@@ -161,14 +161,18 @@ class Entity
 	{
 		if (template.resizeableX)
 		{
-			size.x = Math.max(template.size.x, _sizeAnchor.x + delta.x);
+			var newSizeX = _sizeAnchor.x + delta.x;
+			if (newSizeX > 0)
+				size.x = newSizeX;
 			if (template.originAnchored)
 				origin.x = (template.origin.x / template.size.x) * size.x;
 		}
 
 		if (template.resizeableY)
 		{
-			size.y = Math.max(template.size.y, _sizeAnchor.y + delta.y);
+			var newSizeY = _sizeAnchor.y + delta.y;
+			if (newSizeY > 0)
+				size.y = newSizeY;
 			if (template.originAnchored)
 				origin.y = (template.origin.y / template.size.y) * size.y;
 		}
