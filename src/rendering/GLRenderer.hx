@@ -17,6 +17,8 @@ class GLRenderer
 {
 	public static var renderers: Map<String, GLRenderer> = new Map();
 
+	static var defaultTextureTint = [1.0, 1.0, 1.0];
+
 	public var name: String;
 	public var canvas: CanvasElement;
 	public var gl: RenderingContext;
@@ -228,6 +230,10 @@ class GLRenderer
 			gl.activeTexture(RenderingContext.TEXTURE0);
 			gl.bindTexture(RenderingContext.TEXTURE_2D, texture.textures[name]);
 			gl.uniform1i(gl.getUniformLocation(shader.program, "texture"), 0);
+			var tint = defaultTextureTint;
+			if (colors.length >= 3)
+				tint = colors;
+			shader.setUniform3f("tint", tint[0], tint[1], tint[2]);
 
 			gl.enableVertexAttribArray(shader.vertexUVAttribute);
 			gl.bindBuffer(RenderingContext.ARRAY_BUFFER, uvBuffer);
@@ -259,7 +265,7 @@ class GLRenderer
 	var botleft:Vector = new Vector();
 	var botright:Vector = new Vector();
 
-	public function drawTexture(x:Float, y:Float, texture:Texture, ?origin:Vector, ?scale:Vector, ?rotation:Float, ?clipX:Float, ?clipY:Float, ?clipW:Float, ?clipH:Float):Void
+	public function drawTexture(x:Float, y:Float, texture:Texture, ?origin:Vector, ?scale:Vector, ?rotation:Float, ?clipX:Float, ?clipY:Float, ?clipW:Float, ?clipH:Float, ?tint:Array<Float>):Void
 	{
 		setTexture(texture);
 
@@ -335,6 +341,11 @@ class GLRenderer
 		uvs.push(uvy + uvh);
 		uvs.push(uvx);
 		uvs.push(uvy + uvh);
+
+		if (tint != null) {
+			for (x in tint)
+				colors.push(x);
+		}
 	}
 
 	public function drawTile(x:Float, y:Float, tileset:Tileset, tile:TileData): Void
