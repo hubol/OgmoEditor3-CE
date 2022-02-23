@@ -1,5 +1,6 @@
 package modules.entities;
 
+import hacks.TintHack;
 import io.Imports;
 import level.data.Value;
 import project.data.value.TextValueTemplate;
@@ -246,11 +247,13 @@ class Entity
 			if (flippedX) orig.x -= size.x;
 			if (flippedY) orig.y -= size.y;
 			orig.rotate(Math.sin(rotation * Math.PI / 180), Math.cos(rotation * Math.PI / 180));
-			EDITOR.draw.drawTexture(position.x - orig.x, position.y - orig.y, _texture, null, size.clone().div(template.size).mult(new Vector(flippedX ? -1 : 1, flippedY ? -1 : 1)), rotation * Calc.DTR);
+			EDITOR.draw.drawTexture(position.x - orig.x, position.y - orig.y, _texture, null, size.clone().div(template.size).mult(new Vector(flippedX ? -1 : 1, flippedY ? -1 : 1)), rotation * Calc.DTR,
+				null, null, null, null,
+				TintHack.getTintForEntity(this));
 		}
 		else 
 		{
-			EDITOR.draw.drawTris(_points, position, color);
+			EDITOR.draw.drawTris(_points, position, TintHack.getColorForShapeEntity(this));
 		}
 
 		//Draw Node Ghosts
