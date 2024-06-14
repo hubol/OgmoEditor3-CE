@@ -468,7 +468,8 @@ class Editor
 				if (!selectionElement.is(":visible"))
 				{
 					new JQuery(".editor_palette_resizer").show();
-					paletteElement.height(lastPaletteHeight);
+					if (lastPaletteHeight > 0)
+						paletteElement.height(lastPaletteHeight);
 					selectionElement.show();
 				}
 			}
