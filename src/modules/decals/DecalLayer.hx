@@ -35,6 +35,7 @@ class DecalLayer extends Layer
 			var origin = Imports.vector(decal, "originX", "originY", new Vector(0.5, 0.5));
 			var scale = Imports.vector(decal, "scaleX", "scaleY", new Vector(1, 1));
 			var rotation = Imports.float(decal.rotation, 0);
+			var tint = (cast template:DecalLayerTemplate).tintable.loadObjectTint(decal);
 
 			var values = Imports.values(decal, (cast template:DecalLayerTemplate).values);
 
@@ -45,7 +46,7 @@ class DecalLayer extends Layer
 					break;
 				}
 
-			this.decals.push(new Decal(position, path, texture, origin, scale, rotation, values));
+			this.decals.push(new Decal(position, path, texture, origin, scale, rotation, tint, values));
 		}
 	}
 
