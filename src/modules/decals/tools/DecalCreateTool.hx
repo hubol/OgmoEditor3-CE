@@ -1,5 +1,6 @@
 package modules.decals.tools;
 
+import hacks.TintHack;
 import level.data.Value;
 
 class DecalCreateTool extends DecalTool
@@ -18,7 +19,7 @@ class DecalCreateTool extends DecalTool
 	{
 		if (layerEditor.brush != null && created == null && !deleting && canPreview)
 		{
-			EDITOR.overlay.drawTexture(previewAt.x, previewAt.y, layerEditor.brush, layerEditor.brush.center, scale);
+			EDITOR.overlay.drawTexture(previewAt.x, previewAt.y, layerEditor.brush, layerEditor.brush.center, scale, null, null, null, null, null, TintHack.toFloatArray(getBrushTint()));
 		}
 	}
 
@@ -31,6 +32,10 @@ class DecalCreateTool extends DecalTool
 	override public function onMouseLeave()
 	{
 		canPreview = false;
+	}
+
+	function getBrushTint() {
+		return (cast layerEditor.template:DecalLayerTemplate).tintable.getDefault();
 	}
 
 	override public function onMouseDown(pos:Vector)
@@ -46,7 +51,7 @@ class DecalCreateTool extends DecalTool
 
 		var path = js.node.Path.relative((cast layerEditor.template:DecalLayerTemplate).folder, layerEditor.brush.path);
 		var values = [for (template in (cast layerEditor.template:DecalLayerTemplate).values) new Value(template)];
-		created = new Decal(pos, path, layerEditor.brush, origin, scale, 0, values);
+		created = new Decal(pos, path, layerEditor.brush, origin, scale, 0, getBrushTint(), values);
 		layer.decals.push(created);
 
 		if (OGMO.keyCheckMap[Keys.Shift])

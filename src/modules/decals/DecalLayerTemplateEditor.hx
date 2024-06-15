@@ -1,5 +1,6 @@
 package modules.decals;
 
+import features.Tintable.TintableTemplateField;
 import util.Fields;
 import project.editor.ValueTemplateManager;
 import project.editor.LayerTemplateEditor;
@@ -11,6 +12,7 @@ class DecalLayerTemplateEditor extends LayerTemplateEditor
 	public var includeImageSequenceField:JQuery;
 	public var scaleable:JQuery;
 	public var rotatable:JQuery;
+	public var tintableField:TintableTemplateField;
 	public var folderHolder:JQuery;
 	public var folder:JQuery;
 
@@ -28,6 +30,7 @@ class DecalLayerTemplateEditor extends LayerTemplateEditor
 		Fields.createSettingsBlock(into, scaleable, SettingsBlock.Fourth);
 		rotatable = Fields.createCheckbox(decalTemplate.rotatable, "Rotatable");
 		Fields.createSettingsBlock(into, rotatable, SettingsBlock.Fourth);
+		tintableField = decalTemplate.tintable.createField(into);
 		Fields.createLineBreak(into);
 
 		// folders
@@ -48,6 +51,7 @@ class DecalLayerTemplateEditor extends LayerTemplateEditor
 		decalTemplate.includeImageSequence = Fields.getCheckbox(includeImageSequenceField);
 		decalTemplate.scaleable = Fields.getCheckbox(scaleable);
 		decalTemplate.rotatable = Fields.getCheckbox(rotatable);
+		tintableField.save();
 		decalTemplate.folder = Fields.getPath(folder);
 
 		// save custom values

@@ -9,35 +9,38 @@ class Decal
 	public var scale:Vector;
 	public var origin:Vector;
 	public var rotation:Float;
+	public var tint:String;
 	public var texture:Texture;
 	public var path:String;
 	public var width(get, never):Int;
 	public var height(get, never):Int;
 	public var values:Array<Value>;
 
-	public function new(position:Vector, path:String, texture:Texture, ?origin:Vector, ?scale:Vector, ?rotation:Float, ?values:Array<Value>)
+	public function new(position:Vector, path:String, texture:Texture, ?origin:Vector, ?scale:Vector, ?rotation:Float, ?tint:String, ?values:Array<Value>)
 	{
 		this.position = position.clone();
 		this.texture = texture;
 		this.path = path;
 		this.scale = scale == null ? new Vector(1, 1) : scale.clone();
 		this.rotation = rotation == null ? 0 : OGMO.project.anglesRadians ? rotation : rotation * Calc.DTR;
+		this.tint = tint;
 		this.values = values == null ? [] : values;
 		this.origin = origin == null ? new Vector(0.5, 0.5) : origin.clone();
 	}
 
-	public function save(scaleable:Bool, rotatable:Bool):Dynamic
+	public function save(template: DecalLayerTemplate):Dynamic
 	{
 		var data:Dynamic = {};
 		data._name = "decal";
 		data.x = position.x;
 		data.y = position.y;
-		if (scaleable)
+		if (template.scaleable)
 		{
 			data.scaleX = scale.x;
 			data.scaleY = scale.y;
 		}
-		if (rotatable) data.rotation = OGMO.project.anglesRadians ? rotation : rotation * Calc.RTD;
+		if (template.rotatable) data.rotation = OGMO.project.anglesRadians ? rotation : rotation * Calc.RTD;
+		template.tintable.saveObjectTint(tint, data);
 		data.texture = FileSystem.normalize(path);
 		data.originX = origin.x;
 		data.originY = origin.y;

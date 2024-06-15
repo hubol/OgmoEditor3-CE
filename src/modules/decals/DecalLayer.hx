@@ -13,7 +13,7 @@ class DecalLayer extends Layer
 		var data = super.save();
 		data._contents = "decals";
 		data.decals = [];
-		for (decal in decals) data.decals.push(decal.save((cast template : DecalLayerTemplate).scaleable, (cast template : DecalLayerTemplate).rotatable));
+		for (decal in decals) data.decals.push(decal.save((cast template : DecalLayerTemplate)));
 		data.folder = (cast template : DecalLayerTemplate).folder;
 
 		return data;

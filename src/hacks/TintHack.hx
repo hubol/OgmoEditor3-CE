@@ -6,7 +6,9 @@ import modules.decals.Decal;
 
 class TintHack {
     public static function getTintForDecal(decal: Decal) {
-        return getTint(decal.values);
+        if (decal.tint == null)
+            return defaultTint;
+        return toFloatArray(decal.tint);
     }
 
     public static function getTintForEntity(entity: Entity) {

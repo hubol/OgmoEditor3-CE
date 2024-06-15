@@ -1,5 +1,6 @@
 package modules.decals;
 
+import features.Tintable.TintableTemplate;
 import js.node.Path;
 import level.editor.Tool;
 import level.data.Level;
@@ -45,6 +46,7 @@ class DecalLayerTemplate extends LayerTemplate
 	public var textures:Array<Texture> = [];
 	public var scaleable:Bool;
 	public var rotatable:Bool;
+	public var tintable = new TintableTemplate();
 	public var doRefresh:Void->Void;
 
 	var walker:Walker;
@@ -66,6 +68,7 @@ class DecalLayerTemplate extends LayerTemplate
 		data.includeImageSequence = includeImageSequence;
 		data.scaleable = scaleable;
 		data.rotatable = rotatable;
+		tintable.save(data);
 		data.values = ValueTemplate.saveList(values);
 		return data;
 	}
@@ -77,6 +80,7 @@ class DecalLayerTemplate extends LayerTemplate
 		includeImageSequence = data.includeImageSequence;
 		scaleable = data.scaleable;
 		rotatable = data.rotatable;
+		tintable.load(data);
 		values = ValueTemplate.loadList(data.values);
 		return this;
 	}
