@@ -48,14 +48,14 @@ class TintableTemplate {
             return result;
         }
         else if (EDITOR.level == null) {
-            Sys.println('Attempting to resolve default for TintableTemplate, but EDITOR.level is null!');
+            trace('Attempting to resolve default for TintableTemplate, but EDITOR.level is null!');
             return '#ffffffff';
         }
         for (value in EDITOR.level.values) {
             if (value.template.name == defaultValue)
                 return value.value;
         }
-        Sys.println('Could not find Editor level value with name ${defaultValue}');
+        trace('Could not find Editor level value with name ${defaultValue}');
         return '#ffffffff';
     }
 }
