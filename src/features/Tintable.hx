@@ -78,10 +78,29 @@ class TintableTemplateField {
     public function new(root: JQuery, template: TintableTemplate) {
         this.template = template;
         enabledField = Fields.createCheckbox(template.enabled, "Tintable");
-		Fields.createSettingsBlock(root, enabledField, SettingsBlock.Fourth);
+		Fields.createSettingsBlock(root, enabledField, SettingsBlock.Initial);
 
-        defaultField = Fields.createField("#ffffff", template.defaultValue);
-		Fields.createSettingsBlock(root, defaultField, SettingsBlock.Fourth, "Default Tint", SettingsBlock.InlineTitle);
+        var sources = new JQuery('<div class="radios">');
+
+        var rgbRadioButton = disablingRadioButton('rgb', true);
+        var levelValuesRadioButton = disablingRadioButton('level', false);
+
+        sources.append(rgbRadioButton, levelValuesRadioButton);
+
+        defaultField = Fields.createRgb(Color.fromHex(template.defaultValue, 1));
+		Fields.createSettingsBlock(rgbRadioButton, defaultField, SettingsBlock.Initial, "Default", SettingsBlock.InlineTitle);
+
+        var textField = Fields.createField("#ffffff", "#ffffff");
+		Fields.createSettingsBlock(levelValuesRadioButton, textField, SettingsBlock.Initial, "Level Value", SettingsBlock.InlineTitle);
+
+        root.append(sources);
+    }
+
+    static function disablingRadioButton(name:String, checked:Bool) {
+        var container = new JQuery('<div class="disabling-radio">');
+        var input = new JQuery('<input type="radio" name="group">').prop('id', name).prop('checked', checked);
+        container.append(input);
+        return container;
     }
 
     public function save() {

@@ -18,6 +18,8 @@ enum SettingsBlock
 	
 	InlineTitle;
 	OverTitle;
+
+	Initial;
 }
 
 typedef FieldAttributes = {
