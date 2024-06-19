@@ -90,6 +90,22 @@ input:focus {
     gap: 2px;
 }
 
+.color-box-v2.invalid input[type="color"]::before {
+    content: '!';
+    margin-top: 3px;
+    margin-left: 11px;
+    font-size: 16px;
+    color: white;
+    display: inline;
+    position: absolute;
+    z-index: 100;
+}
+
+.color-box-v2.invalid input[type="text"] {
+    background-color: #ffd0d0;
+    color: #dc0000;
+}
+
 .color-box-v2 input[type="color"] {
     cursor: pointer;
     width: 28px;
