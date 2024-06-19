@@ -1,6 +1,5 @@
 package util;
 
-import features.FeatureFlags;
 import js.node.Path;
 import io.FileSystem;
 import io.Imports;
