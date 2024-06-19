@@ -184,6 +184,23 @@ class Fields
 		return element;
 	}
 
+	static function isHexCharacter(character:String) {
+		var code = character.toLowerCase().charCodeAt(0);
+		return (code >= 48 && code <= 57) || (code >= 97 && code <= 102);
+	}
+
+	static function isValidHexCode(value:String) {
+		if (value.length != 7 || value.charAt(0) != '#')
+			return false;
+
+		for (i in 1...7) {
+			if (!isHexCharacter(value.charAt(i)))
+				return false;
+		}
+
+		return true;
+	}
+
 	public static function createColor(label:String, color:Color, ?into:JQuery, ?onChange:Color->Void):JQuery
 	{
 		if (FeatureFlags.colorInputV2) {
@@ -198,14 +215,22 @@ class Fields
 			input2.on("keydown", function(ev) {
 				if (ev.key.length > 1 || ev.ctrlKey)
 					return;
-				var charCode = ev.key.toLowerCase().charCodeAt(0);
-				if ((charCode >= 48 && charCode <= 57) || (charCode >= 97 && charCode <= 102) || (ev.target.value == "" && charCode == 35))
+				var character = ev.key.charAt(0);
+				if (isHexCharacter(character) || (ev.target.value == "" && character == '#'))
 					return;
 				ev.preventDefault();
 			});
 
+			function validateAndRaise(value:String) {
+				var valid = isValidHexCode(value);
+				element.toggleClass('invalid', !valid);
+				if (onChange != null && valid)
+					onChange(Color.fromHex(value, 1));
+			}
+
 			input2.on("input", function(ev) {
 				input1.val(ev.target.value);
+				validateAndRaise(ev.target.value);
 			});
 
 			element.append(input1, input2);
@@ -215,18 +240,22 @@ class Fields
 					input1.val(value);
 				if (value != input2.val())
 					input2.val(value);
-				element.attr("data-hex", value);
-				element.attr("data-alpha", 1);
 			}
 
 			renderValue(color.toHex());
 
 			input1.on("change", function(ev) {
 				renderValue(ev.target.value);
+				validateAndRaise(ev.target.value);
 			});
 
 			input2.on("change", function(ev) {
 				renderValue(ev.target.value);
+				validateAndRaise(ev.target.value);
+			});
+
+			element.on('setColor', function(ev, value) {
+				renderValue(value);
 			});
 
 			if (into != null) into.append(element);
@@ -256,10 +285,13 @@ class Fields
 
 	public static function setColor(element:JQuery, color:Color)
 	{
+		if (FeatureFlags.colorInputV2) {
+			element.trigger('setColor', [ color.toHex() ]);
+			return;
+		}
 		element.attr("data-hex", color.toHex());
 		element.attr("data-alpha", color.a);
-		if (!FeatureFlags.colorInputV2)
-			element.children().first().css("background", color.rgbaString());
+		element.children().first().css("background", color.rgbaString());
 	}
 
 	public static function getColor(element:JQuery)
