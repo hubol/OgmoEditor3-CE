@@ -70,13 +70,13 @@ class TintableTemplateField {
         enabledField = Fields.createCheckbox(template.enabled, "Tintable");
 		Fields.createSettingsBlock(root, enabledField, SettingsBlock.Fourth);
 
-        // TODO free text entry
-        // enabledField = Fields.createCheckbox(template.enabled, "Tint default");
-		// Fields.createSettingsBlock(root, enabledField, SettingsBlock.Fourth);
+        defaultField = Fields.createField("#ffffff", template.defaultValue);
+		Fields.createSettingsBlock(root, defaultField, SettingsBlock.Fourth, "Default Tint", SettingsBlock.InlineTitle);
     }
 
     public function save() {
         template.enabled = Fields.getCheckbox(enabledField);
+        template.defaultValue = Fields.getField(defaultField);
     }
 }
 
