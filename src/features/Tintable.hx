@@ -113,7 +113,7 @@ class TintableObjectField<T:ITintable> {
             EDITOR.dirty();
         }, FeatureFlags.colorInputV2 ? tint -> {
             if (!expectingChangeInput) {
-                EDITOR.level.store("Changed Object tint from '" + tintable.tint);
+                EDITOR.level.store("Changed Object tint from " + tintable.tint);
                 expectingChangeInput = true;
             }
 
