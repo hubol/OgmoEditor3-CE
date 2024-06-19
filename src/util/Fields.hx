@@ -184,87 +184,8 @@ class Fields
 		return element;
 	}
 
-	static function isHexCharacter(character:String) {
-		var code = character.toLowerCase().charCodeAt(0);
-		return (code >= 48 && code <= 57) || (code >= 97 && code <= 102);
-	}
-
-	static function isValidHexCode(value:String) {
-		if (value.length != 7 || value.charAt(0) != '#')
-			return false;
-
-		for (i in 1...7) {
-			if (!isHexCharacter(value.charAt(i)))
-				return false;
-		}
-
-		return true;
-	}
-
-	public static function createColor(label:String, color:Color, ?into:JQuery, ?onChange:Color->Void, ?onInput:Color->Void):JQuery
+	public static function createColor(label:String, color:Color, ?into:JQuery, ?onChange:Color->Void):JQuery
 	{
-		if (FeatureFlags.colorInputV2) {
-			var element = new JQuery('<div class="color-box-v2">');
-
-			if (color.a != 1)
-				trace('Warning: Color Input V2 got alpha != 1: ${color.a}');
-
-			var input1 = new JQuery('<input type="color">');
-			var input2 = new JQuery('<input type="text" maxlength="7">');
-
-			input2.on("keydown", function(ev) {
-				if (ev.key.length > 1 || ev.ctrlKey)
-					return;
-				var character = ev.key.charAt(0);
-				if (isHexCharacter(character) || (ev.target.value == "" && character == '#'))
-					return;
-				ev.preventDefault();
-			});
-
-			function validate(value:String) {
-				var valid = isValidHexCode(value);
-				element.toggleClass('invalid', !valid);
-				return valid;
-			}
-
-			function validateAndRaise(value:String) {
-				if (validate(value)) {
-					element.attr("data-hex", value);
-					if (onChange != null)
-						onChange(Color.fromHex(value, 1));
-				}	
-			}
-
-			element.append(input1, input2);
-
-			function renderValue(value:String) {
-				input1.val(value);
-				input2.val(value);
-			}
-
-			element.find("input").on("input", function (ev) {
-				var value = ev.target.value;
-				renderValue(value);
-				if (validate(value) && onInput != null)
-					onInput(Color.fromHex(value, 1));
-			});
-
-			element.find("input").on("change", function (ev) {
-				var value = ev.target.value;
-				renderValue(value);
-				validateAndRaise(value);
-			});
-
-			renderValue(color.toHex());
-
-			element.on('setColor', function(ev, value) {
-				renderValue(value);
-			});
-
-			if (into != null) into.append(element);
-			return element;
-		}
-		
 		var element = new JQuery('<div class="color-box">');
 		var child = new JQuery('<div>');
 		element.attr("data-hex", color.toHex());
@@ -289,11 +210,6 @@ class Fields
 	public static function setColor(element:JQuery, color:Color)
 	{
 		element.attr("data-hex", color.toHex());
-
-		if (FeatureFlags.colorInputV2) {
-			element.trigger('setColor', [ color.toHex() ]);
-			return;
-		}
 		element.attr("data-alpha", color.a);
 		element.children().first().css("background", color.rgbaString());
 	}
@@ -301,6 +217,23 @@ class Fields
 	public static function getColor(element:JQuery)
 	{
 		return Color.fromHex(element.attr("data-hex"), Imports.float(element.attr("data-alpha"), 1));
+	}
+
+	static function isHexCharacter(character:String) {
+		var code = character.toLowerCase().charCodeAt(0);
+		return (code >= 48 && code <= 57) || (code >= 97 && code <= 102);
+	}
+
+	static function isValidHexCode(value:String) {
+		if (value.length != 7 || value.charAt(0) != '#')
+			return false;
+
+		for (i in 1...7) {
+			if (!isHexCharacter(value.charAt(i)))
+				return false;
+		}
+
+		return true;
 	}
 
 	public static function createRgb(color:Color, ?into:JQuery, ?onChangeStart:Void->Void, ?onChange:Color->Void, ?onChangeCommit:Color->Void):JQuery
