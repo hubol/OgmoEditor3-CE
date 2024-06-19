@@ -1,5 +1,6 @@
 package features;
 
+import util.Clear;
 import util.Fields;
 
 interface ITintable {
@@ -77,8 +78,14 @@ class TintableTemplateField {
 
     public function new(root: JQuery, template: TintableTemplate) {
         this.template = template;
+
+        root.append(Clear.create());
+
+        var container = new JQuery('<div class="tintable-container">');
+        root.append(container);
+
         enabledField = Fields.createCheckbox(template.enabled, "Tintable");
-		Fields.createSettingsBlock(root, enabledField, SettingsBlock.Initial);
+		Fields.createSettingsBlock(container, enabledField, SettingsBlock.Initial);
 
         var sources = new JQuery('<div class="radios">');
 
@@ -93,7 +100,7 @@ class TintableTemplateField {
         var textField = Fields.createField("#ffffff", "#ffffff");
 		Fields.createSettingsBlock(levelValuesRadioButton, textField, SettingsBlock.Initial, "Level Value", SettingsBlock.InlineTitle);
 
-        root.append(sources);
+        container.append(sources);
     }
 
     static function disablingRadioButton(name:String, checked:Bool) {

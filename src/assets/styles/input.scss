@@ -114,9 +114,48 @@ input:focus {
     flex-shrink: 0;
 }
 
+.disabling-radio {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+}
+
+.disabling-radio input[type="radio"] {
+    margin-left: 12px;
+    margin-right: 0;
+    width: 20px;
+    float: none;
+}
+
 .disabling-radio input[type="radio"]:not(:checked) ~ *{
     pointer-events: none;
     opacity: 50%;
+}
+
+.clear {
+    clear: both;
+}
+
+.clear + * * {
+    float: none !important;
+}
+
+.radios {
+    display: flex;
+}
+
+.tintable-container {
+    display: flex;
+    align-items: center;
+}
+
+.tintable-container > *:first-child {
+    max-width: 25%;
+}
+
+.radios {
+    display: flex;
+    flex-direction: column;
 }
 
 .color-box
