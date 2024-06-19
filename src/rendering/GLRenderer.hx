@@ -214,26 +214,19 @@ class GLRenderer
 			gl.bindBuffer(RenderingContext.ARRAY_BUFFER, posBuffer);
 			gl.vertexAttribPointer(shader.vertexPositionAttribute, 2, RenderingContext.FLOAT, false, 0, 0);
 			gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32Array(positions), RenderingContext.STATIC_DRAW);
-		}
 
-		// vertex colors (shape shader)
-		if (texture == null)
-		{
 			gl.enableVertexAttribArray(shader.vertexColorAttribute);
 			gl.bindBuffer(RenderingContext.ARRAY_BUFFER, colBuffer);
 			gl.vertexAttribPointer(shader.vertexColorAttribute, 4, RenderingContext.FLOAT, false, 0, 0);
 			gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32Array(colors), RenderingContext.STATIC_DRAW);
 		}
+
 		// vertex uv's (texture shader)
-		else
+		if (texture != null)
 		{
 			gl.activeTexture(RenderingContext.TEXTURE0);
 			gl.bindTexture(RenderingContext.TEXTURE_2D, texture.textures[name]);
 			gl.uniform1i(gl.getUniformLocation(shader.program, "texture"), 0);
-			var tint = defaultTextureTint;
-			if (colors.length >= 3)
-				tint = colors;
-			shader.setUniform3f("tint", tint[0], tint[1], tint[2]);
 
 			gl.enableVertexAttribArray(shader.vertexUVAttribute);
 			gl.bindBuffer(RenderingContext.ARRAY_BUFFER, uvBuffer);
@@ -342,10 +335,7 @@ class GLRenderer
 		uvs.push(uvx);
 		uvs.push(uvy + uvh);
 
-		if (tint != null) {
-			for (x in tint)
-				colors.push(x);
-		}
+		add_color(new Color(tint[0], tint[1], tint[2], 1), 6);
 	}
 
 	public function drawTile(x:Float, y:Float, tileset:Tileset, tile:TileData): Void
@@ -422,6 +412,8 @@ class GLRenderer
 		uvs.push(uvy + uvh);
 		uvs.push(uvx + uvw);
 		uvs.push(uvy + uvh);
+
+		add_color(Color.white, 6);
 	}
 
 	// GEOMETRY
