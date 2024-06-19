@@ -224,35 +224,27 @@ class Fields
 			function validateAndRaise(value:String) {
 				var valid = isValidHexCode(value);
 				element.toggleClass('invalid', !valid);
-				if (onChange != null && valid)
-					onChange(Color.fromHex(value, 1));
+				if (valid) {
+					element.attr("data-hex", value);
+					if (onChange != null)
+						onChange(Color.fromHex(value, 1));
+				}	
 			}
-
-			input2.on("input", function(ev) {
-				input1.val(ev.target.value);
-				validateAndRaise(ev.target.value);
-			});
 
 			element.append(input1, input2);
 
 			function renderValue(value:String) {
-				if (value != input1.val())
-					input1.val(value);
-				if (value != input2.val())
-					input2.val(value);
+				input1.val(value);
+				input2.val(value);
 			}
 
+			element.find("input").on("input change", function (ev) {
+				var value = ev.target.value;
+				renderValue(value);
+				validateAndRaise(value);
+			});
+
 			renderValue(color.toHex());
-
-			input1.on("change", function(ev) {
-				renderValue(ev.target.value);
-				validateAndRaise(ev.target.value);
-			});
-
-			input2.on("change", function(ev) {
-				renderValue(ev.target.value);
-				validateAndRaise(ev.target.value);
-			});
 
 			element.on('setColor', function(ev, value) {
 				renderValue(value);
@@ -285,11 +277,12 @@ class Fields
 
 	public static function setColor(element:JQuery, color:Color)
 	{
+		element.attr("data-hex", color.toHex());
+
 		if (FeatureFlags.colorInputV2) {
 			element.trigger('setColor', [ color.toHex() ]);
 			return;
 		}
-		element.attr("data-hex", color.toHex());
 		element.attr("data-alpha", color.a);
 		element.children().first().css("background", color.rgbaString());
 	}
