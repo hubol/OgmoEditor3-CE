@@ -21,6 +21,7 @@ class Start {
 		IntegerValueTemplate.startup();
 		StringValueTemplate.startup();
 		TextValueTemplate.startup();
+		RgbValueTemplate.startup();
 
 		// Editor Panels
 		ProjectGeneralPanel.startup();

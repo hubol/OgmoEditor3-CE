@@ -98,30 +98,27 @@ class TintableObjectField<T:ITintable> {
         }
             
         var tintable = tintables[0];
-        var expectingChangeInput = false;
 
-        var tintField = Fields.createColor("Tint", Color.fromHex(tintable.tint.substr(1, 6), 1), root, tint -> {
-            if (!FeatureFlags.colorInputV2)
-                EDITOR.level.store("Changed Object tint from '" + tintable.tint + "'	to '" + tint + "'");
-
-            expectingChangeInput = false;
-            
-            for (object in tintables)
-                object.tint = tint.toHex();
-
-            EDITOR.level.unsavedChanges = true;
-            EDITOR.dirty();
-        }, FeatureFlags.colorInputV2 ? tint -> {
-            if (!expectingChangeInput) {
+        var tintField = Fields.createRgb(
+            Color.fromHex(tintable.tint.substr(1, 6), 1),
+            root,
+            () -> {
                 EDITOR.level.store("Changed Object tint from " + tintable.tint);
-                expectingChangeInput = true;
+            },
+            tint -> {
+                for (object in tintables)
+                    object.tint = tint.toHex();
+    
+                EDITOR.dirty();
+            },
+            tint -> {
+                for (object in tintables)
+                    object.tint = tint.toHex();
+    
+                EDITOR.level.unsavedChanges = true;
+                EDITOR.dirty();
             }
-
-            for (object in tintables)
-                object.tint = tint.toHex();
-
-            EDITOR.dirty();
-        } : null);
+        );
 
         Fields.createSettingsBlock(root, tintField, SettingsBlock.Full, "Tint", SettingsBlock.OverTitle);
     }

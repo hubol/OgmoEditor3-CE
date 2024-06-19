@@ -303,6 +303,97 @@ class Fields
 		return Color.fromHex(element.attr("data-hex"), Imports.float(element.attr("data-alpha"), 1));
 	}
 
+	public static function createRgb(color:Color, ?into:JQuery, ?onChangeStart:Void->Void, ?onChange:Color->Void, ?onChangeCommit:Color->Void):JQuery
+	{
+		var element = new JQuery('<div class="color-box-v2">');
+
+		if (color.a != 1)
+			trace('Warning: createRgb got alpha != 1: ${color.a}');
+
+		var input1 = new JQuery('<input type="color">');
+		var input2 = new JQuery('<input type="text" maxlength="7">');
+
+		input2.on("keydown", function(ev) {
+			if (ev.key.length > 1 || ev.ctrlKey)
+				return;
+			var character = ev.key.charAt(0);
+			if (isHexCharacter(character) || (ev.target.value == "" && character == '#'))
+				return;
+			ev.preventDefault();
+		});
+
+		var canFireOnChangeStart = true;
+
+		function onDomInput(value:String) {
+			if (canFireOnChangeStart) {
+				if (onChangeStart != null)
+					onChangeStart();
+				canFireOnChangeStart = false;
+			}
+			if (onChange != null)
+				onChange(Color.fromHex(value, 1));
+		}
+
+		function onDomChange(value:String) {
+			if (canFireOnChangeStart && onChangeStart != null)
+				onChangeStart();
+			canFireOnChangeStart = true;
+			if (onChangeCommit != null)
+				onChangeCommit(Color.fromHex(value, 1));
+		}
+
+		function validate(value:String) {
+			var valid = isValidHexCode(value);
+			element.toggleClass('invalid', !valid);
+			if (valid)
+				element.attr("data-hex", value);
+			return valid;
+		}
+
+		element.append(input1, input2);
+
+		function renderValue(value:String) {
+			input1.val(value);
+			input2.val(value);
+		}
+
+		element.find("input").on("input", function (ev) {
+			var value = ev.target.value;
+			renderValue(value);
+			if (validate(value))
+				onDomInput(value);
+		});
+
+		element.find("input").on("change", function (ev) {
+			var value = ev.target.value;
+			renderValue(value);
+			if (validate(value))
+				onDomChange(value);
+		});
+
+		var initialValue = color.toHex();
+		renderValue(initialValue);
+		validate(initialValue);
+
+		element.on('setColor', function(ev, value) {
+			renderValue(value);
+		});
+
+		if (into != null) into.append(element);
+		return element;
+	}
+
+	public static function setRgb(element:JQuery, color:Color)
+	{
+		element.attr("data-hex", color.toHex());
+		element.trigger('setColor', [ color.toHex() ]);
+	}
+
+	public static function getRgb(element:JQuery)
+	{
+		return Color.fromHex(element.attr("data-hex"), 1);
+	}
+
 	public static function createSettingsBlock(into:JQuery, element:JQuery, ?size:SettingsBlock, ?label:String, ?labelType:SettingsBlock):JQuery
 	{
 		var holder = new JQuery('<div class="settingblock">');
