@@ -127,6 +127,10 @@ input:focus {
     float: none;
 }
 
+.disabling-radio input[type="radio"] ~ * input[type="color"] {
+    margin-left: 6px;
+}
+
 .disabling-radio input[type="radio"]:not(:checked) ~ *{
     pointer-events: none;
     opacity: 50%;

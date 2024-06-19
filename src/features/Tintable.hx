@@ -1,5 +1,6 @@
 package features;
 
+import project.data.value.RgbValueTemplate;
 import util.Clear;
 import util.Fields;
 
@@ -87,6 +88,8 @@ class TintableTemplateField {
         enabledField = Fields.createCheckbox(template.enabled, "Tintable");
 		Fields.createSettingsBlock(container, enabledField, SettingsBlock.Initial);
 
+        container.append('<div>Default tint from...</div>');
+
         var sources = new JQuery('<div class="radios">');
 
         var rgbRadioButton = disablingRadioButton('rgb', true);
@@ -94,13 +97,26 @@ class TintableTemplateField {
 
         sources.append(rgbRadioButton, levelValuesRadioButton);
 
-        defaultField = Fields.createRgb(Color.fromHex(template.defaultValue, 1));
-		Fields.createSettingsBlock(rgbRadioButton, defaultField, SettingsBlock.Initial, "Default", SettingsBlock.InlineTitle);
+        defaultField = Fields.createRgb(Color.fromHex(template.defaultValue, 1), rgbRadioButton);
 
-        var textField = Fields.createField("#ffffff", "#ffffff");
-		Fields.createSettingsBlock(levelValuesRadioButton, textField, SettingsBlock.Initial, "Level Value", SettingsBlock.InlineTitle);
+        var options = buildLevelValueOptions();
+
+        var levelOptionField = Fields.createOptions(options.map);
+        levelOptionField.val(options.selectedValue);
+		Fields.createSettingsBlock(levelValuesRadioButton, levelOptionField, SettingsBlock.Initial, "RGB Level Value", SettingsBlock.InlineTitle);
 
         container.append(sources);
+    }
+
+    static function buildLevelValueOptions() {
+        var map = new Map<String, String>();
+
+        for (levelValue in OGMO.project.levelValues) {
+            if (levelValue.definition.type == RgbValueTemplate)
+                map.set(levelValue.name, levelValue.name);
+        }
+
+        return { map: map, selectedValue: '0' }
     }
 
     static function disablingRadioButton(name:String, checked:Bool) {
