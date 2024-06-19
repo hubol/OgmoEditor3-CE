@@ -80,6 +80,24 @@ textarea, input, button, select { font-family: inherit; }
     }
 }
 
+input:focus {
+    border-color: black;
+}
+
+.color-box-v2 {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.color-box-v2 input[type="color"] {
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    flex-shrink: 0;
+}
+
 .color-box
 {
 	width: 48px;

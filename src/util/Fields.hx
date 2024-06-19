@@ -1,5 +1,6 @@
 package util;
 
+import features.FeatureFlags;
 import js.node.Path;
 import io.FileSystem;
 import io.Imports;
@@ -185,6 +186,53 @@ class Fields
 
 	public static function createColor(label:String, color:Color, ?into:JQuery, ?onChange:Color->Void):JQuery
 	{
+		if (FeatureFlags.colorInputV2) {
+			var element = new JQuery('<div class="color-box-v2">');
+
+			if (color.a != 1)
+				trace('Warning: Color Input V2 got alpha != 1: ${color.a}');
+
+			var input1 = new JQuery('<input type="color">');
+			var input2 = new JQuery('<input type="text" maxlength="7">');
+
+			input2.on("keydown", function(ev) {
+				if (ev.key.length > 1 || ev.ctrlKey)
+					return;
+				var charCode = ev.key.toLowerCase().charCodeAt(0);
+				if ((charCode >= 48 && charCode <= 57) || (charCode >= 97 && charCode <= 102) || (ev.target.value == "" && charCode == 35))
+					return;
+				ev.preventDefault();
+			});
+
+			input2.on("input", function(ev) {
+				input1.val(ev.target.value);
+			});
+
+			element.append(input1, input2);
+
+			function renderValue(value:String) {
+				if (value != input1.val())
+					input1.val(value);
+				if (value != input2.val())
+					input2.val(value);
+				element.attr("data-hex", value);
+				element.attr("data-alpha", 1);
+			}
+
+			renderValue(color.toHex());
+
+			input1.on("change", function(ev) {
+				renderValue(ev.target.value);
+			});
+
+			input2.on("change", function(ev) {
+				renderValue(ev.target.value);
+			});
+
+			if (into != null) into.append(element);
+			return element;
+		}
+		
 		var element = new JQuery('<div class="color-box">');
 		var child = new JQuery('<div>');
 		element.attr("data-hex", color.toHex());
@@ -210,7 +258,8 @@ class Fields
 	{
 		element.attr("data-hex", color.toHex());
 		element.attr("data-alpha", color.a);
-		element.children().first().css("background", color.rgbaString());
+		if (!FeatureFlags.colorInputV2)
+			element.children().first().css("background", color.rgbaString());
 	}
 
 	public static function getColor(element:JQuery)

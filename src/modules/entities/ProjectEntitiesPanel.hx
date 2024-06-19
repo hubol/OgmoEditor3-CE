@@ -525,7 +525,7 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 					}
 				 }), SettingsBlock.Fourth);
 
-				var iconleft = new JQuery('<div style="float: left; box-sizing: border-box; padding: 16px;">');
+				var iconleft = new JQuery('<div style="float: left;">');
 				var iconright = new JQuery('<div style="width: 50%; float: left;">');
 				inspector.append(iconleft);
 				inspector.append(iconright);
