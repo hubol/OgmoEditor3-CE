@@ -10,11 +10,15 @@ interface ITintable {
 
 class TintableTemplate {
     public var enabled:Bool;
-    public var defaultValue:String;
+    public var defaultTint:String;
+    public var rgbLevelValueName:String;
+    public var useDefaultTint:Bool;
 
     public function new() {
         enabled = false;
-        defaultValue = '#ffffff';
+        defaultTint = "#ffffff";
+        rgbLevelValueName = "";
+        useDefaultTint = true;
     }
 
     // TODO naming??
@@ -29,13 +33,21 @@ class TintableTemplate {
     }
 
     public function load(data: Dynamic) {
-        enabled = data.tintable != null ? data.tintable : false;
-        defaultValue = data.defaultTint != null ? data.defaultTint : '';
+        var tintable: Dynamic = data.tintable == null ? {} : data.tintable;
+
+        enabled = tintable.enabled != null ? tintable.enabled : false;
+        defaultTint = tintable.defaultTint != null ? tintable.defaultTint : '#ffffff';
+        rgbLevelValueName = tintable.rgbLevelValueName != null ? tintable.rgbLevelValueName : '';
+        useDefaultTint = tintable.useDefaultTint != null ? tintable.useDefaultTint : true;
     }
 
     public function save(data: Dynamic) {
-        data.tintable = enabled;
-        data.defaultTint = defaultValue;
+        data.tintable = {
+            enabled: enabled,
+            defaultTint: defaultTint,
+            rgbLevelValueName: rgbLevelValueName,
+            useDefaultTint: useDefaultTint,
+        };
     }
 
     public function loadObjectTint(data: Dynamic):String {
@@ -52,29 +64,27 @@ class TintableTemplate {
 
     public function getDefault() {
         if (!enabled)
-            return '#ffffffff';
-        if (defaultValue.charAt(0) == '#') {
-            var result = defaultValue;
-            while (result.length < 9)
-                result = result + 'f';
-            return result;
-        }
+            return '#ffffff';
+        if (useDefaultTint)
+            return defaultTint;
         else if (EDITOR.level == null) {
             trace('Attempting to resolve default for TintableTemplate, but EDITOR.level is null!');
-            return '#ffffffff';
+            return '#ffffff';
         }
         for (value in EDITOR.level.values) {
-            if (value.template.name == defaultValue)
+            if (value.template.name == rgbLevelValueName)
                 return value.value;
         }
-        trace('Could not find Editor level value with name ${defaultValue}');
-        return '#ffffffff';
+        trace('Could not find Editor level value with name ${rgbLevelValueName}');
+        return '#ffffff';
     }
 }
 
 class TintableTemplateField {
     private var enabledField:JQuery;
-    private var defaultField:JQuery;
+    private var defaultTintField:JQuery;
+    private var levelOptionField:JQuery;
+    private var radioButtons:JQuery;
     private var template: TintableTemplate;
 
     public function new(root: JQuery, template: TintableTemplate) {
@@ -90,22 +100,22 @@ class TintableTemplateField {
 
         container.append('<div>Default tint from...</div>');
 
-        var sources = new JQuery('<div class="radios">');
+        radioButtons = new JQuery('<div class="radios">');
 
-        var rgbRadioButton = disablingRadioButton('rgb', true);
-        var levelValuesRadioButton = disablingRadioButton('level', false);
+        var rgbRadioButton = disablingRadioButton('rgb', template.useDefaultTint);
+        var levelValuesRadioButton = disablingRadioButton('level', !template.useDefaultTint);
 
-        sources.append(rgbRadioButton, levelValuesRadioButton);
+        radioButtons.append(rgbRadioButton, levelValuesRadioButton);
 
-        defaultField = Fields.createRgb(Color.fromHex(template.defaultValue, 1), rgbRadioButton);
+        defaultTintField = Fields.createRgb(Color.fromHex(template.defaultTint, 1), rgbRadioButton);
 
         var options = buildLevelValueOptions();
 
-        var levelOptionField = Fields.createOptions(options.map);
-        levelOptionField.val(options.selectedValue);
+        levelOptionField = Fields.createOptions(options);
+        levelOptionField.val(template.rgbLevelValueName);
 		Fields.createSettingsBlock(levelValuesRadioButton, levelOptionField, SettingsBlock.Initial, "RGB Level Value", SettingsBlock.InlineTitle);
 
-        container.append(sources);
+        container.append(radioButtons);
     }
 
     static function buildLevelValueOptions() {
@@ -116,19 +126,22 @@ class TintableTemplateField {
                 map.set(levelValue.name, levelValue.name);
         }
 
-        return { map: map, selectedValue: '0' }
+        return map;
     }
 
     static function disablingRadioButton(name:String, checked:Bool) {
         var container = new JQuery('<div class="disabling-radio">');
-        var input = new JQuery('<input type="radio" name="group">').prop('id', name).prop('checked', checked);
+        var input = new JQuery('<input type="radio" name="group">').prop('value', name).prop('checked', checked);
         container.append(input);
         return container;
     }
 
     public function save() {
         template.enabled = Fields.getCheckbox(enabledField);
-        template.defaultValue = Fields.getField(defaultField);
+        template.defaultTint = Fields.getRgb(defaultTintField).toHex();
+        template.rgbLevelValueName = Fields.getField(levelOptionField);
+        var checkedValue = radioButtons.find("input:checked").val();
+        template.useDefaultTint = checkedValue == 'rgb';
     }
 }
 

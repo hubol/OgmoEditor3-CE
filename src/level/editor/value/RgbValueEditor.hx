@@ -32,7 +32,9 @@ class RgbValueEditor extends ValueEditor
 			if (decalLayer == null)
 				continue;
 			var decalLayerTemplate: DecalLayerTemplate = cast decalLayer.template;
-			if (decalLayerTemplate.tintable.enabled && decalLayerTemplate.tintable.defaultValue == template.name) {
+			var tintable = decalLayerTemplate.tintable;
+
+			if (tintable.enabled && !tintable.useDefaultTint && tintable.rgbLevelValueName == template.name) {
 				for (decal in decalLayer.decals) {
 					if (decal.tint == previous)
 						decal.tint = next;
