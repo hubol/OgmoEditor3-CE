@@ -2,6 +2,10 @@ package features;
 
 import util.Fields;
 
+interface ITintable {
+    public var tint:String;
+}
+
 class TintableTemplate {
     public var enabled:Bool;
     public var defaultValue:String;
@@ -14,6 +18,12 @@ class TintableTemplate {
     // TODO naming??
     public function createField(root: JQuery) {
         return new TintableTemplateField(root, this);
+    }
+
+    public function createObjectField<T:ITintable>(root: JQuery, tintables: Array<T>) {
+        if (!enabled)
+            return;
+        new TintableObjectField(root, tintables);
     }
 
     public function load(data: Dynamic) {
@@ -80,6 +90,39 @@ class TintableTemplateField {
     }
 }
 
-class TintableObject {
+class TintableObjectField<T:ITintable> {
+    public function new(root: JQuery, tintables: Array<T>) {
+        if (tintables.length == 0) {
+            trace('TintableObjectField.new got tintables array with 0 items!');
+            return;
+        }
+            
+        var tintable = tintables[0];
+        var expectingChangeInput = false;
 
+        var tintField = Fields.createColor("Tint", Color.fromHex(tintable.tint.substr(1, 6), 1), root, tint -> {
+            if (!FeatureFlags.colorInputV2)
+                EDITOR.level.store("Changed Object tint from '" + tintable.tint + "'	to '" + tint + "'");
+
+            expectingChangeInput = false;
+            
+            for (object in tintables)
+                object.tint = tint.toHex();
+
+            EDITOR.level.unsavedChanges = true;
+            EDITOR.dirty();
+        }, FeatureFlags.colorInputV2 ? tint -> {
+            if (!expectingChangeInput) {
+                EDITOR.level.store("Changed Object tint from '" + tintable.tint);
+                expectingChangeInput = true;
+            }
+
+            for (object in tintables)
+                object.tint = tint.toHex();
+
+            EDITOR.dirty();
+        } : null);
+
+        Fields.createSettingsBlock(root, tintField, SettingsBlock.Full, "Tint", SettingsBlock.OverTitle);
+    }
 }

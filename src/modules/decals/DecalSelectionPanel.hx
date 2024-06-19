@@ -123,7 +123,9 @@ class DecalSelectionPanel extends SidePanel
 				});
 				Fields.createSettingsBlock(properties, decalPos, SettingsBlock.Full, "Position", SettingsBlock.OverTitle);
 
-				if ((cast layerEditor.template : DecalLayerTemplate).rotatable)
+				var decalLayerTemplate: DecalLayerTemplate = cast layerEditor.template;
+
+				if (decalLayerTemplate.rotatable)
 				{
 					var decalRot = Fields.createField("Rotation", Std.string(Calc.roundTo(decal.rotation * Calc.RTD, 3)));
 					decalRot.on('change keydown paste input', function(e) {
@@ -170,7 +172,7 @@ class DecalSelectionPanel extends SidePanel
 				});
 				Fields.createSettingsBlock(properties, decalOrigin, SettingsBlock.Full, "Origin", SettingsBlock.OverTitle);
 
-				if ((cast layerEditor.template : DecalLayerTemplate).scaleable)
+				if (decalLayerTemplate.scaleable)
 				{
 					var decalScale = Fields.createVector(decal.scale);
 					decalScale.find(".vecX").on('change keydown paste input', function(e) {
@@ -199,6 +201,7 @@ class DecalSelectionPanel extends SidePanel
 					});
 					Fields.createSettingsBlock(properties, decalScale, SettingsBlock.Full, "Scale", SettingsBlock.OverTitle);
 				}
+				decalLayerTemplate.tintable.createObjectField(properties, sel);
 			}
 		}
 

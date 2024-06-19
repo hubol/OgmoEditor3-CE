@@ -201,7 +201,7 @@ class Fields
 		return true;
 	}
 
-	public static function createColor(label:String, color:Color, ?into:JQuery, ?onChange:Color->Void):JQuery
+	public static function createColor(label:String, color:Color, ?into:JQuery, ?onChange:Color->Void, ?onInput:Color->Void):JQuery
 	{
 		if (FeatureFlags.colorInputV2) {
 			var element = new JQuery('<div class="color-box-v2">');
@@ -221,10 +221,14 @@ class Fields
 				ev.preventDefault();
 			});
 
-			function validateAndRaise(value:String) {
+			function validate(value:String) {
 				var valid = isValidHexCode(value);
 				element.toggleClass('invalid', !valid);
-				if (valid) {
+				return valid;
+			}
+
+			function validateAndRaise(value:String) {
+				if (validate(value)) {
 					element.attr("data-hex", value);
 					if (onChange != null)
 						onChange(Color.fromHex(value, 1));
@@ -238,7 +242,14 @@ class Fields
 				input2.val(value);
 			}
 
-			element.find("input").on("input change", function (ev) {
+			element.find("input").on("input", function (ev) {
+				var value = ev.target.value;
+				renderValue(value);
+				if (validate(value) && onInput != null)
+					onInput(Color.fromHex(value, 1));
+			});
+
+			element.find("input").on("change", function (ev) {
 				var value = ev.target.value;
 				renderValue(value);
 				validateAndRaise(value);

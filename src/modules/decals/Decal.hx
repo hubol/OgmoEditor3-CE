@@ -1,9 +1,10 @@
 package modules.decals;
 
+import features.Tintable.ITintable;
 import level.data.Value;
 import rendering.Texture;
 
-class Decal
+class Decal implements ITintable
 {
 	public var position:Vector;
 	public var scale:Vector;
