@@ -22,8 +22,6 @@ class RgbValueTemplate extends ValueTemplate
 
 	override function getDefault():String
 	{
-		trace('RgbValueTemplate.getDefault');
-		trace(defaults);
 		return defaults.toHex();
 	}
 
@@ -44,16 +42,12 @@ class RgbValueTemplate extends ValueTemplate
 	{
 		super.load(data);
 		defaults = Color.fromHex(data.defaults, 1);
-		trace('RgbValueTemplate.load');
-		trace(defaults);
 	}
 
 	override function save():Dynamic
 	{
 		var data:Dynamic = super.save();
 		data.defaults = defaults.toHex();
-		trace('RgbValueTemplate.save');
-		trace(defaults);
 		return data;
 	}
 }

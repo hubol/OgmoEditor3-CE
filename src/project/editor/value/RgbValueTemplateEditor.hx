@@ -12,9 +12,6 @@ class RgbValueTemplateEditor extends ValueTemplateEditor
 	{
 		var rgbTemplate:RgbValueTemplate = cast template;
 
-		trace('RgbValueTemplateEditor.importInto');
-		trace(rgbTemplate.defaults);
-
 		// default val
 		defaultField = Fields.createRgb(rgbTemplate.defaults);
 		Fields.createSettingsBlock(into, defaultField, SettingsBlock.Half, "Default", SettingsBlock.InlineTitle);
@@ -25,7 +22,5 @@ class RgbValueTemplateEditor extends ValueTemplateEditor
 		var rgbTemplate:RgbValueTemplate = cast template;
 
 		rgbTemplate.defaults = Fields.getRgb(defaultField);
-		trace('RgbValueTemplateEditor.save');
-		trace(rgbTemplate.defaults);
 	}
 }
