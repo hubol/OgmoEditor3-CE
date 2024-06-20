@@ -46,7 +46,7 @@ class DecalLayerEditor extends LayerEditor
 				var originInPixels = new Vector(decal.width * decal.origin.x, decal.height * decal.origin.y);
 				EDITOR.draw.drawTexture(decal.position.x, decal.position.y, decal.texture, originInPixels, decal.scale, decal.rotation,
 					null, null, null, null,
-					TintHack.getTintForDecal(decal));
+					TintHack.getTintForTintable(decal));
 			}
 			else
 			{

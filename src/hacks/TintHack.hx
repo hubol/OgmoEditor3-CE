@@ -1,18 +1,15 @@
 package hacks;
 
+import features.Tintable.ITintable;
 import modules.entities.Entity;
 import level.data.Value;
 import modules.decals.Decal;
 
 class TintHack {
-    public static function getTintForDecal(decal: Decal) {
-        if (decal.tint == null)
+    public static function getTintForTintable(tintable: ITintable) {
+        if (tintable.tint == null)
             return defaultTint;
-        return toFloatArray(decal.tint);
-    }
-
-    public static function getTintForEntity(entity: Entity) {
-        return getTint(entity.values);
+        return toFloatArray(tintable.tint);
     }
 
     public static function getColorForShapeEntity(entity: Entity) {
