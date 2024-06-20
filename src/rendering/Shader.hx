@@ -48,24 +48,16 @@ class Shader
 		gl.deleteProgram(program);
 	}
 
-	private function findUniformLocation(name: String) {
-		if (uniforms[name] == null) uniforms[name] = gl.getUniformLocation(program, name);
-		return uniforms[name];
-	}
-
 	public function setUniform1f(name: String, value: Float): Void
 	{
-		gl.uniform1f(findUniformLocation(name), value);
+		if (uniforms[name] == null) uniforms[name] = gl.getUniformLocation(program, name);
+		gl.uniform1f(uniforms[name], value);
 	}
 	
 	public function setUniform2f(name: String, vec:Vector): Void
 	{
-		gl.uniform2f(findUniformLocation(name), vec.x, vec.y);
-	}
-
-	public function setUniform3f(name: String, x: Float, y: Float, z: Float): Void
-	{
-		gl.uniform3f(findUniformLocation(name), x, y, z);
+		if (uniforms[name] == null) uniforms[name] = gl.getUniformLocation(program, name);
+		gl.uniform2f(uniforms[name], vec.x, vec.y);
 	}
 
 	function getShader(path: String): js.html.webgl.Shader
