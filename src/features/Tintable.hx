@@ -1,5 +1,6 @@
 package features;
 
+import project.data.value.ValueTemplate;
 import project.data.value.RgbValueTemplate;
 import util.Clear;
 import util.Fields;
@@ -29,6 +30,10 @@ class TintableTemplate {
         template.useDefaultTint = useDefaultTint;
 
         return template;
+    }
+
+    public function receivesFromLevelValue(levelValueTemplate: ValueTemplate) {
+        return enabled && !useDefaultTint && levelValueTemplate.definition.type == RgbValueTemplate && levelValueTemplate.name == rgbLevelValueName;
     }
 
     // TODO naming??

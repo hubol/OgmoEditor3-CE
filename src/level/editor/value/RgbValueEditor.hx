@@ -38,8 +38,7 @@ class RgbValueEditor extends ValueEditor
 				var decalLayerTemplate: DecalLayerTemplate = cast decalLayer.template;
 				var tintable = decalLayerTemplate.tintable;
 
-				// TODO copy-paste looks like shit
-				if (tintable.enabled && !tintable.useDefaultTint && tintable.rgbLevelValueName == template.name) {
+				if (tintable.receivesFromLevelValue(template)) {
 					for (decal in decalLayer.decals) {
 						tintables.push(decal);
 					}
@@ -48,7 +47,7 @@ class RgbValueEditor extends ValueEditor
 			else if (entityLayer != null) {
 				for (entity in entityLayer.entities.list) {
 					var tintable = entity.template.tintable;
-					if (tintable.enabled && !tintable.useDefaultTint && tintable.rgbLevelValueName == template.name) {
+					if (tintable.receivesFromLevelValue(template)) {
 						tintables.push(entity);
 					}
 				}
