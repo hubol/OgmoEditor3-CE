@@ -1,5 +1,6 @@
 package modules.entities;
 
+import features.Tintable.TintableTemplateField;
 import util.RightClickMenu;
 import project.editor.ProjectEditorPanel;
 import util.ItemList;
@@ -48,6 +49,7 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 	public var entityNodeDisplay:JQuery;
 	public var entityNodeLimit:JQuery;
 	public var entityNodeGhost:JQuery;
+	public var entityTintableTemplateField:TintableTemplateField;
 
 	// Entity Value Template Mananger
 	public var entityValueManager:ValueTemplateManager;
@@ -559,6 +561,11 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 				Fields.createLineBreak(inspector);
 			}
 
+			{
+				entityTintableTemplateField = entity.tintable.createField(inspector);
+				Fields.createLineBreak(inspector);
+			}
+
 			// icon texture stuff
 			{
 
@@ -618,6 +625,7 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 		entity.canFlipY = Fields.getCheckbox(entityFlipY);
 		entity.rotatable = Fields.getCheckbox(entityRotateable);
 		entity.rotationDegrees = Imports.integer(Fields.getField(entityRotationDegrees), 16);
+		entityTintableTemplateField.save();
 
 		// icon stuff
 		entity.color = Fields.getColor(entityColor);

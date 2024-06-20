@@ -21,6 +21,16 @@ class TintableTemplate {
         useDefaultTint = true;
     }
 
+    public function clone() {
+        var template = new TintableTemplate();
+        template.enabled = enabled;
+        template.defaultTint = defaultTint;
+        template.rgbLevelValueName = rgbLevelValueName;
+        template.useDefaultTint = useDefaultTint;
+
+        return template;
+    }
+
     // TODO naming??
     public function createField(root: JQuery) {
         return new TintableTemplateField(root, this);

@@ -1,5 +1,6 @@
 package modules.entities;
 
+import features.Tintable.TintableTemplate;
 import js.node.Path;
 import util.Matrix;
 import util.Vector;
@@ -27,6 +28,7 @@ class EntityTemplate
 	public var resizeableY:Bool = false;
 	public var rotatable:Bool = false;
 	public var rotationDegrees:Float = 360;
+	public var tintable:TintableTemplate = new TintableTemplate();
 	public var canFlipX:Bool = false;
 	public var canFlipY:Bool = false;
 	public var canSetColor:Bool = false;
@@ -86,6 +88,7 @@ class EntityTemplate
 		next.resizeableY = from.resizeableY;
 		next.rotatable = from.rotatable;
 		next.rotationDegrees = from.rotationDegrees;
+		next.tintable = from.tintable.clone();
 		next.canFlipX = from.canFlipX;
 		next.canFlipY = from.canFlipY;
 		next.canSetColor = from.canSetColor;
@@ -119,6 +122,7 @@ class EntityTemplate
 		e.resizeableY = data.resizeableY;
 		e.rotatable = data.rotatable;
 		e.rotationDegrees = data.rotationDegrees;
+		e.tintable.load(data);
 		e.canFlipX = data.canFlipX;
 		e.canFlipY = data.canFlipY;
 		e.canSetColor = data.canSetColor;
@@ -173,6 +177,8 @@ class EntityTemplate
 			tags: tags,
 			values: ValueTemplate.saveList(values)
 		}
+
+		tintable.save(e);
 
 		if (texture != null) 
 		{
