@@ -1,5 +1,6 @@
 package modules.entities;
 
+import hacks.TintHack;
 import features.Tintable.TintableTemplate;
 import js.node.Path;
 import util.Matrix;
@@ -51,7 +52,7 @@ class EntityTemplate
 	{
 		if (texture != null)
 		{
-			EDITOR.overlay.drawTexture(at.x, at.y, texture, origin, null);
+			EDITOR.overlay.drawTexture(at.x, at.y, texture, origin, null, null, null, null, null, null, TintHack.toFloatArray(tintable.getDefault()));
 		}
 		else 
 		{

@@ -1,5 +1,7 @@
 package level.editor.value;
 
+import modules.entities.EntityLayer;
+import features.Tintable.ITintable;
 import modules.decals.DecalLayerTemplate;
 import modules.decals.DecalLayer;
 import util.Fields;
@@ -26,20 +28,36 @@ class RgbValueEditor extends ValueEditor
 		if (EDITOR.level == null)
 			return;
 
+		var tintables: Array<ITintable> = [];
+
 		// TODO list comprehensions?!
 		for (layer in EDITOR.level.layers) {
 			var decalLayer = layer.downcast(DecalLayer);
-			if (decalLayer == null)
-				continue;
-			var decalLayerTemplate: DecalLayerTemplate = cast decalLayer.template;
-			var tintable = decalLayerTemplate.tintable;
+			var entityLayer = layer.downcast(EntityLayer);
+			if (decalLayer != null) {
+				var decalLayerTemplate: DecalLayerTemplate = cast decalLayer.template;
+				var tintable = decalLayerTemplate.tintable;
 
-			if (tintable.enabled && !tintable.useDefaultTint && tintable.rgbLevelValueName == template.name) {
-				for (decal in decalLayer.decals) {
-					if (decal.tint == previous)
-						decal.tint = next;
+				// TODO copy-paste looks like shit
+				if (tintable.enabled && !tintable.useDefaultTint && tintable.rgbLevelValueName == template.name) {
+					for (decal in decalLayer.decals) {
+						tintables.push(decal);
+					}
 				}
 			}
+			else if (entityLayer != null) {
+				for (entity in entityLayer.entities.list) {
+					var tintable = entity.template.tintable;
+					if (tintable.enabled && !tintable.useDefaultTint && tintable.rgbLevelValueName == template.name) {
+						tintables.push(entity);
+					}
+				}
+			}
+		}
+
+		for (tintable in tintables) {
+			if (tintable.tint == previous)
+				tintable.tint = next;
 		}
 	}
 
