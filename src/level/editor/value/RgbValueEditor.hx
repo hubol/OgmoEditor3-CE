@@ -24,13 +24,12 @@ class RgbValueEditor extends ValueEditor
 		return false;
 	}
 
-	static function updateDecalTintsOnLevelTemplateChange(template:ValueTemplate, previous:String, next:String) {
+	static function updateTintsOnLevelTemplateChange(template:ValueTemplate, previous:String, next:String) {
 		if (EDITOR.level == null)
 			return;
 
 		var tintables: Array<ITintable> = [];
 
-		// TODO list comprehensions?!
 		for (layer in EDITOR.level.layers) {
 			var decalLayer = layer.downcast(DecalLayer);
 			var entityLayer = layer.downcast(EntityLayer);
@@ -83,7 +82,7 @@ class RgbValueEditor extends ValueEditor
 		function updateDecalsToNewColor(color: Color) {
 			if (isCurrentLevelTemplate(template)) {
 				var nextHexValue = color.toHex();
-				updateDecalTintsOnLevelTemplateChange(template, previousHexValue, nextHexValue);
+				updateTintsOnLevelTemplateChange(template, previousHexValue, nextHexValue);
 				previousHexValue = nextHexValue;
 				EDITOR.dirty();
 			}
