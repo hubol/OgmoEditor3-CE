@@ -190,7 +190,7 @@ class Project
 			name: name,
 			ogmoVersion : OGMO.version,
 			levelPaths: levelPaths,
-			backgroundColor: backgroundColor.toHexAlpha(),
+			backgroundColor: backgroundColor.toHex(),
 			gridColor: gridColor.toHexAlpha(),
 			anglesRadians: anglesRadians,
 			directoryDepth: directoryDepth,

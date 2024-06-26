@@ -558,7 +558,7 @@ class Editor
 		//Background
 		draw.drawRect(12, 12, level.data.size.x, level.data.size.y, Color.black.x(.8));
 		draw.drawRect(-1, -1, level.data.size.x + 2, level.data.size.y + 2, Color.black);
-		draw.drawRect(0, 0, level.data.size.x, level.data.size.y, level.project.backgroundColor);
+		draw.drawRect(0, 0, level.data.size.x, level.data.size.y, level.data.backgroundColor);
 
 		//Draw the layers below and including the current one
 		var i = level.layers.length - 1;

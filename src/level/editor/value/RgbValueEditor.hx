@@ -78,9 +78,10 @@ class RgbValueEditor extends ValueEditor
 		}
 
 		var previousHexValue = value;
+		var _isCurrentLevelTemplate = isCurrentLevelTemplate(template);
 
 		function updateDecalsToNewColor(color: Color) {
-			if (isCurrentLevelTemplate(template)) {
+			if (_isCurrentLevelTemplate) {
 				var nextHexValue = color.toHex();
 				updateTintsOnLevelTemplateChange(template, previousHexValue, nextHexValue);
 				previousHexValue = nextHexValue;
@@ -93,7 +94,11 @@ class RgbValueEditor extends ValueEditor
 			color,
 			null,
 			() -> {
-				EDITOR.level.store("Changed " + template.name + " Value from '" + value + "'");
+				var description = "Changed " + template.name + " Value from '" + value + "'";
+				if (_isCurrentLevelTemplate)
+					EDITOR.level.storeFull(false, false, description);
+				else
+					EDITOR.level.store(description);
 			},
 			color -> {
 				updateDecalsToNewColor(color);

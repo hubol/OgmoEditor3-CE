@@ -14,7 +14,7 @@ import util.Vector;
 
 class Level
 {
-	public var data:LevelData = new LevelData();
+	public var data:LevelData;
 	public var layers:Array<Layer> = [];
 	public var values:Array<Value> = [];
 
@@ -51,6 +51,7 @@ class Level
 	public function new(project:Project, ?data: Dynamic)
 	{
 		this.project = project;
+		this.data = new LevelData(project.backgroundColor);
 
 		stack = new UndoStack(this);
 
