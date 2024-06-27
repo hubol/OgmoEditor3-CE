@@ -1,6 +1,5 @@
 package modules.decals;
 
-import hacks.TintHack;
 import level.editor.ui.SidePanel;
 import rendering.Texture;
 import level.editor.LayerEditor;
@@ -45,8 +44,7 @@ class DecalLayerEditor extends LayerEditor
 			if (decal.texture != null){
 				var originInPixels = new Vector(decal.width * decal.origin.x, decal.height * decal.origin.y);
 				EDITOR.draw.drawTexture(decal.position.x, decal.position.y, decal.texture, originInPixels, decal.scale, decal.rotation,
-					null, null, null, null,
-					TintHack.getTintForTintable(decal));
+					null, null, null, null, decal.tint);
 			}
 			else
 			{

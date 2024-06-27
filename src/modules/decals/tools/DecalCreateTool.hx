@@ -1,6 +1,5 @@
 package modules.decals.tools;
 
-import hacks.TintHack;
 import level.data.Value;
 
 class DecalCreateTool extends DecalTool
@@ -19,7 +18,7 @@ class DecalCreateTool extends DecalTool
 	{
 		if (layerEditor.brush != null && created == null && !deleting && canPreview)
 		{
-			EDITOR.overlay.drawTexture(previewAt.x, previewAt.y, layerEditor.brush, layerEditor.brush.center, scale, null, null, null, null, null, TintHack.toFloatArray(getBrushTint()));
+			EDITOR.overlay.drawTexture(previewAt.x, previewAt.y, layerEditor.brush, layerEditor.brush.center, scale, null, null, null, null, null, getBrushTint());
 		}
 	}
 

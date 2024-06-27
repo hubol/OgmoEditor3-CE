@@ -6,18 +6,18 @@ import util.Clear;
 import util.Fields;
 
 interface ITintable {
-    public var tint:String;
+    public var tint:Color;
 }
 
 class TintableTemplate {
     public var enabled:Bool;
-    public var defaultTint:String;
+    public var defaultTint:Color;
     public var rgbLevelValueName:String;
     public var useDefaultTint:Bool;
 
     public function new() {
         enabled = false;
-        defaultTint = "#ffffff";
+        defaultTint = Color.white;
         rgbLevelValueName = "";
         useDefaultTint = true;
     }
@@ -50,48 +50,46 @@ class TintableTemplate {
     public function load(data: Dynamic) {
         var tintable: Dynamic = data.tintable == null ? {} : data.tintable;
 
-        enabled = tintable.enabled != null ? tintable.enabled : false;
-        defaultTint = tintable.defaultTint != null ? tintable.defaultTint : '#ffffff';
-        rgbLevelValueName = tintable.rgbLevelValueName != null ? tintable.rgbLevelValueName : '';
-        useDefaultTint = tintable.useDefaultTint != null ? tintable.useDefaultTint : true;
+        enabled = Imports.bool(tintable.enabled, false);
+        defaultTint = Imports.color(tintable.defaultTint, false, Color.white);
+        rgbLevelValueName = Imports.string(tintable.rgbLevelValueName, '');
+        useDefaultTint = Imports.bool(tintable.useDefaultTint, true);
     }
 
     public function save(data: Dynamic) {
         data.tintable = {
             enabled: enabled,
-            defaultTint: defaultTint,
+            defaultTint: Export.color(defaultTint, false),
             rgbLevelValueName: rgbLevelValueName,
             useDefaultTint: useDefaultTint,
         };
     }
 
-    public function loadObjectTint(data: Dynamic):String {
-        if (!enabled)
-            return null;
-        return data.tint != null ? data.tint : getDefault();
+    public function loadObjectTint(data: Dynamic):Color {
+        return Imports.color(data.tint, false, getDefault());
     }
 
-    public function saveObjectTint(tint: String, data: Dynamic) {
+    public function saveObjectTint(tintable: ITintable, data: Dynamic) {
         if (!enabled)
             return;
-        data.tint = tint;
+        data.tint = Export.color(tintable.tint, false);
     }
 
     public function getDefault() {
         if (!enabled)
-            return '#ffffff';
+            return null;
         if (useDefaultTint)
             return defaultTint;
         else if (EDITOR.level == null) {
             trace('Attempting to resolve default for TintableTemplate, but EDITOR.level is null!');
-            return '#ffffff';
+            return Color.white;
         }
         for (value in EDITOR.level.values) {
             if (value.template.name == rgbLevelValueName)
                 return value.value;
         }
         trace('Could not find Editor level value with name ${rgbLevelValueName}');
-        return '#ffffff';
+        return Color.white;
     }
 }
 
@@ -122,7 +120,7 @@ class TintableTemplateField {
 
         radioButtons.append(rgbRadioButton, levelValuesRadioButton);
 
-        defaultTintField = Fields.createRgb(Color.fromHex(template.defaultTint, 1), rgbRadioButton);
+        defaultTintField = Fields.createRgb(template.defaultTint, rgbRadioButton);
 
         var options = buildLevelValueOptions();
 
@@ -153,7 +151,7 @@ class TintableTemplateField {
 
     public function save() {
         template.enabled = Fields.getCheckbox(enabledField);
-        template.defaultTint = Fields.getRgb(defaultTintField).toHex();
+        template.defaultTint = Fields.getRgb(defaultTintField);
         template.rgbLevelValueName = Fields.getField(levelOptionField);
         var checkedValue = radioButtons.find("input:checked").val();
         template.useDefaultTint = checkedValue == 'rgb';
@@ -170,20 +168,20 @@ class TintableObjectField<T:ITintable> {
         var tintable = tintables[0];
 
         var tintField = Fields.createRgb(
-            Color.fromHex(tintable.tint.substr(1, 6), 1),
+            tintable.tint,
             root,
             () -> {
-                EDITOR.level.store("Changed Object tint from " + tintable.tint);
+                EDITOR.level.store("Changed Object tint from " + tintable.tint.toHex());
             },
             tint -> {
                 for (object in tintables)
-                    object.tint = tint.toHex();
+                    object.tint = tint.clone();
     
                 EDITOR.dirty();
             },
             tint -> {
                 for (object in tintables)
-                    object.tint = tint.toHex();
+                    object.tint = tint.clone();
     
                 EDITOR.level.unsavedChanges = true;
                 EDITOR.dirty();

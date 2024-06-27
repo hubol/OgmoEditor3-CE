@@ -20,9 +20,9 @@ class RgbValueTemplate extends ValueTemplate
 		return name + ":rgb";
 	}
 
-	override function getDefault():String
+	override function getDefault():Color
 	{
-		return defaults.toHex();
+		return defaults.clone();
 	}
 
 	override function validate(val:Dynamic):Int

@@ -10,14 +10,14 @@ class Decal implements ITintable
 	public var scale:Vector;
 	public var origin:Vector;
 	public var rotation:Float;
-	public var tint:String;
+	public var tint:Color;
 	public var texture:Texture;
 	public var path:String;
 	public var width(get, never):Int;
 	public var height(get, never):Int;
 	public var values:Array<Value>;
 
-	public function new(position:Vector, path:String, texture:Texture, ?origin:Vector, ?scale:Vector, ?rotation:Float, ?tint:String, ?values:Array<Value>)
+	public function new(position:Vector, path:String, texture:Texture, ?origin:Vector, ?scale:Vector, ?rotation:Float, ?tint:Color, ?values:Array<Value>)
 	{
 		this.position = position.clone();
 		this.texture = texture;
@@ -41,7 +41,7 @@ class Decal implements ITintable
 			data.scaleY = scale.y;
 		}
 		if (template.rotatable) data.rotation = OGMO.project.anglesRadians ? rotation : rotation * Calc.RTD;
-		template.tintable.saveObjectTint(tint, data);
+		template.tintable.saveObjectTint(this, data);
 		data.texture = FileSystem.normalize(path);
 		data.originX = origin.x;
 		data.originY = origin.y;
@@ -52,7 +52,7 @@ class Decal implements ITintable
 
 	public function clone():Decal
 	{
-		return new Decal(position, path, texture, origin, scale, rotation, tint, [for (value in values) value.clone()]);
+		return new Decal(position, path, texture, origin, scale, rotation, tint == null ? null : tint.clone(), [for (value in values) value.clone()]);
 	}
 
 	function get_width():Int

@@ -1,7 +1,6 @@
 package modules.entities;
 
 import features.Tintable.ITintable;
-import hacks.TintHack;
 import io.Imports;
 import level.data.Value;
 import project.data.value.TextValueTemplate;
@@ -28,7 +27,7 @@ class Entity implements ITintable
 	public var color:Color;
 	public var nodes:Array<Vector>;
 	public var values:Array<Value>;
-	public var tint:String;
+	public var tint:Color;
 
 	// Not Exported
 	private var _matrix:Matrix = new Matrix();     //The collision matrix
@@ -74,8 +73,7 @@ class Entity implements ITintable
 		e.size = Imports.vector(data, "width", "height", template.size);
 		e.origin = Imports.vector(data, "originX", "originY", template.origin);
 		e.rotation = Imports.float(data.rotation, 0) * (OGMO.project.anglesRadians ? Calc.RTD : 1);
-		// TODO should it be template.tintable.loadObjectTint?
-		e.tint = data.tint == null ? "#ffffff" : data.tint;
+		e.tint = template.tintable.loadObjectTint(data);
 		e.flippedX = Imports.bool(data.flippedX, false);
 		e.flippedY = Imports.bool(data.flippedY, false);
 		e.color = Imports.color(data.color, false, template.color);
@@ -104,7 +102,7 @@ class Entity implements ITintable
 		if (template.canFlipX) data.flippedX = flippedX;
 		if (template.canFlipY) data.flippedY = flippedY;
 		if (template.canSetColor) data.color = Export.color(color, true);
-		template.tintable.saveObjectTint(tint, data);
+		template.tintable.saveObjectTint(this, data);
 		Export.nodes(data, nodes);
 		Export.values(data, values);
 
@@ -124,7 +122,7 @@ class Entity implements ITintable
 		e.flippedX = flippedX;
 		e.flippedY = flippedY;
 		e.color = color;
-		e.tint = tint;
+		e.tint = tint == null ? null : tint.clone();
 		e.nodes = [for (node in nodes) node.clone()];
 		e._texture = _texture;
 		e.values = [for (value in values) value.clone()];
@@ -255,12 +253,11 @@ class Entity implements ITintable
 			if (flippedY) orig.y -= size.y;
 			orig.rotate(Math.sin(rotation * Math.PI / 180), Math.cos(rotation * Math.PI / 180));
 			EDITOR.draw.drawTexture(position.x - orig.x, position.y - orig.y, _texture, null, size.clone().div(template.size).mult(new Vector(flippedX ? -1 : 1, flippedY ? -1 : 1)), rotation * Calc.DTR,
-				null, null, null, null,
-				TintHack.getTintForTintable(this));
+				null, null, null, null, tint);
 		}
 		else 
 		{
-			EDITOR.draw.drawTris(_points, position, TintHack.getColorForShapeEntity(this));
+			EDITOR.draw.drawTris(_points, position, tint == null ? color : tint);
 		}
 
 		//Draw Node Ghosts

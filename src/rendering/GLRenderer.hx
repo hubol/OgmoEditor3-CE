@@ -258,7 +258,7 @@ class GLRenderer
 	var botleft:Vector = new Vector();
 	var botright:Vector = new Vector();
 
-	public function drawTexture(x:Float, y:Float, texture:Texture, ?origin:Vector, ?scale:Vector, ?rotation:Float, ?clipX:Float, ?clipY:Float, ?clipW:Float, ?clipH:Float, ?tint:Array<Float>):Void
+	public function drawTexture(x:Float, y:Float, texture:Texture, ?origin:Vector, ?scale:Vector, ?rotation:Float, ?clipX:Float, ?clipY:Float, ?clipW:Float, ?clipH:Float, ?tint:Color):Void
 	{
 		setTexture(texture);
 
@@ -335,7 +335,7 @@ class GLRenderer
 		uvs.push(uvx);
 		uvs.push(uvy + uvh);
 
-		add_color(new Color(tint[0], tint[1], tint[2], 1), 6);
+		add_color(tint == null ? Color.white : tint, 6);
 	}
 
 	public function drawTile(x:Float, y:Float, tileset:Tileset, tile:TileData): Void

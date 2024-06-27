@@ -24,7 +24,7 @@ class RgbValueEditor extends ValueEditor
 		return false;
 	}
 
-	static function updateTintsOnLevelTemplateChange(template:ValueTemplate, previous:String, next:String) {
+	static function updateTintsOnLevelTemplateChange(template:ValueTemplate, previous:Color, next:Color) {
 		if (EDITOR.level == null)
 			return;
 
@@ -54,8 +54,8 @@ class RgbValueEditor extends ValueEditor
 		}
 
 		for (tintable in tintables) {
-			if (tintable.tint == previous)
-				tintable.tint = next;
+			if (Color.compare(tintable.tint, previous))
+				tintable.tint = next.clone();
 		}
 	}
 
@@ -64,37 +64,33 @@ class RgbValueEditor extends ValueEditor
 		title = template.name;
 
 		// check if values conflict
-		var value = values[0].value;
+		var value:Color = values[0].value;
 		var conflict = false;
-		var i = 1;
-		while (i < values.length && !conflict)
-		{
-			if (values[i].value != value)
-			{
+		
+		for (loadedValue in values) {
+			if (!Color.compare(loadedValue.value, value)) {
 				conflict = true;
-				value = ValueEditor.conflictString();
+				break;
 			}
-			i++;
 		}
 
-		var previousHexValue = value;
+		var previousColor = value;
 		var _isCurrentLevelTemplate = isCurrentLevelTemplate(template);
 
 		function updateDecalsToNewColor(color: Color) {
 			if (_isCurrentLevelTemplate) {
-				var nextHexValue = color.toHex();
-				updateTintsOnLevelTemplateChange(template, previousHexValue, nextHexValue);
-				previousHexValue = nextHexValue;
+				updateTintsOnLevelTemplateChange(template, previousColor, color);
+				previousColor = color;
 				EDITOR.dirty();
 			}
 		}
 
-		var color = conflict ? Color.black : Color.fromHex(value, 1);
+		var color = conflict ? Color.black : value;
 		element = Fields.createRgb(
 			color,
 			null,
 			() -> {
-				var description = "Changed " + template.name + " Value from '" + value + "'";
+				var description = "Changed " + template.name + " Value from '" + value.toHex() + "'";
 				if (_isCurrentLevelTemplate)
 					EDITOR.level.storeFull(false, false, description);
 				else
@@ -105,7 +101,7 @@ class RgbValueEditor extends ValueEditor
 			},
 			color -> {
 				updateDecalsToNewColor(color);
-				for (i in 0...values.length) values[i].value = color.toHex();
+				for (i in 0...values.length) values[i].value = color.clone();
 			}
 		);
 	}
