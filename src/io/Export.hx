@@ -72,7 +72,15 @@ class Export
 	public static function values(into:Dynamic, values:Array<Value>)
 	{
 		if (into.values == null && values.length > 0) into.values = {};
-		for (value in values) Reflect.setField(into.values, value.template.name, value.value);
+		for (item in values) {
+			value(into, item);
+		}
+	}
+
+	static function value(into:Dynamic, value:Value) {
+		var colorValue = Std.downcast(value.value, Color);
+		var output = colorValue == null ? value.value : color(colorValue, false);
+		Reflect.setField(into.values, value.template.name, output);
 	}
 
 	/*

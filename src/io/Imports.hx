@@ -1,6 +1,6 @@
 package io;
 
-import haxe.DynamicAccess;
+import project.data.value.RgbValueTemplate;
 import js.html.Element;
 import js.html.Document;
 import level.data.Level;
@@ -69,7 +69,7 @@ class Imports
 
 	public static function color(hex:String, alpha:Bool, def: Color): Color
 	{
-		if (hex == null) return def.clone();
+		if (hex == null) return def == null ? null : def.clone();
 
 		var c: Color;
 		if (alpha) c = Color.fromHexAlpha(hex);
@@ -85,9 +85,17 @@ class Imports
 		var result:Array<Value> = [];
 
 		for (template in templates)
-			result.push(new Value(template, Reflect.field(from.values, template.name)));
+			result.push(new Value(template, value(from, template)));
 
 		return result;
+	}
+
+	static function value(from:Dynamic, template:ValueTemplate):Dynamic {
+		var value = Reflect.field(from.values, template.name);
+		var rgbValueTemplate = template.downcast(RgbValueTemplate);
+		if (rgbValueTemplate != null)
+			return color(value, false, rgbValueTemplate.defaults);
+		return value;
 	}
 
 	public static function contentName(data:Dynamic):String

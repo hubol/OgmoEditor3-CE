@@ -1,5 +1,7 @@
 package modules.entities;
 
+import features.Tintable.TintableObjectField;
+import features.Tintable.ITintable;
 import util.Fields;
 import util.ItemList;
 import level.data.Value;
@@ -154,6 +156,7 @@ class EntitySelectionPanel extends SidePanel
 				var showHeight = true;
 				var showFlipX = true;
 				var showFlipY = true;
+				var tintables: Array<ITintable> = [];
 				for (entity in sel)
 				{
 					if (showRot && !entity.template.rotatable) showRot = false;
@@ -161,6 +164,7 @@ class EntitySelectionPanel extends SidePanel
 					if (showHeight && !entity.template.resizeableY) showHeight = false;
 					if (showFlipX && !entity.template.canFlipX) showFlipX = false;
 					if (showFlipY && !entity.template.canFlipY) showFlipY = false;
+					if (entity.template.tintable.enabled) tintables.push(entity);
 				}
 
 				if (showRot)
@@ -266,6 +270,10 @@ class EntitySelectionPanel extends SidePanel
 							EDITOR.dirty();
 					});
 					Fields.createSettingsBlock(properties, entityFlipY, SettingsBlock.Full, "Flipped Y", SettingsBlock.OverTitle);
+				}
+
+				if (tintables.length > 0) {
+					new TintableObjectField(properties, tintables);
 				}
 			}
 		}

@@ -94,7 +94,15 @@ class Color
 
 	public function equals(c:Color):Bool
 	{
-		return r == c.r && g == c.g && b == c.b && a == c.a;
+		return compare(this, c);
+	}
+
+	public static function compare(c0:Color, c1:Color):Bool {
+		if (c0 == null && c1 == null)
+			return true;
+		if (c0 == null || c1 == null)
+			return false;
+		return c0.r == c1.r && c0.g == c1.g && c0.b == c1.b && c0.a == c1.a;
 	}
 
 	// TODO - I'm not a regex person :| -01010111

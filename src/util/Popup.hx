@@ -647,13 +647,14 @@ class Popup
 		var content = new JQuery('<div class="content">');
 		var event:Event->Void = null;
 		var levelOffset:JQuery = null;
+		var bgColor:JQuery = null;
 
 		function close(escape:Bool)
 		{
 			var offset = Fields.getVector(levelOffset);
 			if (!level.data.offset.equals(offset))
 			{
-				level.store("Changed Level Offset from '" + level.data.offset.toString() + "'	to '" + offset.toString() + "'");
+				level.storeFull(false, false, "Changed Level Offset from '" + level.data.offset.toString() + "'	to '" + offset.toString() + "'");
 				level.data.offset = offset;
 				level.unsavedChanges = true;
 			}
@@ -678,6 +679,23 @@ class Popup
 		// add level offsets
 		levelOffset = Fields.createVector(new Vector(level.data.offset.x, level.data.offset.y));
 		Fields.createSettingsBlock(settings, levelOffset, SettingsBlock.Full, "Level Offset", SettingsBlock.OverTitle);
+
+		// Bg color
+		bgColor = Fields.createRgb(
+			level.data.backgroundColor,
+			null,
+			() -> {
+				EDITOR.level.storeFull(false, false, "Changed background color from '" + level.data.backgroundColor.toHex() + "'");
+			},
+			color -> {
+				level.data.backgroundColor = color;
+				EDITOR.dirty();
+			},
+			color -> {
+				level.data.backgroundColor = color;
+				EDITOR.dirty();
+			});
+		Fields.createSettingsBlock(settings, bgColor, SettingsBlock.Full, "Bg Color", SettingsBlock.OverTitle);
 
 		if (level.values.length > 0) Fields.createLineBreak(settings);
 

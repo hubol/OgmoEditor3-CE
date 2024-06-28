@@ -221,6 +221,7 @@ class UndoStack
 		if (state.level != null)
 		{
 			level.data = state.level;
+			level.values = state.level.values;
 			EDITOR.handles.refresh();
 		}
 

@@ -1,5 +1,6 @@
 package modules.entities;
 
+import features.Tintable.TintableTemplateField;
 import util.RightClickMenu;
 import project.editor.ProjectEditorPanel;
 import util.ItemList;
@@ -48,6 +49,7 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 	public var entityNodeDisplay:JQuery;
 	public var entityNodeLimit:JQuery;
 	public var entityNodeGhost:JQuery;
+	public var entityTintableTemplateField:TintableTemplateField;
 
 	// Entity Value Template Mananger
 	public var entityValueManager:ValueTemplateManager;
@@ -525,7 +527,7 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 					}
 				 }), SettingsBlock.Fourth);
 
-				var iconleft = new JQuery('<div style="float: left; box-sizing: border-box; padding: 16px;">');
+				var iconleft = new JQuery('<div style="float: left;">');
 				var iconright = new JQuery('<div style="width: 50%; float: left;">');
 				inspector.append(iconleft);
 				inspector.append(iconright);
@@ -556,6 +558,11 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 				entityTileY = Fields.createCheckbox(entity.tileY, "Tile on Y");
 				Fields.createSettingsBlock(iconright, entityTileY, SettingsBlock.Half);
 
+				Fields.createLineBreak(inspector);
+			}
+
+			{
+				entityTintableTemplateField = entity.tintable.createTemplateField(inspector);
 				Fields.createLineBreak(inspector);
 			}
 
@@ -618,6 +625,7 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 		entity.canFlipY = Fields.getCheckbox(entityFlipY);
 		entity.rotatable = Fields.getCheckbox(entityRotateable);
 		entity.rotationDegrees = Imports.integer(Fields.getField(entityRotationDegrees), 16);
+		entityTintableTemplateField.save();
 
 		// icon stuff
 		entity.color = Fields.getColor(entityColor);

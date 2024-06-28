@@ -551,6 +551,10 @@ class Editor
 		ACTUAL DRAWING
 	*/
 
+	function drawBackground() {
+		draw.drawRect(0, 0, level.data.size.x, level.data.size.y, level.data.backgroundColor);
+	}
+
 	public function drawLevel():Void
 	{
 		draw.setAlpha(1);
@@ -558,7 +562,7 @@ class Editor
 		//Background
 		draw.drawRect(12, 12, level.data.size.x, level.data.size.y, Color.black.x(.8));
 		draw.drawRect(-1, -1, level.data.size.x + 2, level.data.size.y + 2, Color.black);
-		draw.drawRect(0, 0, level.data.size.x, level.data.size.y, level.project.backgroundColor);
+		drawBackground();
 
 		//Draw the layers below and including the current one
 		var i = level.layers.length - 1;
@@ -607,6 +611,8 @@ class Editor
 
 			draw.setAlpha(1);
 			draw.setupRenderTarget(level.data.size);
+
+			drawBackground();
 
 			var i = level.layers.length - 1;
 			while(i >= 0) 

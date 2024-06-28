@@ -17,6 +17,8 @@ class GLRenderer
 {
 	public static var renderers: Map<String, GLRenderer> = new Map();
 
+	static var defaultTextureTint = [1.0, 1.0, 1.0];
+
 	public var name: String;
 	public var canvas: CanvasElement;
 	public var gl: RenderingContext;
@@ -212,18 +214,15 @@ class GLRenderer
 			gl.bindBuffer(RenderingContext.ARRAY_BUFFER, posBuffer);
 			gl.vertexAttribPointer(shader.vertexPositionAttribute, 2, RenderingContext.FLOAT, false, 0, 0);
 			gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32Array(positions), RenderingContext.STATIC_DRAW);
-		}
 
-		// vertex colors (shape shader)
-		if (texture == null)
-		{
 			gl.enableVertexAttribArray(shader.vertexColorAttribute);
 			gl.bindBuffer(RenderingContext.ARRAY_BUFFER, colBuffer);
 			gl.vertexAttribPointer(shader.vertexColorAttribute, 4, RenderingContext.FLOAT, false, 0, 0);
 			gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32Array(colors), RenderingContext.STATIC_DRAW);
 		}
+
 		// vertex uv's (texture shader)
-		else
+		if (texture != null)
 		{
 			gl.activeTexture(RenderingContext.TEXTURE0);
 			gl.bindTexture(RenderingContext.TEXTURE_2D, texture.textures[name]);
@@ -259,7 +258,7 @@ class GLRenderer
 	var botleft:Vector = new Vector();
 	var botright:Vector = new Vector();
 
-	public function drawTexture(x:Float, y:Float, texture:Texture, ?origin:Vector, ?scale:Vector, ?rotation:Float, ?clipX:Float, ?clipY:Float, ?clipW:Float, ?clipH:Float):Void
+	public function drawTexture(x:Float, y:Float, texture:Texture, ?origin:Vector, ?scale:Vector, ?rotation:Float, ?clipX:Float, ?clipY:Float, ?clipW:Float, ?clipH:Float, ?tint:Color):Void
 	{
 		setTexture(texture);
 
@@ -335,6 +334,8 @@ class GLRenderer
 		uvs.push(uvy + uvh);
 		uvs.push(uvx);
 		uvs.push(uvy + uvh);
+
+		add_color(tint == null ? Color.white : tint, 6);
 	}
 
 	public function drawTile(x:Float, y:Float, tileset:Tileset, tile:TileData): Void
@@ -411,6 +412,8 @@ class GLRenderer
 		uvs.push(uvy + uvh);
 		uvs.push(uvx + uvw);
 		uvs.push(uvy + uvh);
+
+		add_color(Color.white, 6);
 	}
 
 	// GEOMETRY

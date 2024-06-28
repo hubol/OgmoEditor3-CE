@@ -50,3 +50,6 @@ This builds, then packages the App into an executable.
  - Created by [Maddy Thorson](https://twitter.com/MaddyThorson) and [Noel Berry](https://twitter.com/noelfb)
  - Icons & Logo by [Kyle Pulver](https://twitter.com/kylepulver)
  - Ported to Haxe and extended by [Caleb Cornett](https://twitter.com/thespydog), [Will Blanton](https://twitter.com/x01010111), and [Austin East](https://twitter.com/austinweast)
+
+## Hubol's notes
+- Node v12.22.9 works fine (some higher versions do not)
