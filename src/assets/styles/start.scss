@@ -48,9 +48,26 @@
         bottom: 32px;
         color: #aaa;
         cursor: default;
-        float: left;
         font-size: 0.9em;
         text-transform: uppercase;
+        display: flex;
+        width: calc(100vw - 64px);
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+
+    &_hubol {
+        text-transform: none;
+
+        & h1 {
+            font-size: 20px;
+        }
+
+        & ul {
+            text-align: left;
+            margin-bottom: 0;
+            padding-inline-start: 25px;
+        }
     }
 
     &_recents
