@@ -30,7 +30,7 @@ class DecalLayerTemplateEditor extends LayerTemplateEditor
 		Fields.createSettingsBlock(into, scaleable, SettingsBlock.Fourth);
 		rotatable = Fields.createCheckbox(decalTemplate.rotatable, "Rotatable");
 		Fields.createSettingsBlock(into, rotatable, SettingsBlock.Fourth);
-		tintableField = decalTemplate.tintable.createField(into);
+		tintableField = decalTemplate.tintable.createTemplateField(into);
 		Fields.createLineBreak(into);
 
 		// folders

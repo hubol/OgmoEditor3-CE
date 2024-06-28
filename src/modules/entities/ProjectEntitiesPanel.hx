@@ -562,7 +562,7 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 			}
 
 			{
-				entityTintableTemplateField = entity.tintable.createField(inspector);
+				entityTintableTemplateField = entity.tintable.createTemplateField(inspector);
 				Fields.createLineBreak(inspector);
 			}
 

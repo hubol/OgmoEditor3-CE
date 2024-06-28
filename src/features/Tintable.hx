@@ -36,8 +36,7 @@ class TintableTemplate {
         return enabled && !useDefaultTint && levelValueTemplate.definition.type == RgbValueTemplate && levelValueTemplate.name == rgbLevelValueName;
     }
 
-    // TODO naming??
-    public function createField(root: JQuery) {
+    public function createTemplateField(root: JQuery) {
         return new TintableTemplateField(root, this);
     }
 
