@@ -734,7 +734,6 @@ class Popup
 
 		// show
 		overlay.append(win);
-		overlay.css("background-color", "rgba(0,0,0,0.5)");
 		overlay.hide();
 		overlay.fadeIn(150);
 		new JQuery("body").append(overlay);
