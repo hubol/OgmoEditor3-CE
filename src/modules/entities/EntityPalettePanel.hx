@@ -59,8 +59,7 @@ class EntityPalettePanel extends SidePanel
 			var matchingTemplates:Array<EntityTemplate> = [];
 			for (temp in allTemplates)
 				if (search.length <= 0 || temp.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 || (tagName != untaggedName && tagName.indexOf(search.toString()) >= 0))
-					if (template == null || temp.allowedOnLayer(cast template))
-						matchingTemplates.push(temp);
+					matchingTemplates.push(temp);
 
 			if (matchingTemplates.length <= 0)
 				continue;
@@ -100,19 +99,25 @@ class EntityPalettePanel extends SidePanel
 
 				item.onclick = function(current)
 				{
-					// toggle selection
-					itemlist.perform(function(n) { n.selected = (n.data == current.data); });
+					var layerEditorTemplate:EntityLayerTemplate = layerEditor == null ? null : cast layerEditor.layer.template;
 
-					// correct brush
-					if (layerEditor != null)
-					{
-						var index = OGMO.project.entities.templates.indexOf(current.data);
-						if (index >= 0)
-						{
-							layerEditor.brush = index;
-							EDITOR.toolBelt.setTool(1);
+					if (layerEditorTemplate == null || !template.allowedOnLayer(layerEditorTemplate)) {
+						for (i in 0...EDITOR.layerEditors.length) {
+							var entityLayerEditor = Std.downcast(EDITOR.layerEditors[i], EntityLayerEditor);
+							if (entityLayerEditor == null)
+								continue;
+							if (template.allowedOnLayer(cast entityLayerEditor.template)) {
+								setCreateToolWithBrush(entityLayerEditor, template);
+								EDITOR.setLayer(i);
+								return;
+							}
 						}
 					}
+
+					// toggle selection
+					itemlist.perform(function(n) { n.selected = (n.data == template); });
+
+					setCreateToolWithBrush(layerEditor, template);
 				};
 			}
 		}
@@ -120,11 +125,16 @@ class EntityPalettePanel extends SidePanel
 		this.itemlist = itemlist;
 	}
 
-	var template(get, never):EntityLayerTemplate;
-	function get_template():EntityLayerTemplate
-	{
-		if (layerEditor == null) return null;
-		return cast layerEditor.layer.template;
+	static function setCreateToolWithBrush(editor:EntityLayerEditor, template:EntityTemplate) {
+		if (editor != null)
+		{
+			var index = OGMO.project.entities.templates.indexOf(template);
+			if (index >= 0)
+			{
+				editor.brush = index;
+				EDITOR.toolBelt.setTool(1);
+			}
+		}
 	}
 
 }
