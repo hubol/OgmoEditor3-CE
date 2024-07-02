@@ -182,7 +182,7 @@ class FloatingHTMLPropertyDisplay extends FloatingHTML
                 else if (val.template.definition.type == TextValueTemplate)
                     htmlString += '<p>« ${val.value} »</p>';
             }
-            else
+            else if (val.template.display == ValueDisplayType.NameAndValue)
             {
                 if (val.template.definition.type == BoolValueTemplate)
                     if (val.value == true)
