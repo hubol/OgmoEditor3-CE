@@ -239,11 +239,8 @@ class EntitySelectionPanel extends SidePanel
 							var flipped = !sel[0].flippedX;
 							EDITOR.level.store("Changed Entity Flipped X to '" + (flipped ? "True'" : "False'"));
 
-							sel[0].flippedX = flipped;
-
-							for (i in 1...sel.length) {
-								var entity = sel[i];
-								if (entity.template.canFlipX) entity.flippedX = flipped;
+							for (selection in sel) {
+								selection.flipX(flipped);
 							}
 
 							EDITOR.level.unsavedChanges = true;
@@ -259,11 +256,8 @@ class EntitySelectionPanel extends SidePanel
 							var flipped = !sel[0].flippedY;
 							EDITOR.level.store("Changed Entity Flipped Y to '" + (flipped ? "True'" : "False'"));
 
-							sel[0].flippedY = flipped;
-
-							for (i in 1...sel.length) {
-								var entity = sel[i];
-								if (entity.template.canFlipY) entity.flippedY = flipped;
+							for (selection in sel) {
+								selection.flipY(flipped);
 							}
 
 							EDITOR.level.unsavedChanges = true;

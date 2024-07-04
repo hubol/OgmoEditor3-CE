@@ -217,6 +217,20 @@ class Entity implements ITintable
 		updateMatrix();
 	}
 
+	public function flipX(flippedX:Bool) {
+		if (template.canFlipX) {
+			this.flippedX = flippedX;
+			this.updateMatrix();
+		}
+	}
+
+	public function flipY(flippedY:Bool) {
+		if (template.canFlipY) {
+			this.flippedY = flippedY;
+			this.updateMatrix();
+		}
+	}
+
 	/*
 		MATRIX
 	*/
@@ -224,18 +238,33 @@ class Entity implements ITintable
 	public function updateMatrix()
 	{
 		var tile = template.tileSize.clone();
-		var orig = origin.clone();
+		var origin = this.origin.clone();
+		var size = this.size.clone();
+
+		if (template.flipOnlyScales) {
+			if (flippedX) {
+				origin.x = -origin.x;
+				size.x = -size.x;
+			}
+			if (flippedY) {
+				origin.y = -origin.y;
+				size.y = -size.y;
+			}
+		}
+
+		var tileOrigin = origin.clone();
+
 		if (!template.tileX)
 			tile.x = size.x;
 		else
-			orig.x = (orig.x / size.x) * tile.x;
+			tileOrigin.x = (origin.x / size.x) * tile.x;
 		if (!template.tileY)
 			tile.y = size.y;
 		else
-			orig.y = (orig.y / size.y) * tile.y;
+			tileOrigin.y = (origin.y / size.y) * tile.y;
 
 		_matrix.entityTransform(origin, size, rotation * Calc.DTR);
-		_tileMatrix.entityTransform(orig, tile, rotation * Calc.DTR);
+		_tileMatrix.entityTransform(tileOrigin, tile, rotation * Calc.DTR);
 
 		_points = template.shape.getPoints(_tileMatrix, origin, size, tile, flippedX, flippedY);
 	}
@@ -249,8 +278,15 @@ class Entity implements ITintable
 		if (_texture != null)
 		{
 			var orig = origin.clone();
-			if (flippedX) orig.x -= size.x;
-			if (flippedY) orig.y -= size.y;
+			if (!template.flipOnlyScales) {
+				if (flippedX) orig.x -= size.x;
+				if (flippedY) orig.y -= size.y;
+			}
+			else {
+				if (flippedX) orig.x = -orig.x;
+				if (flippedY) orig.y = -orig.y;
+			}
+			
 			orig.rotate(Math.sin(rotation * Math.PI / 180), Math.cos(rotation * Math.PI / 180));
 			EDITOR.draw.drawTexture(position.x - orig.x, position.y - orig.y, _texture, null, size.clone().div(template.size).mult(new Vector(flippedX ? -1 : 1, flippedY ? -1 : 1)), rotation * Calc.DTR,
 				null, null, null, null, tint);

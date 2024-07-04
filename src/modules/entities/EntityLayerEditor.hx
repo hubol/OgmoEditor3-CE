@@ -216,13 +216,13 @@ class EntityLayerEditor extends LayerEditor
 			case Keys.H:
 				if (OGMO.ctrl || selection.amount <= 0) return;
 				EDITOR.level.store("flip entity h");
-				for (e in entities.getGroup(selection)) if (e.template.canFlipX) e.flippedX = !e.flippedX;
+				for (e in entities.getGroup(selection)) e.flipX(!e.flippedX);
 				selection.changed = true;
 				EDITOR.dirty();
 			case Keys.V:
 				if (OGMO.ctrl || selection.amount <= 0) return;
 				EDITOR.level.store("flip entity v");
-				for (e in entities.getGroup(selection)) if (e.template.canFlipY) e.flippedY = !e.flippedY;
+				for (e in entities.getGroup(selection)) e.flipY(!e.flippedY);
 				selection.changed = true;
 				EDITOR.dirty();
 		}

@@ -31,6 +31,7 @@ class EntityTemplate
 	public var tintable:TintableTemplate = new TintableTemplate();
 	public var canFlipX:Bool = false;
 	public var canFlipY:Bool = false;
+	public var flipOnlyScales:Bool = false;
 	public var canSetColor:Bool = false;
 	public var hasNodes:Bool = false;
 	public var nodeLimit:Int = -1;
@@ -91,6 +92,7 @@ class EntityTemplate
 		next.tintable = from.tintable.clone();
 		next.canFlipX = from.canFlipX;
 		next.canFlipY = from.canFlipY;
+		next.flipOnlyScales = from.flipOnlyScales;
 		next.canSetColor = from.canSetColor;
 		next.hasNodes = from.hasNodes;
 		next.nodeLimit = from.nodeLimit;
@@ -125,6 +127,7 @@ class EntityTemplate
 		e.tintable.load(data);
 		e.canFlipX = data.canFlipX;
 		e.canFlipY = data.canFlipY;
+		e.flipOnlyScales = Imports.bool(data.flipOnlyScales, false);
 		e.canSetColor = data.canSetColor;
 		e.hasNodes = data.hasNodes;
 		e.nodeLimit = data.nodeLimit;
@@ -169,6 +172,7 @@ class EntityTemplate
 			rotationDegrees: rotationDegrees,
 			canFlipX: canFlipX,
 			canFlipY: canFlipY,
+			flipOnlyScales: flipOnlyScales,
 			canSetColor: canSetColor,
 			hasNodes: hasNodes,
 			nodeLimit: nodeLimit,

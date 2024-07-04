@@ -43,6 +43,7 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 	public var entityResizeableY:JQuery;
 	public var entityFlipX:JQuery;
 	public var entityFlipY:JQuery;
+	public var entityFlipOnlyScales:JQuery;
 	public var entityRotateable:JQuery;
 	public var entityRotationDegrees:JQuery;
 	public var entityHasNodes:JQuery;
@@ -460,6 +461,7 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 				// resizeable y
 				entityResizeableY = Fields.createCheckbox(entity.resizeableY, "Resizable Y");
 				Fields.createSettingsBlock(inspector, entityResizeableY, SettingsBlock.Fourth);
+				Fields.createLineBreak(inspector);
 
 				// flip x
 				entityFlipX = Fields.createCheckbox(entity.canFlipX, "Flipable X");
@@ -468,6 +470,10 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 				// flip y
 				entityFlipY = Fields.createCheckbox(entity.canFlipY, "Flipable Y");
 				Fields.createSettingsBlock(inspector, entityFlipY, SettingsBlock.Fourth);
+
+				// flip only scales
+				entityFlipOnlyScales = Fields.createCheckbox(entity.flipOnlyScales, "Flip only scales");
+				Fields.createSettingsBlock(inspector, entityFlipOnlyScales, SettingsBlock.Fourth);
 				Fields.createLineBreak(inspector);
 
 				// rotatable
@@ -623,6 +629,7 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 		entity.resizeableY = Fields.getCheckbox(entityResizeableY);
 		entity.canFlipX = Fields.getCheckbox(entityFlipX);
 		entity.canFlipY = Fields.getCheckbox(entityFlipY);
+		entity.flipOnlyScales = Fields.getCheckbox(entityFlipOnlyScales);
 		entity.rotatable = Fields.getCheckbox(entityRotateable);
 		entity.rotationDegrees = Imports.integer(Fields.getField(entityRotationDegrees), 16);
 		entityTintableTemplateField.save();
