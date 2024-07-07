@@ -42,7 +42,7 @@ class DecalCreateTool extends DecalTool
 		deleting = false;
 
 		if (layerEditor.brush == null) return;
-		if (!OGMO.ctrl) layer.snapToGrid(pos, pos);
+		snap(pos);
 
 		EDITOR.level.store("create decal");
 		EDITOR.locked = true;
@@ -106,12 +106,21 @@ class DecalCreateTool extends DecalTool
 		}
 	}
 
+	function snap(pos:Vector) {
+		if (OGMO.ctrl) {
+			pos.x = Math.round(pos.x);
+			pos.y = Math.round(pos.y);
+			return;
+		}
+
+		layer.snapToGrid(pos, pos);
+	}
+
 	override public function onMouseMove(pos:Vector)
 	{
 		if (created != null)
 		{
-			if (!OGMO.ctrl)
-				layer.snapToGrid(pos, pos);
+			snap(pos);
 
 			if (!pos.equals(created.position))
 			{
@@ -129,8 +138,7 @@ class DecalCreateTool extends DecalTool
 		}
 		else if (layerEditor.brush != null && !pos.equals(previewAt))
 		{
-			if (!OGMO.ctrl)
-				layer.snapToGrid(pos, pos);
+			snap(pos);
 
 			canPreview = true;
 			previewAt = pos;
