@@ -17,6 +17,7 @@
     },
     "devDependencies": {
         "@electron/remote": "^2.1.2",
+        "call-bind": "^1.0.7",
         "clean-webpack-plugin": "^2.0.1",
         "copy-webpack-plugin": "^5.0.3",
         "css-loader": "^2.1.1",
@@ -28,6 +29,7 @@
         "node-loader": "^0.6.0",
         "node-sass": "^4.14.1",
         "sass-loader": "^7.1.0",
+        "side-channel": "^1.0.6",
         "style-loader": "^0.23.1",
         "webpack": "^4.30.0",
         "webpack-cli": "^3.3.11",
