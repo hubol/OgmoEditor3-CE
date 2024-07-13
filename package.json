@@ -16,10 +16,11 @@
         "release": "electron-builder --config electron-builder.json -mwl --publish=never"
     },
     "devDependencies": {
+        "@electron/remote": "^2.1.2",
         "clean-webpack-plugin": "^2.0.1",
         "copy-webpack-plugin": "^5.0.3",
         "css-loader": "^2.1.1",
-        "electron": "^12.0.4",
+        "electron": "^16.0.7",
         "electron-builder": "^22.10.5",
         "electron-icon-maker": "0.0.4",
         "file-loader": "^3.0.1",

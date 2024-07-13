@@ -20,6 +20,15 @@ class App
 
 	static function main()
 	{
+		// Indeed, you must initialize and enable
+		// https://github.com/electron/remote/issues/79#issuecomment-921004401
+		// https://github.com/electron/remote/issues/94#issuecomment-1024849702
+		js.Lib.require('@electron/remote/main').initialize();
+
+		ElectronApp.on('browser-window-created', (_, window) -> {
+			js.Lib.require("@electron/remote/main").enable(window.webContents);
+		});
+
 		ElectronApp.on('window-all-closed', (e) -> {
 			// Keep the app open if even if windows are closed on OSX (normal mac app behavior)
 			if (process.platform != 'darwin') {

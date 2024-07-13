@@ -2,7 +2,7 @@ package level.data;
 
 import js.Browser;
 import util.Popup;
-import electron.renderer.Remote;
+import features.ElectronRemote;
 import js.node.Path;
 import io.FileSystem;
 import io.Export;
@@ -197,7 +197,7 @@ class Level
 		// 		{ name: "XML Level", extensions: [ "xml" ]}
 		// 	];
 
-		var file = Ogmo.dialog.showSaveDialogSync(Remote.getCurrentWindow(),
+		var file = Ogmo.dialog.showSaveDialogSync(ElectronRemote.getCurrentWindow(),
 		{
 			title: "Save Level As...",
 			filters: [{ name: "JSON Level", extensions: [ "json" ] }],

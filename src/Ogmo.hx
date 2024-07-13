@@ -3,8 +3,7 @@ import js.jquery.JQuery;
 import js.Browser;
 import js.node.Path;
 import js.Node.process;
-import electron.main.BrowserWindow;
-import electron.renderer.Remote;
+import features.ElectronRemote;
 import electron.renderer.IpcRenderer;
 import project.editor.ProjectEditor;
 import project.data.Project;
@@ -30,10 +29,9 @@ class Ogmo
 	public var settings:Settings;
 	public var keyCheckMap:Array<Bool> = [];
 	public var keyPressMap:Array<Bool> = [];
-	public var app:BrowserWindow = Remote.getCurrentWindow();
 	public var mouse:Vector = new Vector(0, 0);
 	public var popupMode:Bool = false;
-	public var root:String = untyped Remote.app.getAppPath();
+	public var root:String = ElectronRemote.app.getAppPath();
 	public var execDir(get, never):String;
 
 	public var project(default, set):Project = null;
@@ -54,10 +52,10 @@ class Ogmo
 	public function new()
 	{
 		ogmo = this;
-		dialog = js.Lib.require('electron').remote.dialog;
+		dialog = ElectronRemote.dialog;
 		settings = new Settings();
 
-		version = untyped Remote.app.getVersion();
+		version = ElectronRemote.app.getVersion();
 
 		Webpack.require('./assets/styles/core.scss');
 
@@ -190,7 +188,7 @@ class Ogmo
 			}
 		}
 
-		var w = Remote.getCurrentWindow();
+		var w = ElectronRemote.getCurrentWindow();
 		w.setTitle(str);
 		w.setDocumentEdited(edited);
 	}
@@ -256,7 +254,8 @@ class Ogmo
 				if (editor.active) editor.keyPress(key);
 				if (projectEditor.active) projectEditor.keyPress(key);
 			case Keys.Tilde:
-				app.webContents.toggleDevTools();
+				ElectronRemote.getCurrentWindow().webContents.toggleDevTools();
+				return;
 		}
 	}
 

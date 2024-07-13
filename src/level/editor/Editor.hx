@@ -8,7 +8,7 @@ import util.Color;
 import js.Browser;
 import js.jquery.JQuery;
 import js.Node.process;
-import electron.renderer.Remote;
+import features.ElectronRemote;
 import io.LevelManager;
 import level.data.Level;
 import level.editor.ui.LayersPanel;
@@ -290,7 +290,7 @@ class Editor
 				EDITOR.level.setZoom(zoom);
 			});
 
-			Remote.getCurrentWindow().on('focus', function (e)
+			ElectronRemote.getCurrentWindow().on('focus', function (e)
 			{
 				EDITOR.levelManager.onGainFocus();
 				EDITOR.levelsPanel.refresh();

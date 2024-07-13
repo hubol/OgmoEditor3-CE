@@ -11,7 +11,7 @@ import js.lib.Uint8Array;
 import js.node.Buffer;
 import js.node.Fs;
 import electron.FileFilter;
-import electron.renderer.Remote;
+import features.ElectronRemote;
 
 class FileSystem
 {
@@ -27,7 +27,7 @@ class FileSystem
 			defaultPath = js.node.Path.normalize(defaultPath); // Converts / back to \ on Windows, or else won't work
 
 		var files = Ogmo.dialog.showOpenDialogSync(
-			Remote.getCurrentWindow(),
+			ElectronRemote.getCurrentWindow(),
 			{
 				title: title,
 				properties: ['openFile'],
@@ -46,7 +46,7 @@ class FileSystem
 			defaultPath = js.node.Path.normalize(defaultPath); // Converts / back to \ on Windows, or else won't work
 
 		var file = Ogmo.dialog.showSaveDialogSync(
-			Remote.getCurrentWindow(),
+			ElectronRemote.getCurrentWindow(),
 			{
 				title: title,
 				filters: filters,
@@ -60,7 +60,7 @@ class FileSystem
 	public static function chooseFolder(title:String):String
 	{
 		var files = Ogmo.dialog.showOpenDialogSync(
-			Remote.getCurrentWindow(),
+			ElectronRemote.getCurrentWindow(),
 			{
 				title: title,
 				properties: ['openDirectory']
@@ -68,23 +68,6 @@ class FileSystem
 		);
 		if (files != null) return normalize(files[0]);
 		return '';
-	}
-
-	public static function showQuestion(title:String, question:String, confirm:String, deny:String):Bool
-	{
-		var result = Ogmo.dialog.showMessageBoxSync(
-			Remote.getCurrentWindow(),
-			{
-				message: question,
-				title: title,
-				type: 'warning',
-				buttons: [confirm, deny],
-				cancelId: 1,
-				defaultId: 1
-			}
-		);
-
-		return (result == 0);
 	}
 
 	public static function removeFolder(dir:String)
