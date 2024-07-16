@@ -1,5 +1,6 @@
 package modules.entities;
 
+import features.Promises;
 import features.Tintable.TintableTemplateField;
 import util.RightClickMenu;
 import project.editor.ProjectEditorPanel;
@@ -525,6 +526,9 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 					if (FileSystem.exists(path))
 					{
 						entity.setTexture(path, OGMO.project);
+						Promises.wait(() -> entity.texture.width > 0).then((bool) -> {
+							Fields.setVector(entitySize, new Vector(entity.texture.width, entity.texture.height));
+						});
 
 						texturePreview.empty();
 						var img = new JQuery('<img src="${entity.texture.image.src}"/>');
