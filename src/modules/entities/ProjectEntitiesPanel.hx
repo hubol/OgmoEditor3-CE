@@ -48,6 +48,7 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 	public var entityRotateable:JQuery;
 	public var entityRotationDegrees:JQuery;
 	public var entityHasNodes:JQuery;
+	public var entityHasUid:JQuery;
 	public var entityNodeDisplay:JQuery;
 	public var entityNodeLimit:JQuery;
 	public var entityNodeGhost:JQuery;
@@ -437,6 +438,11 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 					refreshList();
 				});
 				Fields.createSettingsBlock(inspector, entityTags, SettingsBlock.Full, "Tags", SettingsBlock.InlineTitle);
+
+				// Unique ID
+				entityHasUid = Fields.createCheckbox(entity.hasUid, "Unique ID");
+				Fields.createSettingsBlock(inspector, entityHasUid, SettingsBlock.Fourth);
+
 				Fields.createLineBreak(inspector);
 			}
 
@@ -643,6 +649,8 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 		entity.tileX = Fields.getCheckbox(entityTileX);
 		entity.tileY = Fields.getCheckbox(entityTileY);
 		entity.tileSize = Fields.getVector(entityTileSize);
+
+		entity.hasUid = Fields.getCheckbox(entityHasUid);
 
 		// nodes
 		entity.hasNodes = Fields.getCheckbox(entityHasNodes);

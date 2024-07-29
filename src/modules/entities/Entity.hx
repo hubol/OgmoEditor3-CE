@@ -1,5 +1,6 @@
 package modules.entities;
 
+import features.Uid;
 import features.Tintable.ITintable;
 import io.Imports;
 import level.data.Value;
@@ -17,6 +18,7 @@ import util.Matrix;
 class Entity implements ITintable
 {
 	public var id:Int;
+	public var uid:Int;
 	public var template:EntityTemplate;
 	public var position:Vector;
 	public var size:Vector;
@@ -43,6 +45,8 @@ class Entity implements ITintable
 		var e = new Entity();
 
 		e.id = id;
+		if (template.hasUid)
+			e.uid = Uid.next();
 		e.template = template;
 		e.position = pos.clone();
 		e.size = template.size.clone();
@@ -68,6 +72,8 @@ class Entity implements ITintable
 
 		var e = new Entity();
 		e.id = data.id;
+
+		e.uid = data.uid;
 		e.template = template;
 		e.position = Imports.vector(data, "x", "y");
 		e.size = Imports.vector(data, "width", "height", template.size);
@@ -102,6 +108,11 @@ class Entity implements ITintable
 		if (template.canFlipX) data.flippedX = flippedX;
 		if (template.canFlipY) data.flippedY = flippedY;
 		if (template.canSetColor) data.color = Export.color(color, true);
+		if (template.hasUid) {
+			if (this.uid == null)
+				this.uid = Uid.next();
+			data.uid = this.uid;
+		}
 		template.tintable.saveObjectTint(this, data);
 		Export.nodes(data, nodes);
 		Export.values(data, values);
@@ -114,6 +125,8 @@ class Entity implements ITintable
 		var e = new Entity();
 
 		e.id = id;
+		if (template.hasUid)
+			e.uid = Uid.next();
 		e.template = template;
 		e.position = position.clone();
 		e.size = size.clone();

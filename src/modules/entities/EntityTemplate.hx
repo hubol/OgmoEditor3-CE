@@ -34,6 +34,7 @@ class EntityTemplate
 	public var flipOnlyScales:Bool = false;
 	public var canSetColor:Bool = false;
 	public var hasNodes:Bool = false;
+	public var hasUid:Bool = false;
 	public var nodeLimit:Int = -1;
 	public var nodeDisplay:NodeDisplayModes = NodeDisplayModes.PATH;
 	public var nodeGhost:Bool = true;
@@ -95,6 +96,7 @@ class EntityTemplate
 		next.flipOnlyScales = from.flipOnlyScales;
 		next.canSetColor = from.canSetColor;
 		next.hasNodes = from.hasNodes;
+		next.hasUid = from.hasUid;
 		next.nodeLimit = from.nodeLimit;
 		next.nodeDisplay = from.nodeDisplay;
 		next.nodeGhost = from.nodeGhost;
@@ -130,6 +132,7 @@ class EntityTemplate
 		e.flipOnlyScales = Imports.bool(data.flipOnlyScales, false);
 		e.canSetColor = data.canSetColor;
 		e.hasNodes = data.hasNodes;
+		e.hasUid = Imports.bool(data.hasUid, false);
 		e.nodeLimit = data.nodeLimit;
 		e.nodeDisplay = data.nodeDisplay;
 		e.nodeGhost = data.nodeGhost;
@@ -175,6 +178,7 @@ class EntityTemplate
 			flipOnlyScales: flipOnlyScales,
 			canSetColor: canSetColor,
 			hasNodes: hasNodes,
+			hasUid: hasUid,
 			nodeLimit: nodeLimit,
 			nodeDisplay: nodeDisplay,
 			nodeGhost: nodeGhost,
