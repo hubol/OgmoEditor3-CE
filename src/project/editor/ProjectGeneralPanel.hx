@@ -24,6 +24,7 @@ class ProjectGeneralPanel extends ProjectEditorPanel
 	public var levelMinSize:JQuery;
 	public var levelMaxSize:JQuery;
 	public var levelValueManager:ValueTemplateManager;
+	public var externalProviderUrl:JQuery;
 
 	public function new()
 	{
@@ -43,6 +44,9 @@ class ProjectGeneralPanel extends ProjectEditorPanel
 
 		playCommand = Fields.createField("Play Command", "");
 		Fields.createSettingsBlock(root, playCommand, SettingsBlock.Half, "Play Command", SettingsBlock.InlineTitle);
+
+		externalProviderUrl = Fields.createField("External Provider URL", "");
+		Fields.createSettingsBlock(root, externalProviderUrl, SettingsBlock.Half, "External Provider URL", SettingsBlock.InlineTitle);
 
 		Fields.createLineBreak(root);
 
@@ -94,6 +98,7 @@ class ProjectGeneralPanel extends ProjectEditorPanel
 		Fields.setVector(layerGridDefaultSize, OGMO.project.layerGridDefaultSize);
 		Fields.setVector(levelMinSize, OGMO.project.levelMinSize);
 		Fields.setVector(levelMaxSize, OGMO.project.levelMaxSize);
+		Fields.setField(externalProviderUrl, OGMO.project.externalProviderUrl);
 		levelValueManager.inspect(null, false);
 		levelValueManager.values = OGMO.project.levelValues;
 		levelValueManager.refreshList();
@@ -112,6 +117,7 @@ class ProjectGeneralPanel extends ProjectEditorPanel
 		OGMO.project.layerGridDefaultSize = Fields.getVector(layerGridDefaultSize);
 		OGMO.project.levelMinSize = Fields.getVector(levelMinSize);
 		OGMO.project.levelMaxSize = Fields.getVector(levelMaxSize);
+		OGMO.project.externalProviderUrl = Fields.getField(externalProviderUrl);
 		levelValueManager.save();
 		OGMO.project.levelValues = levelValueManager.values;
 	}

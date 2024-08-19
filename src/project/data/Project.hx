@@ -1,6 +1,6 @@
 package project.data;
 
-import electron.renderer.Remote;
+import project.data.ExternalEnum.ExternalEnums;
 import js.lib.Date;
 import js.node.Path;
 import io.Export;
@@ -33,6 +33,9 @@ class Project
 	public var entities:EntityTemplateList = new EntityTemplateList();
 	public var layers:Array<LayerTemplate> = [];
 	public var tilesets:Array<Tileset> = [];
+
+	public var externalProviderUrl:String;
+	public final externalEnums = new ExternalEnums();
 
 	//Not exported
 	public var path:String;
@@ -176,6 +179,10 @@ class Project
 		for (entity in data.entities) entities.templates.push(EntityTemplate.load(this, entity));
 		entities.refreshTagLists();
 
+		// External provider
+		this.externalProviderUrl = Imports.string(data.externalProviderUrl, '');
+		this.externalEnums.load(data.externalEnums);
+
 		// load user project hooks
 		var scriptLocation:String = externalScript != null ? getAbsoluteLevelPath(externalScript) : "";
 		projectHooks.set(scriptLocation);
@@ -207,6 +214,8 @@ class Project
 			layers: [for (layer in layers) layer.save()],
 			entities: [for (entity in entities.templates) entity.save()],
 			tilesets: [for (tileset in tilesets) tileset.save()],
+			externalProviderUrl: this.externalProviderUrl,
+			externalEnums: this.externalEnums.save(),
 		};
 
 		data = projectHooks.beforeSaveProject(this, data);
@@ -253,4 +262,6 @@ typedef ProjectSaveFile =
 	layers:Array<Dynamic>,
 	entities:Array<Dynamic>,
 	tilesets:Array<Dynamic>,
+	externalProviderUrl:String,
+	externalEnums:Array<{ name:String, values:Array<String> }>,
 }

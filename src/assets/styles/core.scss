@@ -44,6 +44,15 @@ html, body
 		justify-content: center;
 		z-index: 100;
 	}
+
+	.external-provider {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 100;
+		opacity: 0;
+		pointer-events: none;
+	}
 }
 
 @import "icons";

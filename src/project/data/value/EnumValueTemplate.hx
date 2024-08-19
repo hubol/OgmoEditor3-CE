@@ -1,5 +1,6 @@
 package project.data.value;
 
+import haxe.ds.ReadOnlyArray;
 import io.Imports;
 import project.editor.value.EnumValueTemplateEditor;
 import level.editor.value.EnumValueEditor;
@@ -14,7 +15,17 @@ class EnumValueTemplate extends ValueTemplate
 		ValueDefinition.definitions.push(n);
 	}
 
-	public var choices:Array<String> = [];
+	public var choices(get, never):ReadOnlyArray<String>;
+
+	function get_choices() {
+		return useExternalEnum
+			? OGMO.project.externalEnums.getValues(externalEnumName)
+			: values;
+	}
+
+	public var useExternalEnum:Bool = false;
+	public var externalEnumName:String = '';
+	public var values:Array<String> = [];
 	public var defaults:Int = 0;
 
 	override function getHashCode():String
@@ -51,15 +62,23 @@ class EnumValueTemplate extends ValueTemplate
 	override function load(data:Dynamic):Void
 	{
 		super.load(data);
-		choices = data.choices;
+		if (data.choices != null)
+			values = data.choices;
+		else if (data.values != null)
+			values = data.values;
+
 		defaults = Imports.integer(data.defaults, 0);
+		useExternalEnum = Imports.bool(data.useExternalEnum, false);
+		externalEnumName = Imports.string(data.externalEnumName, '');
 	}
 
 	override function save():Dynamic
 	{
 		var data:Dynamic = super.save();
-		data.choices = choices;
+		data.values = values;
 		data.defaults = defaults;
+		data.useExternalEnum = useExternalEnum;
+		data.externalEnumName = externalEnumName;
 		return data;
 	}
 }

@@ -1,3 +1,4 @@
+import features.ExternalProvider;
 import js.jquery.Event;
 import js.jquery.JQuery;
 import js.Browser;
@@ -62,6 +63,8 @@ class Ogmo
 		new JQuery(function () { onReady(); });
 	}
 
+	var externalProvider: ExternalProvider;
+
 	function onReady():Void
 	{
 		//Load settings
@@ -71,6 +74,7 @@ class Ogmo
 		new Editor();
 		new StartPage();
 		new ProjectEditor();
+		this.externalProvider = new ExternalProvider();
 		gotoStartPage();
 		loop();
 
@@ -160,6 +164,8 @@ class Ogmo
 		if (startPage.active) startPage.loop();
 		if (editor.active) editor.loop();
 		if (projectEditor.active) projectEditor.loop();
+
+		this.externalProvider.setUrl(project == null ? null : project.externalProviderUrl);
 
 		// This fixes an issue with resetting keys while the CMD key is held on OSX.
 		// While CMD is pressed, `keyup` events for other keys are not called.
