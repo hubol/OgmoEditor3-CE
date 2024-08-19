@@ -524,7 +524,8 @@
     {
         padding-left: 8px;
         padding-right: 16px;
-        height: 48px;
+        min-height: 48px;
+        height: unset;
         top: -30px;
         opacity: 0;
         pointer-events: none;
@@ -566,6 +567,11 @@
         & .icon-redo::after
         {
             background-color: #4B898E;
+        }
+
+        & .icon-external-provider::after
+        {
+            background-color: rgb(117, 93, 252);
         }
     }
 }

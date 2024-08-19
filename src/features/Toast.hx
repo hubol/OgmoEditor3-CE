@@ -6,16 +6,16 @@ class Toast {
     static function getClassSuffix(type: ToastType) {
         if (type == ToastType.Undo)
             return 'undo';
-        // if (type == ToastType.Redo)
+        if (type == ToastType.Redo)
             return 'redo';
-        // return 'external-update';
+        return 'external-provider';
     }
 
     static var timeoutId: Int;
 
     public static function show(type: ToastType, description: String, activeMs = 1000) {
         final suffix = getClassSuffix(type);
-        final html = '<div class="icon icon-$suffix"></div><div class="label $suffix">$description</div>';
+        final html = '<div class="icon icon-$suffix"></div><div class="label">$description</div>';
 
         final container = new JQuery('.global .toast');
 
@@ -30,5 +30,5 @@ class Toast {
 enum ToastType {
     Undo;
     Redo;
-    // ExternalUpdate;
+    ExternalUpdate;
 }
