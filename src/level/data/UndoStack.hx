@@ -1,7 +1,6 @@
 package level.data;
 
-import js.Browser;
-import js.jquery.JQuery;
+import features.Toast;
 
 typedef LevelState =
 {
@@ -17,13 +16,10 @@ class UndoStack
 	public var level: Level;
 	public var undoStates: Array<LevelState>;
 	public var redoStates: Array<LevelState>;
-	public var sticker: JQuery;
-	public var timeoutID: Dynamic;
 
 	public function new(level: Level)
 	{
 		this.level = level;
-		sticker = new JQuery(".sticker-action");
 		undoStates = [];
 		redoStates = [];
 	}
@@ -112,7 +108,7 @@ class UndoStack
 					EDITOR.currentLayerEditor.selectionPanel.refresh();
 			}
 
-			showActionSticker(true, desc);
+			Toast.show(Undo, desc);
 		}
 	}
 
@@ -156,30 +152,8 @@ class UndoStack
 					EDITOR.currentLayerEditor.selectionPanel.refresh();
 			}
 
-			showActionSticker(false, desc);
+			Toast.show(Redo, desc);
 		}
-	}
-
-	function showActionSticker(undo:Bool, description:String):Void
-	{
-		if (undo)
-			description = "<div class='icon icon-undo'></div><div class='label undo'>" + description + "</div>";
-		else
-			description = "<div class='icon icon-redo'></div><div class='label redo'>" + description + "</div>";
-
-		sticker.html(description);
-		if (!sticker.hasClass("active"))
-			sticker.addClass("active");
-
-		//Clear old timeout
-		if (timeoutID != null) Browser.window.clearTimeout(timeoutID);
-
-		//Do timeout
-		timeoutID = Browser.window.setTimeout(function ()
-		{
-			timeoutID = null;
-			if (sticker.hasClass("active")) sticker.removeClass("active");
-		}, 1000);
 	}
 
 	function fetchLayer(layerID:Int, description:String): LevelState

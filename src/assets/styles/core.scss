@@ -35,6 +35,17 @@ html, body
 	font-weight: bold;
 }
 
+.global {
+	.toast-container {
+		position: fixed;
+		top: 0;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		z-index: 100;
+	}
+}
+
 @import "icons";
 @import "input";
 @import "itemlist";
