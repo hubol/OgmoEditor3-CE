@@ -52,7 +52,9 @@ class Decal implements ITintable
 
 	public function clone():Decal
 	{
-		return new Decal(position, path, texture, origin, scale, rotation, tint == null ? null : tint.clone(), [for (value in values) value.clone()]);
+		final decal = new Decal(position, path, texture, origin, scale, 0, tint == null ? null : tint.clone(), [for (value in values) value.clone()]);
+		decal.rotation = rotation;
+		return decal;
 	}
 
 	function get_width():Int
