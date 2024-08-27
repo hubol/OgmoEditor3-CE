@@ -1,5 +1,6 @@
 package features;
 
+import modules.entities.Entity;
 import modules.decals.Decal;
 import util.Matrix;
 
@@ -13,32 +14,13 @@ class EntityLikeUtils {
 		return -factor;
 	}
 
-    static function containsPoint(matrix:Matrix, point:Vector) {
+    public static function containsPoint(matrix:Matrix, point:Vector) {
 		result.set(point.x, point.y);
 		matrix.inverseTransformPoint(result, result);
 
 		return result.x >= -1 && result.x <= 1 && result.y >= -1 && result.y <= 1;
 	}
-
-    static function prepareMatrix(position:Vector, origin:Vector, scale:Vector, width:Float, height:Float, rotation:Float, padding:Float) {
-        _matrix.setIdentity();
-		_matrix.translate((origin.x * -2) + 1, (origin.y * -2) + 1);
-
-		final width = scale.x * width;
-		final height = scale.y * height;
-
-		_matrix.scale((width + signed(width, padding)) / 2, (height + signed(height, padding)) / 2);
-
-		_matrix.rotate(rotation);
-		_matrix.translate(position.x, position.y);
-
-        return _matrix;
-    }
-
-    static function decalPrepareMatrix(decal:Decal, padding:Float) {
-        return prepareMatrix(decal.position, decal.origin, decal.scale, decal.width, decal.height, decal.rotation, padding);
-    }
-
+    
     static final _corners: Array<Vector> = [
         new Vector(-1, -1),
         new Vector(1, -1),
@@ -46,7 +28,7 @@ class EntityLikeUtils {
         new Vector(1, 1)
     ];
 
-    static function getCorners(matrix:Matrix):Array<Vector> {
+    public static function getCorners(matrix:Matrix):Array<Vector> {
         _corners[0].set(-1, -1);
         _corners[1].set(1, -1);
         _corners[2].set(-1, 1);
@@ -56,12 +38,40 @@ class EntityLikeUtils {
 
         return _corners;
     }
+}
 
-	public static function decalContainsPoint(decal:Decal, point:Vector, padding = 2.0) {
-        return containsPoint(decalPrepareMatrix(decal, padding), point);
+class EntityLikeMatrix {
+    static final instance = new Matrix();
+
+	static function signed(number:Float, factor:Float) {
+		if (number >= 0)
+			return factor;
+		return -factor;
 	}
 
-    public static function decalGetCorners(decal:Decal, padding = 2.0) {
-        return getCorners(decalPrepareMatrix(decal, padding));
-	}
+    static function apply(position:Vector, origin:Vector, size:Vector, rotation:Float, padding:Float) {
+        instance.setIdentity();
+		instance.translate((origin.x * -2) + 1, (origin.y * -2) + 1);
+
+		instance.scale((size.x + signed(size.x, padding)) / 2, (size.y + signed(size.y, padding)) / 2);
+
+		instance.rotate(rotation);
+		instance.translate(position.x, position.y);
+
+        return instance;
+    }
+
+    static final _size = new Vector();
+
+    public static function fromDecal(decal:Decal, padding = 2.0) {
+        return apply(decal.position, decal.origin, _size.set(decal.width * decal.scale.x, decal.height * decal.scale.y), decal.rotation, padding);
+    }
+
+    // TODO use it someday maybe
+    // public static function fromEntity(entity:Entity, padding:Float) {
+    //     final flipX = entity.flippedX && entity.template.flipOnlyScales;
+    //     final flipY = entity.flippedY && entity.template.flipOnlyScales;
+
+    //     return apply(entity.position, entity.origin, _size.set(entity.size.x * (flipX ? -1 : 1), entity.size.y * (flipY ? -1 : 1)), entity.rotation, padding);
+    // }
 }

@@ -110,7 +110,7 @@ class Decal implements ITintable
 
 	public function getCorners(pad:Float):Array<Vector>
 	{
-		return EntityLikeUtils.decalGetCorners(this, pad);
+		return EntityLikeUtils.getCorners(EntityLikeMatrix.fromDecal(this, pad));
 	}
 
 }

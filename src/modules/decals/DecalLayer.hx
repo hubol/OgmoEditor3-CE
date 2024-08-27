@@ -58,7 +58,7 @@ class DecalLayer extends Layer
 		while (i >= 0)
 		{
 			var decal = decals[i];
-			if (EntityLikeUtils.decalContainsPoint(decal, pos))
+			if (EntityLikeUtils.containsPoint(EntityLikeMatrix.fromDecal(decal), pos))
 				return [decal];
 			i--;
 		}
@@ -72,7 +72,7 @@ class DecalLayer extends Layer
 		while (i >= 0)
 		{
 			var decal = decals[i];
-			if (EntityLikeUtils.decalContainsPoint(decal, pos))
+			if (EntityLikeUtils.containsPoint(EntityLikeMatrix.fromDecal(decal), pos))
 				list.push(decal);
 			i--;
 		}
