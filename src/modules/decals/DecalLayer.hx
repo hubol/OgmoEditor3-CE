@@ -1,5 +1,7 @@
 package modules.decals;
 
+import features.EntityLikeUtils;
+import util.Matrix;
 import rendering.Texture;
 import js.node.Path;
 import level.data.Layer;
@@ -56,8 +58,7 @@ class DecalLayer extends Layer
 		while (i >= 0)
 		{
 			var decal = decals[i];
-			if (pos.x > decal.position.x - decal.width * decal.origin.x && pos.y > decal.position.y - decal.height * decal.origin.y &&
-				pos.x < decal.position.x + decal.width * (1-decal.origin.x) && pos.y < decal.position.y + decal.height * (1-decal.origin.y))
+			if (EntityLikeUtils.decalContainsPoint(decal, pos))
 				return [decal];
 			i--;
 		}
@@ -71,8 +72,7 @@ class DecalLayer extends Layer
 		while (i >= 0)
 		{
 			var decal = decals[i];
-			if (pos.x > decal.position.x - decal.width * decal.origin.x && pos.y > decal.position.y - decal.height * decal.origin.y &&
-				pos.x < decal.position.x + decal.width * (1-decal.origin.x) && pos.y < decal.position.y + decal.height * (1-decal.origin.y))
+			if (EntityLikeUtils.decalContainsPoint(decal, pos))
 				list.push(decal);
 			i--;
 		}

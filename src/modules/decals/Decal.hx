@@ -1,5 +1,6 @@
 package modules.decals;
 
+import features.EntityLikeUtils;
 import features.Tintable.ITintable;
 import level.data.Value;
 import rendering.Texture;
@@ -109,23 +110,7 @@ class Decal implements ITintable
 
 	public function getCorners(pad:Float):Array<Vector>
 	{
-		var corners:Array<Vector> = [
-			new Vector(-pad - width * origin.x * scale.x, -pad - height * origin.y * scale.y),
-			new Vector(pad + width * (1-origin.x) * scale.x, -pad - height * origin.y * scale.y),
-			new Vector(-pad - width * origin.x * scale.x, pad + height * (1-origin.y) * scale.y),
-			new Vector(pad + width * (1-origin.x) * scale.x, pad + height * (1-origin.y) * scale.y)
-		];
-
-		for (corner in corners)
-		{
-			var x = corner.x;
-			var y = corner.y;
-			corner.x = x * rotation.cos() - y * rotation.sin();
-			corner.y = x * rotation.sin() + y * rotation.cos();
-		}
-		for (corner in corners) corner.add(position);
-
-		return corners;
+		return EntityLikeUtils.decalGetCorners(this, pad);
 	}
 
 }
