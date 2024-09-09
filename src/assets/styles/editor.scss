@@ -203,6 +203,10 @@
 
 // RIGHT PANEL (palette & selection)
 
+@mixin outline($color: #000) {
+    filter: drop-shadow(0px 1px 0px $color) drop-shadow(0px -1px 0px $color) drop-shadow(1px 0px 0px $color) drop-shadow(-1px 0px 0px $color);
+}
+
 .editor_palette
 {
     width: 100%;
@@ -319,10 +323,8 @@
 			display: block;
 			float: left;
 			margin: 2px;
-			background: url("../img/transparent.png");
+            @include outline(#808080);
 			opacity: 0.60;
-			transition: opacity 0.25s;
-			border: 2px solid #fff;
 			box-sizing: border-box;
 			cursor: pointer;
 
@@ -338,7 +340,7 @@
 				-webkit-image-rendering: pixelated;
 			}
 
-			&:hover { opacity: 1; }
+			&:hover { opacity: 1; @include outline; }
 			&.selected { opacity: 1; border: 2px solid #00ff00; }
 		}
 	}
