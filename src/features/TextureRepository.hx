@@ -76,7 +76,6 @@ class TextureRepository {
                 existingTexture.dispose();
             }
             final path = FooPath.resolve(this.root, texturePath);
-            trace(path);
             final texture = Texture.fromFile(path);
             textures.set(texturePath, texture);
         }
@@ -154,11 +153,6 @@ class TextureRepository {
             upsertTexture(dir, relativePath);
         else
             upsertDirectory(dir, relativePath);
-
-        trace('------- Upsert -------');
-        trace(isTextureFile ? 'Texture File' : 'Directory');
-        trace(relativePath);
-        trace(this.directory);
     }
 
     function delete(path:String) {
@@ -176,19 +170,13 @@ class TextureRepository {
 
         parentDirectory.updatedAt = Date.now();
 
-        trace('------- Delete -------');
-        trace(directory == null ? 'Texture File' : 'Directory');
-        trace(relativePath);
-
         if (directory != null) {
             parentDirectory.directories.remove(relativePath);
             deleteDirectory(relativePath, directory);
-            trace(this.directory);
             return;
         }
 
         deleteTexture(parentDirectory, relativePath);
-        trace(this.directory);
     }
 
     function deleteTexture(directory:TextureDirectory, path:String) {
@@ -227,7 +215,6 @@ class TextureRepository {
     }
 
     public function getTexture(path:String) {
-        // TODO what happens when it doesn't exist?!
         return this.textures.get(path);
     }
 

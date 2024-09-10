@@ -34,9 +34,6 @@ class DecalPalettePanel extends SidePanel
 
 		final page = template.textureRepositoryPager.update();
 
-		trace('------Refresh Page------');
-		trace(page);
-
 		// add parent link
 		if (page.parent != null)
 		{
