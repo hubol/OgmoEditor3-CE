@@ -1,5 +1,6 @@
 package level.editor;
 
+import features.BrokenTexture;
 import js.node.ChildProcess;
 import haxe.io.Path;
 import util.Matrix;
@@ -68,6 +69,7 @@ class Editor
 
 		draw = new GLRenderer("main", cast new JQuery(".editor_canvas#editor")[0]);
 		overlay = new GLRenderer("overlay", cast new JQuery(".editor_canvas#overlay")[0]);
+		BrokenTexture.create();
 		overlay.clearColor = Color.transparent;
 		root = new JQuery(".editor");
 		htmlOverlay = new JQuery(".editor_html_overlay#html_overlay");
