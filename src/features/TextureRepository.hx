@@ -265,12 +265,21 @@ class TextureRepositoryPager {
         return dirname;
     }
 
+    static function sort(a:String, b:String) {
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+    }
+
     public function update(): TextureRepositoryPage {
         final parent = getParentPath(this.path);
         final directory = this.repository.getDirectory(this.path);
         final subdirectoryNames = directory == null ? [] : [for (name in directory.directories.keys()) Path.basename(name)];
         final texturePaths = directory == null ? [] : [for (path in directory.texturePaths) path];
         this.lastUpdatedAt = directory == null ? -1 : directory.updatedAt;
+
+        subdirectoryNames.sort(sort);
+        texturePaths.sort(sort);
 
         return {
             parent: parent,
