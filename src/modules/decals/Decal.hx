@@ -1,5 +1,6 @@
 package modules.decals;
 
+import features.TextureRef;
 import features.EntityLikeUtils;
 import features.Tintable.ITintable;
 import level.data.Value;
@@ -12,13 +13,13 @@ class Decal implements ITintable
 	public var origin:Vector;
 	public var rotation:Float;
 	public var tint:Color;
-	public var texture:Texture;
+	public var texture:TextureRef;
 	public var path:String;
 	public var width(get, never):Int;
 	public var height(get, never):Int;
 	public var values:Array<Value>;
 
-	public function new(position:Vector, path:String, texture:Texture, ?origin:Vector, ?scale:Vector, ?rotation:Float, ?tint:Color, ?values:Array<Value>)
+	public function new(position:Vector, path:String, texture:TextureRef, ?origin:Vector, ?scale:Vector, ?rotation:Float, ?tint:Color, ?values:Array<Value>)
 	{
 		this.position = position.clone();
 		this.texture = texture;
