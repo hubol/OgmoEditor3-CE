@@ -6,18 +6,8 @@ import js.lib.Set;
 import util.Klaw.Walker;
 import rendering.Texture;
 import js.node.Path;
-import js.node.Fs;
 import js.node.fs.Stats;
 import util.Chokidar;
-
-// typedef Files = 
-// {
-// 	?name: String,
-// 	?dirname:String,
-// 	?parent: Files,
-// 	?textures: Array<Dynamic>,
-// 	?subdirs: Array<Files>
-// }
 
 typedef TextureDirectory = 
 {
@@ -42,7 +32,9 @@ class TextureRepository {
         this.watcher = Chokidar.watch([ this.root ])
             .on('add', this.onAdd)
             .on('addDir', this.onAdd)
-            .on('change', this.onChange);
+            .on('change', this.onChange)
+            .on('unlink', this.onUnlink)
+            .on('unlinkDir', this.onUnlink);
         Browser.window.setInterval(this.onInterval);
     }
 
@@ -115,10 +107,14 @@ class TextureRepository {
         this.texturePathsToLoad.add(path);
     }
 
+    static function isProcessablePath(relativePath:String) {
+        return relativePath.length > 0 && relativePath.indexOf('..') == -1 && relativePath.indexOf('.pdnSave') == -1;
+    }
+
     function upsert(path:String, stats:Stats) {
         final relativePath = normalize(path);
 
-        if (relativePath.indexOf('..') == 0 || relativePath.length == 0 || relativePath.indexOf('.pdnSave') > -1)
+        if (!isProcessablePath(relativePath))
             return;
 
         final ext = Path.extname(relativePath);
@@ -151,10 +147,56 @@ class TextureRepository {
         else
             upsertDirectory(dir, relativePath);
 
-        trace('--------------');
-        trace(relativePath);
+        trace('------- Upsert -------');
         trace(isTextureFile ? 'Texture File' : 'Directory');
+        trace(relativePath);
         trace(this.directory);
+    }
+
+    function delete(path:String) {
+        final relativePath = normalize(path);
+
+        if (!isProcessablePath(relativePath))
+            return;
+
+        final directory = this.directories.get(relativePath);
+
+        final parentPath = Path.dirname(relativePath);
+        var parentDirectory = this.directories.get(parentPath);
+        if (parentDirectory == null)
+            parentDirectory = this.directory;
+
+        parentDirectory.updatedAt = Date.now();
+
+        trace('------- Delete -------');
+        trace(directory == null ? 'Texture File' : 'Directory');
+        trace(relativePath);
+
+        if (directory != null) {
+            parentDirectory.directories.remove(relativePath);
+            deleteDirectory(relativePath, directory);
+            trace(this.directory);
+            return;
+        }
+
+        deleteTexture(parentDirectory, relativePath);
+        trace(this.directory);
+    }
+
+    function deleteTexture(directory:TextureDirectory, path:String) {
+        directory.texturePaths.delete(path);
+        this.texturePathsToLoad.delete(path);
+        final texture = this.textures.get(path);
+        if (texture != null)
+            texture.dispose();
+    }
+
+    function deleteDirectory(path:String, self:TextureDirectory) {
+        this.directories.remove(path);
+        for (texturePath in self.texturePaths)
+            deleteTexture(self, texturePath);
+        for (path => directory in self.directories)
+            deleteDirectory(path, directory);
     }
 
     function onAdd(path:String, stats:Stats) {
@@ -166,7 +208,7 @@ class TextureRepository {
     }
 
     function onUnlink(path:String) {
-
+        this.delete(path);
     }
 
     public function getTexture(path:String) {
@@ -179,7 +221,7 @@ class TextureRepository {
             return;
 
         this.watcher.close();
-        for (texture in this.textures.iterator())
+        for (texture in this.textures)
             texture.dispose();
         this.isDestroyed = true;
     }
