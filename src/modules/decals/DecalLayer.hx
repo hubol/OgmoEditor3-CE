@@ -1,5 +1,6 @@
 package modules.decals;
 
+import features.TextureRef;
 import features.EntityLikeUtils;
 import util.Matrix;
 import rendering.Texture;
@@ -25,6 +26,7 @@ class DecalLayer extends Layer
 	{
 		super.load(data);
 
+		final template = (cast this.template : DecalLayerTemplate);
 		var decals = Imports.contentsArray(data, "decals");
 
 		for (decal in decals)
@@ -32,7 +34,6 @@ class DecalLayer extends Layer
 			
 			var position = Imports.vector(decal, "x", "y");
 			var path = haxe.io.Path.normalize(decal.texture);
-			var relative = Path.join((cast template : DecalLayerTemplate).folder, path);
 			var texture:Texture = null;
 			var origin = Imports.vector(decal, "originX", "originY", new Vector(0.5, 0.5));
 			var scale = Imports.vector(decal, "scaleX", "scaleY", new Vector(1, 1));
@@ -41,14 +42,7 @@ class DecalLayer extends Layer
 
 			var values = Imports.values(decal, (cast template:DecalLayerTemplate).values);
 
-			for (tex in (cast template : DecalLayerTemplate).textures)
-				if (tex.path == relative)
-				{
-					texture	= tex;
-					break;
-				}
-
-			this.decals.push(new Decal(position, path, texture, origin, scale, rotation, tint, values));
+			this.decals.push(new Decal(position, path, new TextureRef(template.textureRepository, path), origin, scale, rotation, tint, values));
 		}
 	}
 

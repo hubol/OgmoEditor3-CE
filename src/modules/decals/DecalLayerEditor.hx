@@ -1,12 +1,12 @@
 package modules.decals;
 
+import features.TextureRef;
 import level.editor.ui.SidePanel;
-import rendering.Texture;
 import level.editor.LayerEditor;
 
 class DecalLayerEditor extends LayerEditor
 {
-	public var brush:Texture;
+	public var brush:TextureRef;
 	public var selected:Array<Decal> = [];
 	public var hovered:Array<Decal> = [];
 	public var selectedChanged:Bool = true;
@@ -43,7 +43,7 @@ class DecalLayerEditor extends LayerEditor
 		{
 			if (decal.texture != null){
 				var originInPixels = new Vector(decal.width * decal.origin.x, decal.height * decal.origin.y);
-				EDITOR.draw.drawTexture(decal.position.x, decal.position.y, decal.texture, originInPixels, decal.scale, decal.rotation,
+				EDITOR.draw.drawTexture(decal.position.x, decal.position.y, decal.texture.getTexture(), originInPixels, decal.scale, decal.rotation,
 					null, null, null, null, decal.tint);
 			}
 			else
@@ -73,10 +73,21 @@ class DecalLayerEditor extends LayerEditor
 	}
 
 	override function loop() {
-		if (!selectedChanged) return;
-		selectedChanged = false;
-		selectionPanel.refresh();
-		EDITOR.dirty();
+		final template:DecalLayerTemplate = cast this.template;
+		final textureRepositoryPagerHasChanges = template.textureRepositoryPager.isOutdated() == HasChanges;
+
+		if (textureRepositoryPagerHasChanges) {
+			this.decalPalettePanel.refresh();
+		}
+
+		if (selectedChanged) {
+			selectedChanged = false;
+			selectionPanel.refresh();
+		}
+
+		if (selectedChanged || textureRepositoryPagerHasChanges) {
+			EDITOR.dirty();
+		}
 	}
 
 	override function refresh() {
@@ -84,9 +95,12 @@ class DecalLayerEditor extends LayerEditor
 		selectedChanged = true;
 	}
 
+	var decalPalettePanel:DecalPalettePanel;
+
 	override function createPalettePanel():SidePanel
 	{
-		return new DecalPalettePanel(this);
+		this.decalPalettePanel = new DecalPalettePanel(this, cast this.template);
+		return this.decalPalettePanel;
 	}
 
 	override function createSelectionPanel():Null<SidePanel> 

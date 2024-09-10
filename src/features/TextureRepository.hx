@@ -239,6 +239,7 @@ class TextureRepository {
 }
 
 typedef TextureRepositoryPage = {
+    parent:String,
     path:String,
     exists:Bool,
     subdirectoryNames:Array<String>,
@@ -255,13 +256,24 @@ class TextureRepositoryPager {
         this.repository = repository;
     }
 
+    static function getParentPath(path:String) {
+        if (path == '')
+            return null;
+        final dirname = Path.dirname(path);
+        if (dirname == '.')
+            return '';
+        return dirname;
+    }
+
     public function update(): TextureRepositoryPage {
+        final parent = getParentPath(this.path);
         final directory = this.repository.getDirectory(this.path);
-        final subdirectoryNames = directory == null ? [] : [for (name in directory.directories.keys()) name];
+        final subdirectoryNames = directory == null ? [] : [for (name in directory.directories.keys()) Path.basename(name)];
         final texturePaths = directory == null ? [] : [for (path in directory.texturePaths) path];
         this.lastUpdatedAt = directory == null ? -1 : directory.updatedAt;
 
         return {
+            parent: parent,
             path: this.path,
             exists: directory != null,
             subdirectoryNames: subdirectoryNames,
@@ -269,8 +281,13 @@ class TextureRepositoryPager {
         }
     }
 
-    public function into(subdirectoryName:String) {
-        this.path = Path.resolve(this.path, subdirectoryName);
+    public function navigateInto(subdirectoryName:String) {
+        this.path = Path.join(this.path, subdirectoryName);
+        this.lastUpdatedAt = -1;
+    }
+
+    public function navigateOut() {
+        this.path = getParentPath(this.path);
         this.lastUpdatedAt = -1;
     }
 
