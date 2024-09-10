@@ -193,6 +193,7 @@ class TextureRepository {
         final texture = this.textures.get(path);
         if (texture != null)
             texture.dispose();
+        this.textures.remove(path);
     }
 
     function deleteDirectory(path:String, self:TextureDirectory) {
