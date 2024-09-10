@@ -124,7 +124,7 @@ class DecalLayerTemplate extends LayerTemplate
 
 		// starts reading all directories
 		var path = Path.join(Path.dirname(project.path), folder);
-		new TextureRepository(path);
+		TextureRepository.create(path);
 		files.dirname = path;
 		if (FileSystem.exists(path))
 		{

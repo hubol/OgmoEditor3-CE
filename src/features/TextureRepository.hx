@@ -41,17 +41,28 @@ class TextureRepository {
     final textures = new Map<String, Texture>();
     final texturePathsToLoad = new Set<String>();
 
-    public function new(path:String) {
-        this.root = FooPath.normalize(path);
+    static final instances = new Map<String, TextureRepository>();
+
+    public static function create(path:String) {
+        final root = FooPath.normalize(path);
+        final instance = instances.get(root);
+        if (instance != null)
+            return instance;
+        return new TextureRepository(root);
+    }
+
+    function new(root:String) {
+        this.root = root;
         this.directory = createTextureDirectory();
         populateDirectoryFromWalker();
-        this.watcher = Chokidar.watch([ this.root ])
+        this.watcher = Chokidar.watch([ root ])
             .on('add', this.onAdd)
             .on('addDir', this.onAdd)
             .on('change', this.onChange)
             .on('unlink', this.onUnlink)
             .on('unlinkDir', this.onUnlink);
         Browser.window.setInterval(this.onInterval);
+        TextureRepository.instances.set(root, this);
     }
 
     function onInterval() {
@@ -219,6 +230,7 @@ class TextureRepository {
         if (this.isDestroyed)
             return;
 
+        TextureRepository.instances.remove(this.root);
         this.watcher.close();
         for (texture in this.textures)
             texture.dispose();
