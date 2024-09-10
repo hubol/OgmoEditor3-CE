@@ -1,5 +1,6 @@
 package modules.decals;
 
+import features.TextureRepository;
 import features.Tintable.TintableTemplate;
 import js.node.Path;
 import level.editor.Tool;
@@ -123,6 +124,7 @@ class DecalLayerTemplate extends LayerTemplate
 
 		// starts reading all directories
 		var path = Path.join(Path.dirname(project.path), folder);
+		new TextureRepository(path);
 		files.dirname = path;
 		if (FileSystem.exists(path))
 		{
