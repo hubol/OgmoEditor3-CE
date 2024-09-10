@@ -34,7 +34,7 @@ class TextureRef {
     public function getTexture() {
         final texture = this.repository.getTexture(path);
         if (texture == null)
-            return null; // TODO dummy texture!!
+            return BrokenTexture.instance;
         return texture;
     }
 
