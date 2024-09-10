@@ -21,6 +21,10 @@ class FooPath {
         return normalize(Path.resolve(parent, child));
     }
 
+    public static function join(parent:String, child:String) {
+        return normalize(Path.join(parent, child));
+    }
+
     public static function relative(parent:String, child:String) {
         return normalize(Path.relative(parent, child));
     }
@@ -292,7 +296,7 @@ class TextureRepositoryPager {
     }
 
     public function navigateInto(subdirectoryName:String) {
-        this.path = Path.join(this.path, subdirectoryName);
+        this.path = FooPath.join(this.path, subdirectoryName);
         this.lastUpdatedAt = -1;
     }
 
