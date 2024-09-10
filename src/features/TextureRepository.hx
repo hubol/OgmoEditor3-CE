@@ -1,5 +1,7 @@
 package features;
 
+import js.Browser;
+import js.lib.Date;
 import js.lib.Set;
 import util.Klaw.Walker;
 import rendering.Texture;
@@ -21,6 +23,7 @@ typedef TextureDirectory =
 {
     texturePaths: Set<String>,
     directories: Map<String, TextureDirectory>,
+    updatedAt: Float,
 }
 
 class TextureRepository {
@@ -28,7 +31,9 @@ class TextureRepository {
     final root:String;
     final watcher:FSWatcher;
     final directory: TextureDirectory;
+    final directories = new Map<String, TextureDirectory>();
     final textures = new Map<String, Texture>();
+    final texturePathsToLoad = new Set<String>();
 
     public function new(path:String) {
         this.root = normalizeSeparators(path);
@@ -38,6 +43,21 @@ class TextureRepository {
             .on('add', this.onAdd)
             .on('addDir', this.onAdd)
             .on('change', this.onChange);
+        Browser.window.setInterval(this.onInterval);
+    }
+
+    function onInterval() {
+        for (texturePath in this.texturePathsToLoad) {
+            final existingTexture = textures.get(texturePath);
+            if (existingTexture != null) {
+                existingTexture.dispose();
+            }
+            final path = Path.resolve(this.root, texturePath);
+            final texture = Texture.fromFile(path);
+            textures.set(texturePath, texture);
+        }
+
+        this.texturePathsToLoad.clear();
     }
 
     function disposeDirectory(dir:TextureDirectory) {
@@ -74,7 +94,25 @@ class TextureRepository {
     }
 
     static function createTextureDirectory(): TextureDirectory {
-        return { texturePaths: new Set(), directories: new Map() };
+        return { texturePaths: new Set(), directories: new Map(), updatedAt: Date.now() };
+    }
+
+    function upsertDirectory(parent:TextureDirectory, path:String) {
+        var directory = parent.directories.get(path);
+        if (directory == null) {
+            directory = createTextureDirectory();
+            parent.directories.set(path, directory);
+            parent.updatedAt = Date.now();
+            this.directories.set(path, directory);
+        }
+
+        return directory;
+    }
+
+    function upsertTexture(parent:TextureDirectory, path:String) {
+        parent.updatedAt = Date.now();
+        parent.texturePaths.add(path);
+        this.texturePathsToLoad.add(path);
     }
 
     function upsert(path:String, stats:Stats) {
@@ -86,34 +124,32 @@ class TextureRepository {
         final ext = Path.extname(relativePath);
         final isTextureFile = (ext == ".png" || ext == ".jpeg" || ext == ".jpg" || ext == ".bmp") && stats.isFile();
 
-        final directoriesToFindOrCreate = new Array<String>();
+        final directoryPathsToFindOrCreate = new Array<String>();
         var node = relativePath;
         while (true) {
             final parent = Path.dirname(node);
             if (parent == '.')
                 break;
             node = parent;
-            directoriesToFindOrCreate.unshift(parent);
+            directoryPathsToFindOrCreate.unshift(parent);
         }
 
         var dir = this.directory;
 
-        for (parent in directoriesToFindOrCreate) {
+        for (parent in directoryPathsToFindOrCreate) {
             final nextDir = dir.directories.get(parent);
             if (nextDir != null) {
                 dir = nextDir;
                 continue;
             }
 
-            final newDir: TextureDirectory = { texturePaths: new Set(), directories: new Map() };
-            dir.directories.set(parent, newDir);
-            dir = newDir;
+            dir = upsertDirectory(dir, parent);
         }
 
         if (isTextureFile)
-            dir.texturePaths.add(relativePath);
+            upsertTexture(dir, relativePath);
         else
-            dir.directories.set(relativePath, createTextureDirectory());
+            upsertDirectory(dir, relativePath);
 
         trace('--------------');
         trace(relativePath);
@@ -283,4 +319,25 @@ class TextureRepository {
 	// 			if (doRefresh != null) doRefresh();
 	// 		});
 	// 	}
+}
+
+class TextureRepositoryPager {
+    final repository:TextureRepository;
+
+    var path = '';
+    var lastUpdatedAt = -1;
+    final subdirectoryNames = new Array<String>();
+    final texturePaths = new Array<String>();
+
+    public function new(repository:TextureRepository) {
+        this.repository = repository;
+    }
+
+    public function update() {
+
+    }
+
+    public function isOutdated():Bool {
+        return true;
+    }
 }
