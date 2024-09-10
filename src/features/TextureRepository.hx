@@ -32,7 +32,7 @@ class TextureRepository {
 
     public function new(path:String) {
         this.root = normalizeSeparators(path);
-        this.directory = { texturePaths: new Set(), directories: new Map() };
+        this.directory = createTextureDirectory();
         populateDirectoryFromWalker();
         this.watcher = Chokidar.watch([ this.root ])
             .on('add', this.onAdd)
@@ -73,6 +73,10 @@ class TextureRepository {
         return normalizeSeparators(Path.relative(this.root, normalizeSeparators(path)));
     }
 
+    static function createTextureDirectory(): TextureDirectory {
+        return { texturePaths: new Set(), directories: new Map() };
+    }
+
     function upsert(path:String, stats:Stats) {
         final relativePath = normalize(path);
 
@@ -92,9 +96,6 @@ class TextureRepository {
             directoriesToFindOrCreate.unshift(parent);
         }
 
-        if (!isTextureFile)
-            directoriesToFindOrCreate.push(relativePath);
-
         var dir = this.directory;
 
         for (parent in directoriesToFindOrCreate) {
@@ -111,6 +112,8 @@ class TextureRepository {
 
         if (isTextureFile)
             dir.texturePaths.add(relativePath);
+        else
+            dir.directories.set(relativePath, createTextureDirectory());
 
         trace('--------------');
         trace(relativePath);
