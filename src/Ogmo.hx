@@ -1,3 +1,4 @@
+import features.Tooltip;
 import js.jquery.Event;
 import js.jquery.JQuery;
 import js.Browser;
@@ -44,6 +45,8 @@ class Ogmo
 	public var shift(get, null):Bool;
 	public var alt(get, null):Bool;
 	public var inputFocused(get, null):Bool;
+
+	var tooltip: Tooltip;
 	
 	public static function main() {
 		new Ogmo();
@@ -66,6 +69,8 @@ class Ogmo
 	{
 		//Load settings
 		settings.load();
+
+		this.tooltip = new Tooltip();
 
 		// initialize
 		new Editor();
@@ -147,6 +152,7 @@ class Ogmo
 	public function loop(?dt:Float):Void
 	{
 		Browser.window.requestAnimationFrame(loop);
+		this.tooltip.loop();
 		
 		// Time update
 		{

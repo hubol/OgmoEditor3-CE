@@ -35,6 +35,10 @@ html, body
 	font-weight: bold;
 }
 
+.start_info {
+	pointer-events: none;
+}
+
 .global {
 	.toast-container {
 		position: fixed;
@@ -43,6 +47,19 @@ html, body
 		display: flex;
 		justify-content: center;
 		z-index: 100;
+	}
+
+	.tooltip {
+		position: fixed;
+		font-family: monospace;
+		padding: 0.3em 0.5em;
+		border: solid 1px black;
+		color: black;
+		background-color: yellow;
+		pointer-events: none;
+		user-select: none;
+		white-space: nowrap;
+		z-index: 200;
 	}
 }
 

@@ -1,5 +1,6 @@
 package modules.decals;
 
+import js.node.Path;
 import features.TextureRef;
 import rendering.Texture;
 import js.Browser;
@@ -65,11 +66,12 @@ class DecalPalettePanel extends SidePanel
 		var textures:Array<String> = page.texturePaths;
 		for (texturePath in textures)
 		{
+			final baseName = Path.basename(texturePath);
 			final texture = template.textureRepository.getTexture(texturePath);
 			final textureRef = new TextureRef(template.textureRepository, texturePath);
 
-			var img = new JQuery('<img src="' + texture.image.src + '"/>');
-			var button = new JQuery('<div class="decal"/>');
+			var img = new JQuery('<img src="${texture.image.src}"/>');
+			var button = new JQuery('<div class="decal" data-tooltip="${baseName}"/>');
 			button.append(img);
 
 			Browser.window.setTimeout(function()
