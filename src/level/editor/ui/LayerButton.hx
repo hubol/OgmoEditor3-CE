@@ -24,6 +24,14 @@ class LayerButton
 		jqName = new JQuery('<div class="editor_layer_name">' + layer.name + '</div>');
 		jqVis = new JQuery('<div class="editor_layer_visibility icon icon-eye-open"></div>');
 
+		jqRoot.mouseenter(function (e) {
+			EDITOR.highlightedLayerID = id;
+		});
+		jqRoot.mouseleave(function (e) {
+			if (EDITOR.highlightedLayerID == id)
+				EDITOR.highlightedLayerID = null;
+		});
+
 		// append them to the root
 		jqRoot.append(jqIcon).append(jqName).append(jqVis);
 

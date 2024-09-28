@@ -149,6 +149,11 @@ class EntityLayerEditor extends LayerEditor
 		for (entity in entities.getGroup(selection)) entity.drawSelectionBox();
 	}
 
+	override function drawHighlight() {
+		for (entity in this.entities.list)
+			entity.drawSelectionBox();
+	}
+
 	override function loop()
 	{
 		if (!selection.changed) return;

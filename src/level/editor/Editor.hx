@@ -638,6 +638,15 @@ class Editor
 		}
 	}
 
+	public var highlightedLayerID(default, set):Int = null;
+
+	function set_highlightedLayerID(value) {
+		this.overlayDirty();
+		return this.highlightedLayerID = value;
+	}
+
+
+
 	public function drawOverlay():Void
 	{
 		overlay.setAlpha(1);
@@ -652,6 +661,11 @@ class Editor
 		//Zoom Rect
 		if (level.zoomRect != null)
 			overlay.drawLineRect(level.zoomRect, Color.white);
+
+		final highlightedLayerEditor = this.layerEditors[this.highlightedLayerID];
+		if (highlightedLayerEditor != null)
+			highlightedLayerEditor.drawHighlight();
+
 
 		overlay.finishDrawing();
 	}

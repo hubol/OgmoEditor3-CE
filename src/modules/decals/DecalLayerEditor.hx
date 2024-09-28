@@ -72,6 +72,11 @@ class DecalLayerEditor extends LayerEditor
 		for (decal in selected) decal.drawSelectionBox(true);
 	}
 
+	override function drawHighlight() {
+		for (decal in (cast this.layer : DecalLayer).decals)
+			decal.drawSelectionBox(false);
+	}
+
 	override function loop() {
 		final template:DecalLayerTemplate = cast this.template;
 		final textureRepositoryPagerHasChanges = template.textureRepositoryPager.isOutdated() == HasChanges;

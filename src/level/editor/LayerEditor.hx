@@ -37,6 +37,8 @@ class LayerEditor
 	 */
 	public function drawOverlay():Void {}
 
+	public function drawHighlight():Void {}
+
 	/**
 	 * Override me!
 	 * @return Null<SidePanel>
