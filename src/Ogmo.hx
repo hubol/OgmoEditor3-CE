@@ -1,3 +1,4 @@
+import features.HubolColorPicker;
 import features.Tooltip;
 import js.jquery.Event;
 import js.jquery.JQuery;
@@ -71,6 +72,7 @@ class Ogmo
 		settings.load();
 
 		this.tooltip = new Tooltip();
+		HubolColorPicker.initialize();
 
 		// initialize
 		new Editor();
