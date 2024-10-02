@@ -22,7 +22,6 @@ class HubolColorPicker {
     HubolColorPicker._el = el;
     HubolColorPicker._picker = new IroColorPicker(el, {
       width: 200,
-      color: "rgb(255, 0, 0)",
       handleRadius: 6,
       layout: [
         {
