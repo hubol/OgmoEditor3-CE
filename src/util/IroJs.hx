@@ -5,6 +5,7 @@ import js.html.Element;
 typedef IroColorPickerLayoutItemOptions = {
 	?id:String,
 	?sliderType:String,
+	?boxHeight:Int,
 }
 
 typedef IroColorPickerLayoutItem = {
@@ -15,6 +16,7 @@ typedef IroColorPickerLayoutItem = {
 typedef IroColorPickerOptions = {
 	width:Int,
 	color:String,
+	?handleRadius:Int,
 	?borderWidth:Int,
 	?borderColor:String,
 	layout:Array<IroColorPickerLayoutItem>,

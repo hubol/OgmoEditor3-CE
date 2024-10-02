@@ -63,8 +63,19 @@ html, body
 	}
 }
 
-.IroBox, .IroSliderGradient {
-	border-radius: 0 !important;
+#hubol-color-picker {
+	position: fixed;
+	display: inline-block;
+	padding: 8px;
+	border: solid 1px gray;
+
+	.IroSlider {
+		margin-top: 8px !important;
+	}
+
+	.IroBox, .IroSliderGradient {
+		border-radius: 0 !important;
+	}
 }
 
 @import "icons";
