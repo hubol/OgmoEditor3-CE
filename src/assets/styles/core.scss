@@ -63,6 +63,10 @@ html, body
 	}
 }
 
+.IroBox, .IroSliderGradient {
+	border-radius: 0 !important;
+}
+
 @import "icons";
 @import "input";
 @import "itemlist";
