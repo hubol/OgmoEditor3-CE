@@ -11,6 +11,7 @@ class HubolColorPicker {
   private static var _el: Element;
   private static var _picker: IroColorPicker;
   private static var _isOpened = true;
+  private static var _targetEl: Element;
 
   public static function initialize() {
     if (HubolColorPicker._isInitialized)
@@ -43,6 +44,19 @@ class HubolColorPicker {
 
     Browser.document.addEventListener('mousedown', HubolColorPicker._onDocumentClick);
     HubolColorPicker._update();
+
+    open(Browser.document.querySelector(".start_logo"), "#00ff00");
+  }
+
+  public static function open(targetEl: Element, initialColorHex: String) {
+    HubolColorPicker._picker.color.hexString = initialColorHex;
+    HubolColorPicker._targetEl = targetEl;
+    HubolColorPicker._isOpened = true;
+    HubolColorPicker._update();
+  }
+
+  public static function loop() {
+    HubolColorPicker._update();
   }
 
   private static function _onDocumentClick(ev: MouseEvent) {
@@ -59,5 +73,16 @@ class HubolColorPicker {
 
   private static function _update() {
     HubolColorPicker._el.style.display = HubolColorPicker._isOpened ? "initial" : "none";
+    if (HubolColorPicker._targetEl == null)
+      return;
+
+    final pickerRect = HubolColorPicker._el.getBoundingClientRect();
+    final targetRect = HubolColorPicker._targetEl.getBoundingClientRect();
+
+    final x = Math.max(0, Math.min(Viewport.width - pickerRect.width, targetRect.x));
+    final y = targetRect.y - 8 >= pickerRect.height ? (targetRect.y - 8 - pickerRect.height) : (targetRect.bottom + 8);
+
+    HubolColorPicker._el.style.left = '${x}px';
+    HubolColorPicker._el.style.top = '${y}px';
   }
 }

@@ -155,6 +155,7 @@ class Ogmo
 	{
 		Browser.window.requestAnimationFrame(loop);
 		this.tooltip.loop();
+		HubolColorPicker.loop();
 		
 		// Time update
 		{

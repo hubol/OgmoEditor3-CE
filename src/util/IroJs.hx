@@ -22,6 +22,10 @@ typedef IroColorPickerOptions = {
 	layout:Array<IroColorPickerLayoutItem>,
 }
 
+typedef IroColorPickerColor = {
+	hexString:String,
+}
+
 @:jsRequire("@jaames/iro", "default.ColorPicker")
 extern class IroColorPicker
 {
@@ -29,6 +33,8 @@ extern class IroColorPicker
 	public function new(el:Element, ?options:IroColorPickerOptions):Void;
 
 	public function on(event:String, listener:String->Void):Void;
+
+	public final color:IroColorPickerColor;
 }
 
 @:jsRequire("@jaames/iro", "default.ui")
