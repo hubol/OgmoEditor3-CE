@@ -1,5 +1,6 @@
 package features;
 
+import js.html.KeyboardEvent;
 import js.html.MouseEvent;
 import js.Browser;
 import js.html.Element;
@@ -42,6 +43,7 @@ class HubolColorPicker {
     HubolColorPicker._isInitialized = true;
 
     Browser.document.addEventListener('mousedown', HubolColorPicker._onDocumentClick);
+    Browser.document.addEventListener('keydown', HubolColorPicker._onDocumentKeyDown);
     HubolColorPicker._update();
 
     open(Browser.document.querySelector(".start_logo"), "#00ff00");
@@ -65,6 +67,16 @@ class HubolColorPicker {
     final rect = HubolColorPicker._el.getBoundingClientRect();
 
     if (rect.left > ev.clientX || rect.top > ev.clientY || rect.right < ev.clientX || rect.bottom < ev.clientY) {
+      HubolColorPicker._isOpened = false;
+      HubolColorPicker._update();
+    }
+  }
+
+  private static function _onDocumentKeyDown(ev: KeyboardEvent) {
+    if (!HubolColorPicker._isOpened)
+      return;
+
+    if (ev.keyCode == Keys.Enter || ev.keyCode == Keys.Tab || ev.keyCode == Keys.Escape) {
       HubolColorPicker._isOpened = false;
       HubolColorPicker._update();
     }
