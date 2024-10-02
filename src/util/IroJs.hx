@@ -15,8 +15,8 @@ typedef IroColorPickerLayoutItem = {
 typedef IroColorPickerOptions = {
 	width:Int,
 	color:String,
-	borderWidth:Int,
-	borderColor:String,
+	?borderWidth:Int,
+	?borderColor:String,
 	layout:Array<IroColorPickerLayoutItem>,
 }
 
