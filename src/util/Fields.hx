@@ -1,5 +1,6 @@
 package util;
 
+import features.HubolColorPicker;
 import js.node.Path;
 import io.FileSystem;
 import io.Imports;
@@ -244,7 +245,7 @@ class Fields
 		if (color.a != 1)
 			trace('Warning: createRgb got alpha != 1: ${color.a}');
 
-		var input1 = new JQuery('<input type="color">');
+		var input1 = new JQuery('<div class="color-input">');
 		var input2 = new JQuery('<input type="text" maxlength="7">');
 
 		input2.on("keydown", function(ev) {
@@ -287,22 +288,35 @@ class Fields
 		element.append(input1, input2);
 
 		function renderValue(value:String) {
-			input1.val(value);
+			trace("renderValue " + value);
+			input1.css("background-color", value);
 			input2.val(value);
 		}
 
-		element.find("input").on("input", function (ev) {
-			var value = ev.target.value;
+		function onInput(value:String) {
 			renderValue(value);
 			if (validate(value))
 				onDomInput(value);
-		});
+		}
 
-		element.find("input").on("change", function (ev) {
-			var value = ev.target.value;
+		function onChange(value:String) {
 			renderValue(value);
 			if (validate(value))
 				onDomChange(value);
+		}
+
+		input2.on("input", function (ev) {
+			final value = ev.target.value;
+			onInput(value);
+		});
+
+		input2.on("change", function (ev) {
+			final value = ev.target.value;
+			onChange(value);
+		});
+
+		input1.on("mousedown", function() {
+			HubolColorPicker.open(input1.get(0), input2.val(), (color) -> onInput(color.hexString), (color) -> onChange(color.hexString));
 		});
 
 		var initialValue = color.toHex();

@@ -32,7 +32,7 @@ extern class IroColorPicker
 	@:overload(function(el:String, ?options:IroColorPickerOptions):Void {})
 	public function new(el:Element, ?options:IroColorPickerOptions):Void;
 
-	public function on(event:String, listener:String->Void):Void;
+	public function on(event:String, listener:IroColorPickerColor->Void):Void;
 
 	public final color:IroColorPickerColor;
 }
