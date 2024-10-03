@@ -90,7 +90,7 @@ input:focus {
     gap: 2px;
 }
 
-.color-box-v2.invalid input[type="color"]::before {
+.color-box-v2.invalid .color-input::before {
     content: '!';
     margin-top: 3px;
     margin-left: 11px;
@@ -106,7 +106,7 @@ input:focus {
     color: #dc0000;
 }
 
-.color-box-v2 input[type="color"] {
+.color-box-v2 .color-input {
     cursor: pointer;
     width: 34px;
     height: 34px;
