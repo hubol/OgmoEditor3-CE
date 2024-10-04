@@ -99,9 +99,7 @@ class HubolColorPicker {
     if (!HubolColorPicker._isOpened)
       return;
 
-    if (ev.keyCode == Keys.Enter || ev.keyCode == Keys.Tab || ev.keyCode == Keys.Escape) {
-      HubolColorPicker._close();
-    }
+    HubolColorPicker._close();
   }
 
   private static function _update() {
