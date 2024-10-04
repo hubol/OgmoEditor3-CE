@@ -9,23 +9,29 @@ import util.IroJs.IroComponents;
 import util.IroJs.IroColorPicker;
 
 class HubolColorPicker {
-  private static var _isInitialized = false;
-  private static var _el: Element;
-  private static var _picker: IroColorPicker;
-  private static var _isOpened = false;
-  private static var _targetEl: Element;
-  private static var _onChange: (color: IroColorPickerColor) -> Void;
-  private static var _onChangeCommit: (color: IroColorPickerColor) -> Void;
-  private static var _openedForTicksCount = 0;
+  public static final singleton = new HubolColorPicker();
 
-  public static function initialize() {
-    if (HubolColorPicker._isInitialized)
+  private var _isInitialized = false;
+  private var _el: Element;
+  private var _picker: IroColorPicker;
+  private var _isOpened = false;
+  private var _targetEl: Element;
+  private var _onChange: (color: IroColorPickerColor) -> Void;
+  private var _onChangeCommit: (color: IroColorPickerColor) -> Void;
+  private var _openedForTicksCount = 0;
+
+  private function new() {
+    
+  }
+
+  public function initialize() {
+    if (this._isInitialized)
       return;
 
     final el = Browser.document.getElementById("hubol-color-picker");
 
-    HubolColorPicker._el = el;
-    HubolColorPicker._picker = new IroColorPicker(el, {
+    this._el = el;
+    this._picker = new IroColorPicker(el, {
       width: 200,
       handleRadius: 6,
       layout: [
@@ -44,77 +50,77 @@ class HubolColorPicker {
         }
       ]
     });
-    HubolColorPicker._picker.on("input:change", (color) -> {
-      if (HubolColorPicker._onChange != null)
-        HubolColorPicker._onChange(color);
+    this._picker.on("input:change", (color) -> {
+      if (this._onChange != null)
+        this._onChange(color);
     });
-    HubolColorPicker._isInitialized = true;
+    this._isInitialized = true;
 
-    Browser.document.addEventListener('mousedown', HubolColorPicker._onDocumentClick);
-    Browser.document.addEventListener('keydown', HubolColorPicker._onDocumentKeyDown);
-    HubolColorPicker._update();
+    Browser.document.addEventListener('mousedown', this._onDocumentClick);
+    Browser.document.addEventListener('keydown', this._onDocumentKeyDown);
+    this._update();
   }
 
-  public static function open(targetEl: Element, initialColorHex: String, onChange: (color: IroColorPickerColor) -> Void, onChangeCommit: (color: IroColorPickerColor) -> Void) {
-    HubolColorPicker._picker.color.hexString = initialColorHex;
-    HubolColorPicker._targetEl = targetEl;
-    HubolColorPicker._isOpened = true;
-    HubolColorPicker._onChange = onChange;
-    HubolColorPicker._onChangeCommit = onChangeCommit;
-    HubolColorPicker._openedForTicksCount = 0;
-    HubolColorPicker._update();
+  public function open(targetEl: Element, initialColorHex: String, onChange: (color: IroColorPickerColor) -> Void, onChangeCommit: (color: IroColorPickerColor) -> Void) {
+    this._picker.color.hexString = initialColorHex;
+    this._targetEl = targetEl;
+    this._isOpened = true;
+    this._onChange = onChange;
+    this._onChangeCommit = onChangeCommit;
+    this._openedForTicksCount = 0;
+    this._update();
   }
 
-  public static function loop() {
-    HubolColorPicker._update();
-    if (HubolColorPicker._isOpened)
-      HubolColorPicker._openedForTicksCount++;
+  public function loop() {
+    this._update();
+    if (this._isOpened)
+      this._openedForTicksCount++;
   }
 
-  private static function _close() {
-    if (!HubolColorPicker._isOpened)
+  private function _close() {
+    if (!this._isOpened)
       return;
 
-    HubolColorPicker._isOpened = false;
-    if (HubolColorPicker._onChangeCommit != null) {
-      HubolColorPicker._onChangeCommit(HubolColorPicker._picker.color);
-      HubolColorPicker._onChangeCommit = null;
+    this._isOpened = false;
+    if (this._onChangeCommit != null) {
+      this._onChangeCommit(this._picker.color);
+      this._onChangeCommit = null;
     }
-    HubolColorPicker._onChange = null;
-    HubolColorPicker._update();
+    this._onChange = null;
+    this._update();
   }
 
-  private static function _onDocumentClick(ev: MouseEvent) {
-    if (!HubolColorPicker._isOpened || HubolColorPicker._openedForTicksCount < 2)
+  private function _onDocumentClick(ev: MouseEvent) {
+    if (!this._isOpened || this._openedForTicksCount < 2)
       return;
 
-    final rect = HubolColorPicker._el.getBoundingClientRect();
+    final rect = this._el.getBoundingClientRect();
 
     if (rect.left > ev.clientX || rect.top > ev.clientY || rect.right < ev.clientX || rect.bottom < ev.clientY) {
-      HubolColorPicker._close();
+      this._close();
     }
   }
 
-  private static function _onDocumentKeyDown(ev: KeyboardEvent) {
-    if (!HubolColorPicker._isOpened)
+  private function _onDocumentKeyDown(ev: KeyboardEvent) {
+    if (!this._isOpened)
       return;
 
-    HubolColorPicker._close();
+    this._close();
   }
 
-  private static function _update() {
-    HubolColorPicker._el.style.display = HubolColorPicker._isOpened ? "initial" : "none";
+  private function _update() {
+    this._el.style.display = this._isOpened ? "initial" : "none";
 
-    if (HubolColorPicker._targetEl == null)
+    if (this._targetEl == null)
       return;
 
-    final pickerRect = HubolColorPicker._el.getBoundingClientRect();
-    final targetRect = HubolColorPicker._targetEl.getBoundingClientRect();
+    final pickerRect = this._el.getBoundingClientRect();
+    final targetRect = this._targetEl.getBoundingClientRect();
 
     final x = Math.max(0, Math.min(Viewport.width - pickerRect.width, targetRect.x));
     final y = targetRect.y - 8 >= pickerRect.height ? (targetRect.y - 8 - pickerRect.height) : (targetRect.bottom + 8);
 
-    HubolColorPicker._el.style.left = '${x}px';
-    HubolColorPicker._el.style.top = '${y}px';
+    this._el.style.left = '${x}px';
+    this._el.style.top = '${y}px';
   }
 }
