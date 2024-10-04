@@ -90,6 +90,15 @@ input:focus {
     gap: 2px;
 }
 
+.color-box-v2 .eyedropper {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+    align-self: flex-end;
+    cursor: pointer;
+}
+
 .color-box-v2.invalid .color-input::before {
     content: '!';
     margin-top: 3px;
@@ -108,8 +117,9 @@ input:focus {
 
 .color-box-v2 .color-input {
     cursor: pointer;
-    width: 34px;
-    height: 34px;
+    border: 1px solid #aaa;
+    width: 32px;
+    height: 32px;
     padding: 0;
     flex-shrink: 0;
 }

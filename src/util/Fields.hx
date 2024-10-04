@@ -1,5 +1,6 @@
 package util;
 
+import features.EyeDropper;
 import features.HubolColorPicker;
 import js.node.Path;
 import io.FileSystem;
@@ -246,6 +247,7 @@ class Fields
 			trace('Warning: createRgb got alpha != 1: ${color.a}');
 
 		var input1 = new JQuery('<div class="color-input">');
+		final eyedropper = new JQuery('<div class="eyedropper icon icon-eyedropper">');
 		var input2 = new JQuery('<input type="text" maxlength="7">');
 
 		input2.on("keydown", function(ev) {
@@ -285,10 +287,9 @@ class Fields
 			return valid;
 		}
 
-		element.append(input1, input2);
+		element.append(input1).append(eyedropper).append(input2);
 
 		function renderValue(value:String) {
-			trace("renderValue " + value);
 			input1.css("background-color", value);
 			input2.val(value);
 		}
@@ -317,6 +318,10 @@ class Fields
 
 		input1.on("mousedown", function() {
 			HubolColorPicker.open(input1.get(0), input2.val(), (color) -> onInput(color.hexString), (color) -> onChange(color.hexString));
+		});
+		
+		eyedropper.on("mousedown", function() {
+			EyeDropper.open((result) -> onChange(result.sRGBHex));
 		});
 
 		var initialValue = color.toHex();
