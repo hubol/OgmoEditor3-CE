@@ -72,7 +72,7 @@ class Ogmo
 		settings.load();
 
 		this.tooltip = new Tooltip();
-		HubolColorPicker.initialize();
+		HubolColorPicker.singleton.initialize();
 
 		// initialize
 		new Editor();
@@ -155,7 +155,7 @@ class Ogmo
 	{
 		Browser.window.requestAnimationFrame(loop);
 		this.tooltip.loop();
-		HubolColorPicker.loop();
+		HubolColorPicker.singleton.loop();
 		
 		// Time update
 		{

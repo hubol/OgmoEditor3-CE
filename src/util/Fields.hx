@@ -317,7 +317,7 @@ class Fields
 		});
 
 		input1.on("mousedown", function() {
-			HubolColorPicker.open(input1.get(0), input2.val(), (color) -> onInput(color.hexString), (color) -> onChange(color.hexString));
+			HubolColorPicker.singleton.open(input1.get(0), input2.val(), (color) -> onInput(color.hexString), (color) -> onChange(color.hexString));
 		});
 		
 		eyedropper.on("mousedown", function() {
