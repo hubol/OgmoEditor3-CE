@@ -241,16 +241,16 @@ class Fields
 
 	public static function createRgb(color:Color, ?into:JQuery, ?onChangeStart:Void->Void, ?onChange:Color->Void, ?onChangeCommit:Color->Void):JQuery
 	{
-		var element = new JQuery('<div class="color-box-v2">');
+		final element = new JQuery('<div class="color-box-v2">');
 
 		if (color.a != 1)
 			trace('Warning: createRgb got alpha != 1: ${color.a}');
 
-		var input1 = new JQuery('<div class="color-input">');
-		final eyedropper = new JQuery('<div class="eyedropper icon icon-eyedropper">');
-		var input2 = new JQuery('<input type="text" maxlength="7">');
+		final previewPickerEl = new JQuery('<div class="color-input">');
+		final eyedropperEl = new JQuery('<div class="eyedropper icon icon-eyedropper">');
+		final textInputEl = new JQuery('<input type="text" maxlength="7">');
 
-		input2.on("keydown", function(ev) {
+		textInputEl.on("keydown", function(ev) {
 			if (ev.key.length > 1 || ev.ctrlKey)
 				return;
 			var character = ev.key.charAt(0);
@@ -258,26 +258,6 @@ class Fields
 				return;
 			ev.preventDefault();
 		});
-
-		var canFireOnChangeStart = true;
-
-		function onDomInput(value:String) {
-			if (canFireOnChangeStart) {
-				if (onChangeStart != null)
-					onChangeStart();
-				canFireOnChangeStart = false;
-			}
-			if (onChange != null)
-				onChange(Color.fromHex(value, 1));
-		}
-
-		function onDomChange(value:String) {
-			if (canFireOnChangeStart && onChangeStart != null)
-				onChangeStart();
-			canFireOnChangeStart = true;
-			if (onChangeCommit != null)
-				onChangeCommit(Color.fromHex(value, 1));
-		}
 
 		function validate(value:String) {
 			var valid = isValidHexCode(value);
@@ -287,41 +267,60 @@ class Fields
 			return valid;
 		}
 
-		element.append(input1).append(eyedropper).append(input2);
+		element.append(previewPickerEl).append(eyedropperEl).append(textInputEl);
 
 		function renderValue(value:String) {
-			input1.css("background-color", value);
-			input2.val(value);
+			previewPickerEl.css("background-color", value);
+			textInputEl.val(value);
 		}
 
-		function onInput(value:String) {
+		var canFireOnChangeStart = true;
+
+		function _onChange(value:String) {
+			trace("_onChange " + value);
 			renderValue(value);
-			if (validate(value))
-				onDomInput(value);
+			if (!validate(value))
+				return;
+
+			if (canFireOnChangeStart) {
+				if (onChangeStart != null)
+					onChangeStart();
+				canFireOnChangeStart = false;
+			}
+			if (onChange != null)
+				onChange(Color.fromHex(value, 1));
 		}
 
-		function onChange(value:String) {
+		function _onChangeCommit(value:String) {
+			trace("_onChangeCommit " + value);
+
 			renderValue(value);
-			if (validate(value))
-				onDomChange(value);
+			if (!validate(value))
+				return;
+
+			if (canFireOnChangeStart && onChangeStart != null)
+				onChangeStart();
+			canFireOnChangeStart = true;
+			if (onChangeCommit != null)
+				onChangeCommit(Color.fromHex(value, 1));
 		}
 
-		input2.on("input", function (ev) {
+		textInputEl.on("input", function (ev) {
 			final value = ev.target.value;
-			onInput(value);
+			_onChange(value);
 		});
 
-		input2.on("change", function (ev) {
+		textInputEl.on("change", function (ev) {
 			final value = ev.target.value;
-			onChange(value);
+			_onChangeCommit(value);
 		});
 
-		input1.on("mousedown", function() {
-			HubolColorPicker.singleton.open(input1.get(0), input2.val(), (color) -> onInput(color.hexString), (color) -> onChange(color.hexString));
+		previewPickerEl.on("mousedown", function() {
+			HubolColorPicker.singleton.open(previewPickerEl.get(0), textInputEl.val(), (color) -> _onChange(color.hexString), (color) -> _onChangeCommit(color.hexString));
 		});
 		
-		eyedropper.on("mousedown", function() {
-			EyeDropper.open((result) -> onChange(result.sRGBHex));
+		eyedropperEl.on("mousedown", function() {
+			EyeDropper.open((result) -> _onChangeCommit(result.sRGBHex));
 		});
 
 		var initialValue = color.toHex();
