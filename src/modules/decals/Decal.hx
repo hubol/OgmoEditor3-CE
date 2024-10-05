@@ -4,10 +4,13 @@ import features.TextureRef;
 import features.EntityLikeUtils;
 import features.Tintable.ITintable;
 import level.data.Value;
-import rendering.Texture;
 
 class Decal implements ITintable
 {
+	private static var _nextId = 0;
+
+	public var internalId = Decal._nextId++;
+
 	public var position:Vector;
 	public var scale:Vector;
 	public var origin:Vector;
@@ -52,10 +55,13 @@ class Decal implements ITintable
 		return data;
 	}
 
-	public function clone():Decal
+	public function clone(?inheritInternalId = false):Decal
 	{
 		final decal = new Decal(position, path, texture, origin, scale, 0, tint == null ? null : tint.clone(), [for (value in values) value.clone()]);
 		decal.rotation = rotation;
+		if (inheritInternalId) {
+			decal.internalId = this.internalId;
+		}
 		return decal;
 	}
 

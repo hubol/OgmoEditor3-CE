@@ -115,7 +115,24 @@ class DecalLayerEditor extends LayerEditor
 
 	override function afterUndoRedo():Void
 	{
-		selected = [];
-		hovered = [];
+		final previousSelectedDecals = this.selected;
+		this.selected = [];
+		this.hovered = [];
+
+		if (previousSelectedDecals.length == 0)
+			return;
+
+		final decals = (cast this.layer : DecalLayer).decals;
+		final decalsByInternalId = new Map<Int,Decal>();
+
+		for (decal in decals) {
+			decalsByInternalId.set(decal.internalId, decal);
+		}
+
+		for (previousDecal in previousSelectedDecals) {
+			final decal = decalsByInternalId.get(previousDecal.internalId);
+			if (decal != null)
+				this.selected.push(decal);
+		}
 	}
 }

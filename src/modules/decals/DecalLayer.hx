@@ -91,7 +91,7 @@ class DecalLayer extends Layer
 	override function clone():DecalLayer
 	{
 		var layer = new DecalLayer(level, id);
-		for (decal in decals) layer.decals.push(decal.clone());
+		for (decal in decals) layer.decals.push(decal.clone(true));
 		return layer;
 	}
 
