@@ -7,5 +7,6 @@
     "ext": "ogmo",
     "name": "OGMO Project",
     "role": "Editor"
-  }
+  },
+  "npmRebuild": false
 }
