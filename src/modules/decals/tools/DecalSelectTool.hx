@@ -1,5 +1,6 @@
 package modules.decals.tools;
 
+import features.DecalGroups;
 import modules.entities.tools.EntitySelectTool.SelectModes;
 
 class DecalSelectTool extends DecalTool
@@ -131,6 +132,9 @@ class DecalSelectTool extends DecalTool
 			EDITOR.level.store("move decal forward");
 			for (decal in layerEditor.selected) OGMO.shift ? moveDecalToFront(decal) : moveDecalForward(decal);
 			EDITOR.dirty();
+		}
+		else if (OGMO.shift && key == Keys.G) {
+			DecalGroups.groupOrUngroupDecals(layerEditor.selected, layer.decals);
 		}
 	}
 

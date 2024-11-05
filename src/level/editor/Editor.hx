@@ -761,6 +761,7 @@ class Editor
 					EDITOR.level.gridVisible = !EDITOR.level.gridVisible;
 					EDITOR.dirty();
 				}
+				defaultKeyPress(key);
 			case Keys.T:
 				//Toggle Property Display
 				if (OGMO.ctrl)
