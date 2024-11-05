@@ -15,11 +15,13 @@ class DecalLayerEditor extends LayerEditor
 	private var _hoveredGroupName:String;
 	
 	function _onGroupNameMouseEnter(name:String) {
+		EDITOR.overlayDirty();
 		this._hoveredGroupName = name;
 	}
 
 	function _onGroupNameMouseLeave(name:String) {
 		if (this._hoveredGroupName == name) {
+			EDITOR.overlayDirty();
 			this._hoveredGroupName = null;
 		}
 	}
@@ -95,6 +97,14 @@ class DecalLayerEditor extends LayerEditor
 	
 	override function drawOverlay()
 	{
+		if (this._hoveredGroupName != null) {
+			for (decal in (cast layer : DecalLayer).decals) {
+				if (decal.groupName == this._hoveredGroupName) {
+					decal.drawSelectionBox(true);
+				}
+			}
+			return;
+		}
 		if (selected.length <= 0) return;
 		for (decal in selected) decal.drawSelectionBox(true);
 	}
