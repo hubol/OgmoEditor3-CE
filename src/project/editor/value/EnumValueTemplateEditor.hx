@@ -13,7 +13,9 @@ class EnumValueTemplateEditor extends ValueTemplateEditor
 		var enumTemplate:EnumValueTemplate = cast template;
 
 		var choices = "";
-		for (i in 0...enumTemplate.choices.length) choices += (i > 0 ? "\n" : "") + enumTemplate.choices[i];
+
+		final length = enumTemplate.choices == null ? 0 : enumTemplate.choices.length;
+		for (i in 0...length) choices += (i > 0 ? "\n" : "") + enumTemplate.choices[i];
 
 		// choices
 		choicesField = Fields.createTextarea("...", choices);
