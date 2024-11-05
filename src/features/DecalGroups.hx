@@ -5,22 +5,6 @@ import js.lib.Set;
 import modules.decals.Decal;
 
 class DecalGroups {
-    public static function moveDecalsForward(decals: Array<Decal>, destination: Array<Decal>) {
-
-    }
-
-    public static function moveDecalsBackward(decals: Array<Decal>, destination: Array<Decal>) {
-        
-    }
-
-    public static function moveDecalsToFront(decals: Array<Decal>, destination: Array<Decal>) {
-
-    }
-
-    public static function moveDecalsToBack(decals: Array<Decal>, destination: Array<Decal>) {
-        
-    }
-
     public static function groupOrUngroupDecals(decals: Array<Decal>, destination: Array<Decal>) {
         final groupNameAnalysis = _analyzeDecalGroupNames(decals);
         final groupNameToApply = _getGroupNameToApply(groupNameAnalysis, destination);
@@ -34,7 +18,7 @@ class DecalGroups {
             decal.groupName = groupNameToApply;
         }
 
-        _ensureConsecutiveGroups(destination);
+        ensureConsecutiveGroups(destination);
 
         EDITOR.dirty();
     }
@@ -62,7 +46,7 @@ class DecalGroups {
         return shouldApplyTopmostGroupName ? analysis.topmostGroupName : null;
     }
 
-    static function _ensureConsecutiveGroups(decals: Array<Decal>) {
+    public static function ensureConsecutiveGroups(decals: Array<Decal>) {
         final groupNamesToChunks = new Map<String,Array<Decal>>();
         final decalChunks = new Array<Array<Decal>>();
 
