@@ -24,7 +24,7 @@ class DecalGroups {
     }
 
     static function _getGroupNameToApply(analysis: DecalGroupNameAnalysis, decals: Array<Decal>) {
-        if (analysis.groupNames.size == 0) {
+        if (analysis.uniqueGroupNamesCount == 0) {
             final groupNames = new Set([ for (decal in decals) if (decal.groupName != null) decal.groupName ]);
 
             final baseName = Path.parse(analysis.topmostDecal.texture.path).name + ' Group';
@@ -41,7 +41,7 @@ class DecalGroups {
             }
         }
 
-        final shouldApplyTopmostGroupName = analysis.groupNames.size > 1 || analysis.nullGroupNamesCount > 0;
+        final shouldApplyTopmostGroupName = analysis.uniqueGroupNamesCount > 1 || analysis.nullGroupNamesCount > 0;
 
         return shouldApplyTopmostGroupName ? analysis.topmostGroupName : null;
     }
@@ -110,34 +110,14 @@ class DecalGroups {
             topmostDecal: topmostDecal,
             topmostGroupName: topmostGroupName,
             nullGroupNamesCount: nullGroupNamesCount,
-            groupNames: groupNames,
+            uniqueGroupNamesCount: groupNames.size,
         }
-    }
-
-    static function _extractDecals(decalsToExtract: Array<Decal>, from: Array<Decal>) {
-        final decalsToExtractSet = new Set(decalsToExtract);
-        final extractedDecals = new Array<Decal>();
-
-        var i = 0;
-        while (i < from.length) {
-            final decal = from[i];
-
-            if (decalsToExtractSet.has(decal)) {
-                from.splice(i, 1);
-                extractedDecals.push(decal);
-                continue;
-            }
-
-            i += 1;
-        }
-
-        return extractedDecals;
     }
 }
 
 typedef DecalGroupNameAnalysis = {
     final topmostDecal:Decal;
     final topmostGroupName:String;
-    final groupNames:Set<String>;
+    final uniqueGroupNamesCount:Int;
     final nullGroupNamesCount:Int;
 }
