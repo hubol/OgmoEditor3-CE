@@ -21,8 +21,9 @@ class Decal implements ITintable
 	public var width(get, never):Int;
 	public var height(get, never):Int;
 	public var values:Array<Value>;
+	public var groupName:String;
 
-	public function new(position:Vector, path:String, texture:TextureRef, ?origin:Vector, ?scale:Vector, ?rotation:Float, ?tint:Color, ?values:Array<Value>)
+	public function new(position:Vector, path:String, texture:TextureRef, ?origin:Vector, ?scale:Vector, ?rotation:Float, ?tint:Color, ?values:Array<Value>, ?groupName:String)
 	{
 		this.position = position.clone();
 		this.texture = texture;
@@ -32,6 +33,7 @@ class Decal implements ITintable
 		this.tint = tint;
 		this.values = values == null ? [] : values;
 		this.origin = origin == null ? new Vector(0.5, 0.5) : origin.clone();
+		this.groupName = groupName;
 	}
 
 	public function save(template: DecalLayerTemplate):Dynamic
@@ -51,13 +53,14 @@ class Decal implements ITintable
 		data.originX = origin.x;
 		data.originY = origin.y;
 		Export.values(data, values);
+		data.groupName = this.groupName;
 
 		return data;
 	}
 
 	public function clone(?inheritInternalId = false):Decal
 	{
-		final decal = new Decal(position, path, texture, origin, scale, 0, tint == null ? null : tint.clone(), [for (value in values) value.clone()]);
+		final decal = new Decal(position, path, texture, origin, scale, 0, tint == null ? null : tint.clone(), [for (value in values) value.clone()], this.groupName);
 		decal.rotation = rotation;
 		if (inheritInternalId) {
 			decal.internalId = this.internalId;
