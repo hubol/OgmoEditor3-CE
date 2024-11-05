@@ -855,8 +855,15 @@
 
     background-color: white;
 
-    > div {
+    font-family: monospace;
 
+    padding: 0.5em 0;
+
+    border-radius: 0 4px 4px 0;
+
+    > div {
+        text-align: center;
+        font-weight: bold;
     }
 
     > ul {
@@ -865,6 +872,15 @@
     }
 
     li {
+        color: #404040;
+        cursor: pointer;
+        padding: 0.4em 0.5em 0;
         list-style-type: none;
+    }
+
+    li:hover {
+        background-color: #c0c0c0;
+        color: black;
+        font-weight: bold;
     }
 }
