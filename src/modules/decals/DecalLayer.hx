@@ -42,7 +42,9 @@ class DecalLayer extends Layer
 
 			var values = Imports.values(decal, (cast template:DecalLayerTemplate).values);
 
-			this.decals.push(new Decal(position, path, new TextureRef(template.textureRepository, path), origin, scale, rotation, tint, values));
+			var groupName = Imports.string(decal.groupName, null);
+
+			this.decals.push(new Decal(position, path, new TextureRef(template.textureRepository, path), origin, scale, rotation, tint, values, groupName));
 		}
 	}
 
