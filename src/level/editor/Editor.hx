@@ -509,11 +509,17 @@ class Editor
 			if (EDITOR.toolBelt.current != null) EDITOR.toolBelt.current.update();
 		}
 
+		var firedOnEditorCleaned = false;
+
 		//Draw the level
 		if (isDirty)
 		{
 			isDirty = false;
 			draw.clear();
+			if (currentLayerEditor != null) {
+				firedOnEditorCleaned = true;
+				currentLayerEditor.onEditorCleaned();
+			}
 
 			if (level != null) drawLevel();
 		}
@@ -524,6 +530,9 @@ class Editor
 		{
 			isOverlayDirty = false;
 			overlay.clear();
+			if (currentLayerEditor != null && !firedOnEditorCleaned) {
+				currentLayerEditor.onEditorCleaned();
+			}
 
 			if (level != null)
 				drawOverlay();

@@ -847,3 +847,24 @@
         &:last-child { border-right: 0; }
     }
 }
+
+.decal_groups_list {
+    position: absolute;
+    z-index: 1000;
+    top: 64px;
+
+    background-color: white;
+
+    > div {
+
+    }
+
+    > ul {
+        padding: 0;
+        margin: 0;
+    }
+
+    li {
+        list-style-type: none;
+    }
+}

@@ -1,5 +1,6 @@
 package features;
 
+import modules.decals.DecalLayer;
 import js.node.Path;
 import js.lib.Set;
 import modules.decals.Decal;
@@ -120,4 +121,95 @@ typedef DecalGroupNameAnalysis = {
     final topmostGroupName:String;
     final uniqueGroupNamesCount:Int;
     final nullGroupNamesCount:Int;
+}
+
+class UiDecalGroupsList {
+    public final el = new JQuery('<div class="decal_groups_list"></div>');
+    private final _titleEl = new JQuery('<div></div>');
+    private final _listEl = new JQuery('<ul></ul>');
+
+    private var _state: UiDecalGroupsListState = { groups: [] };
+
+    private final _onMouseEnter: (groupName:String) -> Void;
+    private final _onMouseLeave: (groupName:String) -> Void;
+    private final _onClick: (groupName:String) -> Void;
+
+    public function new(
+            onMouseEnter: (groupName:String) -> Void,
+            onMouseLeave: (groupName:String) -> Void,
+            onClick: (groupName:String) -> Void) {
+        this.el.append(this._titleEl, this._listEl);
+        this._onMouseEnter = onMouseEnter;
+        this._onMouseLeave = onMouseLeave;
+        this._onClick = onClick;
+
+        new JQuery(".editor_panel-main").append(this.el);
+    }
+
+    public function onEditorCleaned(decalLayer: DecalLayer) {
+        final nextState = _getState(decalLayer);
+
+        if (_areStatesEqual(this._state, nextState)) {
+            return;
+        }
+
+        this._state = nextState;
+
+        this.el.css("display", this._state.groups.length == 0 ? "none" : "");
+
+        this._titleEl.text('${this._state.groups.length} Group(s)');
+        this._listEl.empty();
+
+        for (group in this._state.groups) {
+            final itemEl = new JQuery('<li>${group.name}</li>');
+            itemEl.on('mouseenter', () -> this._onMouseEnter(group.name));
+            itemEl.on('mouseleave', () -> this._onMouseLeave(group.name));
+            itemEl.on('click', () -> this._onClick(group.name));
+
+            this._listEl.append(itemEl);
+        }
+    }
+
+    private static function _areStatesEqual(state0: UiDecalGroupsListState, state1: UiDecalGroupsListState) {
+        if (state0.groups.length != state1.groups.length) {
+            return false;
+        }
+
+        for (i in 0...state0.groups.length) {
+            final group0 = state0.groups[i];
+            final group1 = state1.groups[i];
+
+            if (group0.count != group1.count || group0.name != group1.name) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static function _getState(layer: DecalLayer): UiDecalGroupsListState {
+        final groups = new Map<String, Int>();
+        for (decal in layer.decals) {
+            if (decal.groupName == null) {
+                continue;
+            }
+
+            final value = groups.get(decal.groupName);
+            groups.set(decal.groupName, value == null ? 1 : (value + 1));
+        }
+
+        final groupsArray = new Array<{ name:String, count:Int }>();
+
+        for (key in groups.keys()) {
+            groupsArray.push({ name: key, count: groups.get(key) });
+        }
+
+        return {
+            groups: groupsArray,
+        }
+    }
+}
+
+typedef UiDecalGroupsListState = {
+    final groups:Array<{ name:String, count:Int }>;
 }

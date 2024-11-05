@@ -1,5 +1,6 @@
 package modules.decals;
 
+import features.DecalGroups.UiDecalGroupsList;
 import features.TextureRef;
 import level.editor.ui.SidePanel;
 import level.editor.LayerEditor;
@@ -10,6 +11,32 @@ class DecalLayerEditor extends LayerEditor
 	public var selected:Array<Decal> = [];
 	public var hovered:Array<Decal> = [];
 	public var selectedChanged:Bool = true;
+
+	private var _hoveredGroupName:String;
+	
+	function _onGroupNameMouseEnter(name:String) {
+		this._hoveredGroupName = name;
+	}
+
+	function _onGroupNameMouseLeave(name:String) {
+		if (this._hoveredGroupName == name) {
+			this._hoveredGroupName = null;
+		}
+	}
+
+	function _onGroupNameClick(name:String) {
+		this.selected.resize(0);
+	}
+
+	private final _uiDecalGroupsList: UiDecalGroupsList;
+
+	public function new(id:Int) {
+		super(id);
+		this._uiDecalGroupsList = new UiDecalGroupsList(
+			this._onGroupNameMouseEnter,
+			this._onGroupNameMouseLeave,
+			this._onGroupNameClick);
+	}
 
 	public function toggleSelected(list:Array<Decal>):Void
 	{
@@ -134,5 +161,9 @@ class DecalLayerEditor extends LayerEditor
 			if (decal != null)
 				this.selected.push(decal);
 		}
+	}
+
+	override public function onEditorCleaned() {
+		this._uiDecalGroupsList.onEditorCleaned((cast this.layer : DecalLayer));
 	}
 }
