@@ -54,6 +54,9 @@ class DecalSelectTool extends DecalTool
 				EDITOR.level.store("cut decals");
 				while (layerEditor.selected.length > 0)
 					layerEditor.remove(layerEditor.selected[0]);
+
+				DecalGroups.ensureConsecutiveGroups(layer.decals);
+
 				layerEditor.selectedChanged = true;
 				EDITOR.dirty();
 			}
@@ -68,6 +71,8 @@ class DecalSelectTool extends DecalTool
 					(cast layerEditor.layer:DecalLayer).decals.push(clone);
 					layerEditor.selected.push(clone);
 				}
+
+				DecalGroups.ensureConsecutiveGroups(layer.decals);
 
 				layerEditor.selectedChanged = true;
 				EDITOR.dirty();
@@ -85,6 +90,8 @@ class DecalSelectTool extends DecalTool
 					(cast layerEditor.layer:DecalLayer).decals.push(clone);
 					newSelection.push(clone);
 				}
+
+				DecalGroups.ensureConsecutiveGroups(layer.decals);
 
 				layerEditor.selected = newSelection;
 				layerEditor.selectedChanged = true;
@@ -125,12 +132,14 @@ class DecalSelectTool extends DecalTool
 		{
 			EDITOR.level.store("move decal back");
 			for (decal in layerEditor.selected) OGMO.shift ? moveDecalToBack(decal) : moveDecalBack(decal);
+			DecalGroups.ensureConsecutiveGroups(layer.decals);
 			EDITOR.dirty();
 		}
 		else if (key == Keys.F)
 		{
 			EDITOR.level.store("move decal forward");
 			for (decal in layerEditor.selected) OGMO.shift ? moveDecalToFront(decal) : moveDecalForward(decal);
+			DecalGroups.ensureConsecutiveGroups(layer.decals);
 			EDITOR.dirty();
 		}
 		else if (OGMO.shift && key == Keys.G) {
