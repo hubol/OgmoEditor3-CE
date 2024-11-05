@@ -27,7 +27,15 @@ class DecalLayerEditor extends LayerEditor
 	}
 
 	function _onGroupNameClick(name:String) {
-		this.selected.resize(0);
+		if (!OGMO.shift) {
+			this.selected.resize(0);
+		}
+		
+		for (decal in (cast this.layer : DecalLayer).decals) {
+			if (decal.groupName == name) {
+				this.selected.push(decal);
+			}
+		}
 	}
 
 	private final _uiDecalGroupsList: UiDecalGroupsList;
