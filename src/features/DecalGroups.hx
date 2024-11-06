@@ -156,11 +156,11 @@ class UiDecalGroupsList extends LayerEditorMainPanelElement {
 
         this._rootEl.css("display", this._state.groups.length == 0 ? "none" : "");
 
-        this._titleEl.text('${this._state.groups.length} Group(s)');
+        this._titleEl.text(this._state.groups.length == 1 ? '1 Group' : '${this._state.groups.length} Groups');
         this._listEl.empty();
 
         for (group in this._state.groups) {
-            final itemEl = new JQuery('<li>${group.name}</li>');
+            final itemEl = new JQuery('<li>${group.name}<count>(${group.count == 1 ? '1 decal' : '${group.count} decals'})</count></li>');
             itemEl.on('mouseenter', () -> this._onMouseEnter(group.name));
             itemEl.on('mouseleave', () -> this._onMouseLeave(group.name));
             itemEl.on('click', () -> this._onClick(group.name));
