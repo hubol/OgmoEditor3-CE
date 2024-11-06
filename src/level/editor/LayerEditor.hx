@@ -98,5 +98,7 @@ class LayerEditor
 		return EDITOR.level.layers[this.id];
 	}
 
+	public function onLayerEditorIsCurrentChanged(isCurrent:Bool):Void {}
+
 	public function onEditorCleaned():Void {}
 }

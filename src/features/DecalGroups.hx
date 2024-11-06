@@ -123,8 +123,8 @@ typedef DecalGroupNameAnalysis = {
     final nullGroupNamesCount:Int;
 }
 
-class UiDecalGroupsList {
-    public final el = new JQuery('<div class="decal_groups_list"></div>');
+class UiDecalGroupsList extends LayerEditorMainPanelElement {
+    private final _rootEl = new JQuery('<div class="decal_groups_list"></div>');
     private final _titleEl = new JQuery('<div></div>');
     private final _listEl = new JQuery('<ul></ul>');
 
@@ -138,15 +138,15 @@ class UiDecalGroupsList {
             onMouseEnter: (groupName:String) -> Void,
             onMouseLeave: (groupName:String) -> Void,
             onClick: (groupName:String) -> Void) {
-        this.el.append(this._titleEl, this._listEl);
+        super("<div />");
+        this._el.append(this._rootEl);
+        this._rootEl.append(this._titleEl, this._listEl);
         this._onMouseEnter = onMouseEnter;
         this._onMouseLeave = onMouseLeave;
         this._onClick = onClick;
-
-        new JQuery(".editor_panel-main").append(this.el);
     }
 
-    public function onEditorCleaned(decalLayer: DecalLayer) {
+    public function update(decalLayer: DecalLayer) {
         final nextState = _getState(decalLayer);
 
         if (_areStatesEqual(this._state, nextState)) {
@@ -155,7 +155,7 @@ class UiDecalGroupsList {
 
         this._state = nextState;
 
-        this.el.css("display", this._state.groups.length == 0 ? "none" : "");
+        this._rootEl.css("display", this._state.groups.length == 0 ? "none" : "");
 
         this._titleEl.text('${this._state.groups.length} Group(s)');
         this._listEl.empty();
