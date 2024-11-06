@@ -6,7 +6,7 @@ import modules.decals.Decal;
 
 class DecalGroups {
     public static function groupOrUngroupDecals(decals: Array<Decal>, destination: Array<Decal>) {
-        final groupNameAnalysis = _analyzeDecalGroupNames(decals);
+        final groupNameAnalysis = analyzeDecalGroupNames(decals);
         final groupNameToApply = _getGroupNameToApply(groupNameAnalysis, destination);
 
         final action = groupNameToApply == null ? "Clear group" : 'Set group to "${groupNameToApply}"';
@@ -79,8 +79,8 @@ class DecalGroups {
         }
     }
 
-    static function _analyzeDecalGroupNames(decals: Array<Decal>): DecalGroupNameAnalysis {
-        final groupNames = new Set<String>();
+    public static function analyzeDecalGroupNames(decals: Array<Decal>): DecalGroupNameAnalysis {
+        final groupNameCounts = new Map<String,Int>();
         var topmostGroupName = null;
         var topmostDecal = null;
         var nullGroupNamesCount = 0;
@@ -103,14 +103,16 @@ class DecalGroups {
                 topmostGroupName = decal.groupName;
             }
             
-            groupNames.add(decal.groupName);
+            final count = groupNameCounts.get(decal.groupName);
+            groupNameCounts.set(decal.groupName, count == null ? 1 : count + 1);
         }
 
         return {
             topmostDecal: topmostDecal,
             topmostGroupName: topmostGroupName,
             nullGroupNamesCount: nullGroupNamesCount,
-            uniqueGroupNamesCount: groupNames.size,
+            uniqueGroupNamesCount: [for (key in groupNameCounts.keys()) key].length,
+            groupNameCounts: groupNameCounts,
         }
     }
 }
@@ -120,6 +122,7 @@ typedef DecalGroupNameAnalysis = {
     final topmostGroupName:String;
     final uniqueGroupNamesCount:Int;
     final nullGroupNamesCount:Int;
+    final groupNameCounts:Map<String,Int>;
 }
 
 class UiDecalGroupsList extends LayerEditorMainPanelElement {
@@ -145,8 +148,8 @@ class UiDecalGroupsList extends LayerEditorMainPanelElement {
         this._onClick = onClick;
     }
 
-    public function update(decalLayer: DecalLayer) {
-        final nextState = _getState(decalLayer);
+    public function update(decalLayer: DecalLayer, selectedDecals: Array<Decal>) {
+        final nextState = _getState(decalLayer, selectedDecals);
 
         if (_areStatesEqual(this._state, nextState)) {
             return;
@@ -161,6 +164,19 @@ class UiDecalGroupsList extends LayerEditorMainPanelElement {
 
         for (group in this._state.groups) {
             final itemEl = new JQuery('<li>${group.name}<count>(${group.count == 1 ? '1 decal' : '${group.count} decals'})</count></li>');
+
+            if (group.isTopmostSelected) {
+                itemEl.attr('data-topmost_selected', 'true');
+            }
+
+            if (group.membersSelectedCount > 0) {
+                itemEl.attr('data-selected', 'true');
+
+                if (group.membersSelectedCount == group.count) {
+                    itemEl.attr('data-all_members_selected', 'true');
+                }
+            }
+            
             itemEl.on('mouseenter', () -> this._onMouseEnter(group.name));
             itemEl.on('mouseleave', () -> this._onMouseLeave(group.name));
             itemEl.on('click', () -> this._onClick(group.name));
@@ -178,7 +194,10 @@ class UiDecalGroupsList extends LayerEditorMainPanelElement {
             final group0 = state0.groups[i];
             final group1 = state1.groups[i];
 
-            if (group0.count != group1.count || group0.name != group1.name) {
+            if (group0.count != group1.count
+                || group0.name != group1.name
+                || group0.isTopmostSelected != group1.isTopmostSelected
+                || group0.membersSelectedCount != group1.membersSelectedCount) {
                 return false;
             }
         }
@@ -186,7 +205,9 @@ class UiDecalGroupsList extends LayerEditorMainPanelElement {
         return true;
     }
 
-    private static function _getState(layer: DecalLayer): UiDecalGroupsListState {
+    private static function _getState(layer: DecalLayer, selectedDecals: Array<Decal>): UiDecalGroupsListState {
+        final analysis = DecalGroups.analyzeDecalGroupNames(selectedDecals);
+
         final groups = new Map<String, Int>();
         for (decal in layer.decals) {
             if (decal.groupName == null) {
@@ -197,10 +218,14 @@ class UiDecalGroupsList extends LayerEditorMainPanelElement {
             groups.set(decal.groupName, value == null ? 1 : (value + 1));
         }
 
-        final groupsArray = new Array<{ name:String, count:Int }>();
+        final groupsArray = new Array<UiDecalGroupsListStateGroups>();
 
-        for (key in groups.keys()) {
-            groupsArray.push({ name: key, count: groups.get(key) });
+        for (groupName in groups.keys()) {
+            final name = groupName;
+            final count = groups.get(groupName);
+            final isTopmostSelected = analysis.topmostGroupName == groupName;
+            final membersSelectedCount = analysis.groupNameCounts.get(groupName);
+            groupsArray.push({ name: name, count: count, isTopmostSelected: isTopmostSelected, membersSelectedCount: membersSelectedCount == null ? 0 : membersSelectedCount });
         }
 
         return {
@@ -209,6 +234,13 @@ class UiDecalGroupsList extends LayerEditorMainPanelElement {
     }
 }
 
+typedef UiDecalGroupsListStateGroups = {
+    final name:String;
+    final count:Int;
+    final isTopmostSelected:Bool;
+    final membersSelectedCount:Int;
+}
+
 typedef UiDecalGroupsListState = {
-    final groups:Array<{ name:String, count:Int }>;
+    final groups:Array<UiDecalGroupsListStateGroups>;
 }

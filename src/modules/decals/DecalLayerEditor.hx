@@ -1,5 +1,6 @@
 package modules.decals;
 
+import js.lib.Set;
 import features.DecalGroups.UiDecalGroupsList;
 import features.TextureRef;
 import level.editor.ui.SidePanel;
@@ -28,13 +29,15 @@ class DecalLayerEditor extends LayerEditor
 
 	function _onGroupNameClick(name:String) {
 		EDITOR.overlayDirty();
-		
+
 		if (!OGMO.shift) {
 			this.selected.resize(0);
 		}
+
+		final selectedSet = new Set(this.selected);
 		
 		for (decal in (cast this.layer : DecalLayer).decals) {
-			if (decal.groupName == name) {
+			if (decal.groupName == name && !selectedSet.has(decal)) {
 				this.selected.push(decal);
 			}
 		}
@@ -188,11 +191,11 @@ class DecalLayerEditor extends LayerEditor
 	}
 
 	override public function onEditorCleaned() {
-		this._uiDecalGroupsList.update((cast this.layer : DecalLayer));
+		this._uiDecalGroupsList.update((cast this.layer : DecalLayer), this.selected);
 	}
 
 	override function onLayerEditorIsCurrentChanged(isCurrent:Bool) {
 		this._uiDecalGroupsList.setVisible(isCurrent);
-		this._uiDecalGroupsList.update((cast this.layer : DecalLayer));
+		this._uiDecalGroupsList.update((cast this.layer : DecalLayer), this.selected);
 	}
 }
