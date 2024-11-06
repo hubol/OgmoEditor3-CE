@@ -97,13 +97,14 @@ class Decal implements ITintable
 		scale.y = Calc.snap(scale.y, 1);
 	}
 
-	public function drawSelectionBox(origin:Bool)
+	public function drawSelectionBox(origin:Bool, ?color:Color)
 	{
+		color = color == null ? Color.green : color;
 		var corners = getCorners(2);
-		EDITOR.overlay.drawLine(corners[0], corners[1], Color.green);
-		EDITOR.overlay.drawLine(corners[1], corners[3], Color.green);
-		EDITOR.overlay.drawLine(corners[2], corners[3], Color.green);
-		EDITOR.overlay.drawLine(corners[2], corners[0], Color.green);
+		EDITOR.overlay.drawLine(corners[0], corners[1], color);
+		EDITOR.overlay.drawLine(corners[1], corners[3], color);
+		EDITOR.overlay.drawLine(corners[2], corners[3], color);
+		EDITOR.overlay.drawLine(corners[2], corners[0], color);
 		if (!origin) return;
 		EDITOR.overlay.drawLine(
 			Vector.midPoint(corners[0], corners[1]),
