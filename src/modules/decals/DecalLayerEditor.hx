@@ -27,6 +27,8 @@ class DecalLayerEditor extends LayerEditor
 	}
 
 	function _onGroupNameClick(name:String) {
+		EDITOR.overlayDirty();
+		
 		if (!OGMO.shift) {
 			this.selected.resize(0);
 		}
@@ -105,16 +107,20 @@ class DecalLayerEditor extends LayerEditor
 	
 	override function drawOverlay()
 	{
+		if (selected.length > 0) {
+			for (decal in selected) {
+				decal.drawSelectionBox(true);
+			}
+		}
+
 		if (this._hoveredGroupName != null) {
 			for (decal in (cast layer : DecalLayer).decals) {
 				if (decal.groupName == this._hoveredGroupName) {
-					decal.drawSelectionBox(true);
+					decal.drawSelectionBox(true, Color.yellow);
 				}
 			}
 			return;
 		}
-		if (selected.length <= 0) return;
-		for (decal in selected) decal.drawSelectionBox(true);
 	}
 
 	override function drawHighlight() {
