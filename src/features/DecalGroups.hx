@@ -1,7 +1,6 @@
 package features;
 
 import modules.decals.DecalLayer;
-import js.node.Path;
 import js.lib.Set;
 import modules.decals.Decal;
 
@@ -28,17 +27,17 @@ class DecalGroups {
         if (analysis.uniqueGroupNamesCount == 0) {
             final groupNames = new Set([ for (decal in decals) if (decal.groupName != null) decal.groupName ]);
 
-            final baseName = Path.parse(analysis.topmostDecal.texture.path).name + ' Group';
+            final baseName = 'Group';
             var count = 0;
             var name = baseName;
 
             while (true) {
+                count += 1;
+                name = baseName + ' ' + count;
+
                 if (!groupNames.has(name)) {
                     return name;
                 }
-
-                count += 1;
-                name = baseName + ' ' + count;
             }
         }
 
