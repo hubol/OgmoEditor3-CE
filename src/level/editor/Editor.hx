@@ -447,12 +447,18 @@ class Editor
 
 	function setLayerUtil(id:Int):Void
 	{
+		final previousLayerEditor = this.currentLayerEditor;
+		
 		level.currentLayerID = id;
 		toolBelt.afterSetLayer();
 
 		EDITOR.dirty();
 		updateMouseReadout();
 		layersPanel.refresh();
+
+		if (previousLayerEditor != null) {
+			previousLayerEditor.onLayerEditorIsCurrentChanged(false);
+		}
 
 		if (currentLayerEditor != null)
 		{
@@ -482,6 +488,8 @@ class Editor
 				selectionElement.hide();
 				new JQuery(".editor_palette_resizer").hide();
 			}
+
+			this.currentLayerEditor.onLayerEditorIsCurrentChanged(true);
 		}
 
 		for (i in 0...level.layers.length)

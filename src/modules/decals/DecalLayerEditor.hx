@@ -182,6 +182,11 @@ class DecalLayerEditor extends LayerEditor
 	}
 
 	override public function onEditorCleaned() {
-		this._uiDecalGroupsList.onEditorCleaned((cast this.layer : DecalLayer));
+		this._uiDecalGroupsList.update((cast this.layer : DecalLayer));
+	}
+
+	override function onLayerEditorIsCurrentChanged(isCurrent:Bool) {
+		this._uiDecalGroupsList.setVisible(isCurrent);
+		this._uiDecalGroupsList.update((cast this.layer : DecalLayer));
 	}
 }
