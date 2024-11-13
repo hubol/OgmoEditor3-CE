@@ -43,5 +43,7 @@ class TextureRef {
         this.path = path;
     }
 
-
+    public function equals(other:TextureRef) {
+        return this.repository == other.repository && this.path == other.path;
+    }
 }

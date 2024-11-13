@@ -80,16 +80,20 @@ class DecalPalettePanel extends SidePanel
 				else img.height(button.height());
 			}, 10);
 
-			button.on("click", function()
+			button.on("click", function(ev)
 			{
 				layerEditor.brush = textureRef;
 				holder.find(".decal").removeClass("selected");
 				button.addClass("selected");
 				EDITOR.toolBelt.setTool(1);
-				if (OGMO.shift) {
-					layerEditor.setSelectedDecalsTexture(textureRef);
+				if (OGMO.ctrl) {
+					layerEditor.selectDecalsWithTexture(textureRef);
 				}
 			});
+			button.on("contextmenu", function(ev)
+				{
+					layerEditor.updateSelectedDecals(textureRef);
+				});
 			if (brush == texturePath) button.addClass("selected");
 			holder.append(button);
 		}

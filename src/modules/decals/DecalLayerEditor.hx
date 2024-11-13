@@ -199,7 +199,7 @@ class DecalLayerEditor extends LayerEditor
 		this._uiDecalGroupsList.update((cast this.layer : DecalLayer), this.selected);
 	}
 
-	public function setSelectedDecalsTexture(textureRef: TextureRef) {
+	public function updateSelectedDecals(textureRef: TextureRef) {
 		if (selected.length == 0) {
 			return;
 		}
@@ -208,6 +208,18 @@ class DecalLayerEditor extends LayerEditor
 
 		for (decal in selected) {
 			decal.texture = textureRef;
+		}
+
+		EDITOR.dirty();
+	}
+
+	public function selectDecalsWithTexture(textureRef: TextureRef) {
+		selected.resize(0);
+
+		for (decal in (cast this.layer : DecalLayer).decals) {
+			if (decal.texture.equals(textureRef)) {
+				selected.push(decal);
+			}
 		}
 
 		EDITOR.dirty();
