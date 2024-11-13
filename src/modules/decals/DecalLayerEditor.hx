@@ -198,4 +198,18 @@ class DecalLayerEditor extends LayerEditor
 		this._uiDecalGroupsList.setVisible(isCurrent);
 		this._uiDecalGroupsList.update((cast this.layer : DecalLayer), this.selected);
 	}
+
+	public function setSelectedDecalsTexture(textureRef: TextureRef) {
+		if (selected.length == 0) {
+			return;
+		}
+
+		EDITOR.level.store('Set ${selected.length} decal texture(s) to ${textureRef.path}');
+
+		for (decal in selected) {
+			decal.texture = textureRef;
+		}
+
+		EDITOR.dirty();
+	}
 }
