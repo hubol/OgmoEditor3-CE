@@ -207,7 +207,7 @@ class DecalLayerEditor extends LayerEditor
 		EDITOR.level.store('Set ${selected.length} decal texture(s) to ${textureRef.path}');
 
 		for (decal in selected) {
-			decal.texture = textureRef;
+			decal.updateTexture(textureRef);
 		}
 
 		EDITOR.dirty();

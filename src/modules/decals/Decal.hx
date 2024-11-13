@@ -97,6 +97,11 @@ class Decal implements ITintable
 		scale.y = Calc.snap(scale.y, 1);
 	}
 
+	public function updateTexture(textureRef:TextureRef) {
+		this.texture = textureRef;
+		this.path = textureRef.path;
+	}
+
 	public function drawSelectionBox(origin:Bool, ?color:Color)
 	{
 		color = color == null ? Color.green : color;
