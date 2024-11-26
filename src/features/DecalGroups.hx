@@ -1,5 +1,6 @@
 package features;
 
+import js.lib.Promise;
 import modules.decals.DecalLayer;
 import js.lib.Set;
 import modules.decals.Decal;
@@ -19,6 +20,20 @@ class DecalGroups {
         }
 
         ensureConsecutiveGroups(destination);
+
+        EDITOR.dirty();
+    }
+
+    public static function renameGroup(decals: Array<Decal>, previousGroupName: String, nextGroupName: String) {
+        final description = 'Changed group name from ${previousGroupName} to ${nextGroupName}';
+        trace(description);
+        EDITOR.level.store(description);
+
+        for (decal in decals) {
+            if (decal.groupName == previousGroupName) {
+                decal.groupName = nextGroupName;
+            }
+        }
 
         EDITOR.dirty();
     }
@@ -135,17 +150,20 @@ class UiDecalGroupsList extends LayerEditorMainPanelElement {
     private final _onMouseEnter: (groupName:String) -> Void;
     private final _onMouseLeave: (groupName:String) -> Void;
     private final _onClick: (groupName:String) -> Void;
+    private final _onRightClick: (groupName:String) -> Promise<Void>;
 
     public function new(
             onMouseEnter: (groupName:String) -> Void,
             onMouseLeave: (groupName:String) -> Void,
-            onClick: (groupName:String) -> Void) {
+            onClick: (groupName:String) -> Void,
+            onRightClick: (groupName:String) -> Promise<Void>) {
         super("<div />");
         this._el.append(this._rootEl);
         this._rootEl.append(this._titleEl, this._listEl);
         this._onMouseEnter = onMouseEnter;
         this._onMouseLeave = onMouseLeave;
         this._onClick = onClick;
+        this._onRightClick = onRightClick;
     }
 
     public function update(decalLayer: DecalLayer, selectedDecals: Array<Decal>) {
@@ -180,6 +198,7 @@ class UiDecalGroupsList extends LayerEditorMainPanelElement {
             itemEl.on('mouseenter', () -> this._onMouseEnter(group.name));
             itemEl.on('mouseleave', () -> this._onMouseLeave(group.name));
             itemEl.on('click', () -> this._onClick(group.name));
+            itemEl.on('contextmenu', () -> this._onRightClick(group.name));
 
             this._listEl.append(itemEl);
         }

@@ -1,5 +1,8 @@
 package modules.decals;
 
+import features.DecalGroups;
+import js.lib.Promise;
+import features.Prompt;
 import js.lib.Set;
 import features.DecalGroups.UiDecalGroupsList;
 import features.TextureRef;
@@ -44,6 +47,15 @@ class DecalLayerEditor extends LayerEditor
 		}
 	}
 
+	function _onGroupNameRightClick(name:String): Promise<Void> {
+		final previousGroupName = name;
+
+		return Prompt.show('Update name for group: <strong>"${name}"</strong>', 'Group Name', name)
+			.then((nextGroupName) -> {
+				DecalGroups.renameGroup((cast this.layer : DecalLayer).decals, previousGroupName, nextGroupName);
+			});
+	}
+
 	private final _uiDecalGroupsList: UiDecalGroupsList;
 
 	public function new(id:Int) {
@@ -51,7 +63,8 @@ class DecalLayerEditor extends LayerEditor
 		this._uiDecalGroupsList = new UiDecalGroupsList(
 			this._onGroupNameMouseEnter,
 			this._onGroupNameMouseLeave,
-			this._onGroupNameClick);
+			this._onGroupNameClick,
+			this._onGroupNameRightClick);
 	}
 
 	public function toggleSelected(list:Array<Decal>):Void
