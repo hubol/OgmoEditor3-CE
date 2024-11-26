@@ -29,6 +29,7 @@ class DecalLayerEditor extends LayerEditor
 
 	function _onGroupNameClick(name:String) {
 		EDITOR.overlayDirty();
+		this.selectedChanged = true;
 
 		if (!OGMO.shift) {
 			this.selected.resize(0);
@@ -223,5 +224,6 @@ class DecalLayerEditor extends LayerEditor
 		}
 
 		EDITOR.dirty();
+		this.selectedChanged = true;
 	}
 }
