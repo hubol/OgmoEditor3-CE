@@ -26,16 +26,19 @@ class Prompt {
 
             new JQuery(".prompt-container").append(el);
 
+            final dialogEl: Dynamic = el.get(0);
+
+            dialogEl.addEventListener('close', reject);
+
             el.submit((ev) -> {
                 ev.preventDefault();
                 resolve(el.find('input').val());
-                el.remove();
+                dialogEl.close();
             });
 
             el.find('input').focus().select();
 
-            final domEl: Dynamic = el.get(0);
-            domEl.showModal();
+            dialogEl.showModal();
         });
     }
 }
