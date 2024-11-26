@@ -61,6 +61,26 @@ html, body
 		white-space: nowrap;
 		z-index: 200;
 	}
+
+	.prompt-container {
+		dialog {
+			border: solid 1px black;
+			box-shadow: 0 8px 0 black;
+			width: 75%;
+			max-width: 600px;
+
+			form {
+				display: flex;
+				flex-direction: column;
+				gap: 1em;
+				padding: 1em;
+			}
+		}
+	}
+}
+
+::backdrop {
+	background: #00000040;
 }
 
 #hubol-color-picker {
