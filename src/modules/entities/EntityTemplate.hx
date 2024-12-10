@@ -42,6 +42,7 @@ class EntityTemplate
 	public var tags:Array<String> = [];
 	public var texture:Null<Texture>;
 	public var texturePath:String;
+	public var isRegion:Bool = false;
 
 	//Not Exported
 	public var _icon:String = null;
@@ -103,6 +104,7 @@ class EntityTemplate
 		next.tags = from.tags;
 		next.texture = from.texture;
 		next.texturePath = from.texturePath;
+		next.isRegion = from.isRegion;
 
 		return next;
 	}
@@ -138,6 +140,7 @@ class EntityTemplate
 		e.nodeGhost = data.nodeGhost;
 		e.tags = data.tags;
 		e.values  = ValueTemplate.loadList(data.values);
+		e.isRegion = Imports.bool(data.isRegion, false);
 
 		// Try to load the texture from the filepath
 		if (data.texture != null)
@@ -183,7 +186,8 @@ class EntityTemplate
 			nodeDisplay: nodeDisplay,
 			nodeGhost: nodeGhost,
 			tags: tags,
-			values: ValueTemplate.saveList(values)
+			values: ValueTemplate.saveList(values),
+			isRegion: this.isRegion,
 		}
 
 		tintable.save(e);

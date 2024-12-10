@@ -288,6 +288,22 @@ class Entity implements ITintable
 
 	public function draw()
 	{
+		if (this.template.isRegion) {
+			EDITOR.draw.drawRect(this.position.x, this.position.y, 3, this.size.y, Color.black);
+			EDITOR.draw.drawRect(this.position.x, this.position.y, this.size.x, 3, Color.black);
+			EDITOR.draw.drawRect(this.position.x + this.size.x - 3, this.position.y, 3, this.size.y, Color.black);
+			EDITOR.draw.drawRect(this.position.x, this.position.y + this.size.y - 3, this.size.x, 3, Color.black);
+
+			final color = this.tint == null ? Color.white : this.tint;
+
+			EDITOR.draw.drawRect(this.position.x + 1, this.position.y + 1, 1, this.size.y - 2, color);
+			EDITOR.draw.drawRect(this.position.x + 1, this.position.y + 1, this.size.x - 2, 1, color);
+			EDITOR.draw.drawRect(this.position.x + this.size.x - 2, this.position.y + 1, 1, this.size.y - 2, color);
+			EDITOR.draw.drawRect(this.position.x + 1, this.position.y + this.size.y - 2, this.size.x - 2, 1, color);
+			
+			return;
+		}
+
 		if (_texture != null)
 		{
 			var orig = origin.clone();
