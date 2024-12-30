@@ -53,3 +53,5 @@ This builds, then packages the App into an executable.
 
 ## Hubol's notes
 - Node v12.22.9 works fine (some higher versions do not)
+- Haxe version I'm using is 4.2.4
+- Haxelib version is 4.0.2 (Not sure of relationship between haxe-haxelib versions)
