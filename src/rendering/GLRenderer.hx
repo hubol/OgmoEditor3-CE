@@ -213,12 +213,12 @@ class GLRenderer
 			gl.enableVertexAttribArray(shader.vertexPositionAttribute);
 			gl.bindBuffer(RenderingContext.ARRAY_BUFFER, posBuffer);
 			gl.vertexAttribPointer(shader.vertexPositionAttribute, 2, RenderingContext.FLOAT, false, 0, 0);
-			gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32Array(positions), RenderingContext.STATIC_DRAW);
+			gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32Array(positions), RenderingContext.DYNAMIC_DRAW);
 
 			gl.enableVertexAttribArray(shader.vertexColorAttribute);
 			gl.bindBuffer(RenderingContext.ARRAY_BUFFER, colBuffer);
 			gl.vertexAttribPointer(shader.vertexColorAttribute, 4, RenderingContext.FLOAT, false, 0, 0);
-			gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32Array(colors), RenderingContext.STATIC_DRAW);
+			gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32Array(colors), RenderingContext.DYNAMIC_DRAW);
 		}
 
 		// vertex uv's (texture shader)
@@ -231,7 +231,7 @@ class GLRenderer
 			gl.enableVertexAttribArray(shader.vertexUVAttribute);
 			gl.bindBuffer(RenderingContext.ARRAY_BUFFER, uvBuffer);
 			gl.vertexAttribPointer(shader.vertexUVAttribute, 2, RenderingContext.FLOAT, false, 0, 0);
-			gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32Array(uvs), RenderingContext.STATIC_DRAW);
+			gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32Array(uvs), RenderingContext.DYNAMIC_DRAW);
 		}
 
 		// Set Matrix Uniforms
