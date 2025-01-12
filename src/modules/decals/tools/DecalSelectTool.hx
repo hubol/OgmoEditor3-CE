@@ -1,5 +1,6 @@
 package modules.decals.tools;
 
+import js.lib.Set;
 import features.DecalGroups;
 import modules.entities.tools.EntitySelectTool.SelectModes;
 
@@ -27,6 +28,18 @@ class DecalSelectTool extends DecalTool
 		layerEditor.hovered = [];
 	}
 
+	static function _getSelectedDecalsInIndexOrder(editor: DecalLayerEditor) {
+		final selectedDecals = new Set(editor.selected);
+		final selectedDecalsInIndexOrder = new Array<Decal>();
+		for (decal in (cast editor.layer:DecalLayer).decals) {
+			if (selectedDecals.has(decal)) {
+				selectedDecalsInIndexOrder.push(decal);
+			}
+		}
+
+		return selectedDecalsInIndexOrder;
+	}
+
 	override public function onKeyPress(key:Int)
 	{
 		if (OGMO.ctrl)
@@ -39,18 +52,12 @@ class DecalSelectTool extends DecalTool
 				layerEditor.selectedChanged = true;
 				EDITOR.dirty();
 			}
-			else if (key == Keys.C)
+			else if (key == Keys.C || key == Keys.X)
 			{
-				DecalSelectTool.inClipboard = [];
-				for (decal in layerEditor.selected)
-					DecalSelectTool.inClipboard.push(decal);
+				DecalSelectTool.inClipboard = DecalSelectTool._getSelectedDecalsInIndexOrder(layerEditor);
 			}
 			if (key == Keys.X)
 			{
-				DecalSelectTool.inClipboard = [];
-				for (decal in layerEditor.selected)
-					DecalSelectTool.inClipboard.push(decal);
-
 				EDITOR.level.store("cut decals");
 				while (layerEditor.selected.length > 0)
 					layerEditor.remove(layerEditor.selected[0]);
@@ -80,9 +87,10 @@ class DecalSelectTool extends DecalTool
 			else if (key == Keys.D && layerEditor.selected.length > 0)
 			{
 				EDITOR.level.store("duplicated decals");
+				final decalsToDuplicate = DecalSelectTool._getSelectedDecalsInIndexOrder(layerEditor);
 
 				var newSelection:Array<Decal> = [];
-				for (decal in layerEditor.selected)
+				for (decal in decalsToDuplicate)
 				{
 					var clone = decal.clone();
 					clone.position.add(new Vector(32, 32));
