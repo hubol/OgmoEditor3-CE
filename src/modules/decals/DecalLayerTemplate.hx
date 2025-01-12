@@ -97,6 +97,8 @@ class DecalLayerTemplate extends LayerTemplate
 
 	override function projectWasUnloaded()
 	{
-		this.textureRepository.destroy();
+		if (this.textureRepository != null) {
+			this.textureRepository.destroy();
+		}
 	}
 }
