@@ -40,11 +40,7 @@ class Fields
 			element.val(label);
 		}
 
-		element.on("keyup", function(e)
-		{
-			if (e.keyCode == Keys.Enter)
-				element.blur();
-		});
+		Fields._blurOnEnter(element);
 		element.on("focus", function(e)
 		{
 			if (element.hasClass("default-value"))
@@ -65,6 +61,14 @@ class Fields
 		if (value != null && value.length > 0) Fields.setField(element, value);
 		if (into != null) into.append(element);
 		return element;
+	}
+
+	static function _blurOnEnter(element: JQuery) {
+		element.on("keyup", function(e)
+			{
+				if (e.keyCode == Keys.Enter)
+					element.blur();
+			});
 	}
 
 	public static function setField(element:JQuery, val:String):JQuery
@@ -258,6 +262,8 @@ class Fields
 				return;
 			ev.preventDefault();
 		});
+
+		Fields._blurOnEnter(textInputEl);
 
 		function validate(value:String) {
 			var valid = isValidHexCode(value);
