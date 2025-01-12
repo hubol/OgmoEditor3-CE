@@ -34,7 +34,7 @@ class DecalCreateTool extends DecalTool
 	}
 
 	function getBrushTint() {
-		return (cast layerEditor.template:DecalLayerTemplate).tintable.getDefault();
+		return layerEditor.template.tintable.getDefault();
 	}
 
 	override public function onMouseDown(pos:Vector)
@@ -49,7 +49,7 @@ class DecalCreateTool extends DecalTool
 		EDITOR.dirty();
 
 		var path = layerEditor.brush.path;
-		var values = [for (template in (cast layerEditor.template:DecalLayerTemplate).values) new Value(template)];
+		var values = [for (template in layerEditor.template.values) new Value(template)];
 		created = new Decal(pos, path, layerEditor.brush, origin, scale, 0, getBrushTint(), values);
 		layer.decals.push(created);
 
@@ -150,7 +150,7 @@ class DecalCreateTool extends DecalTool
 	{
 		if (key == Keys.H)
 		{
-			if ((cast layerEditor.template : DecalLayerTemplate).scaleable)
+			if (layerEditor.template.scaleable)
 			{
 				scale.x = -scale.x;
 				EDITOR.dirty();
@@ -158,7 +158,7 @@ class DecalCreateTool extends DecalTool
 		}
 		else if (key == Keys.V)
 		{
-			if ((cast layerEditor.template : DecalLayerTemplate).scaleable)
+			if (layerEditor.template.scaleable)
 			{
 				scale.y = -scale.y;
 				EDITOR.dirty();

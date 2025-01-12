@@ -50,7 +50,7 @@ class EntitySelectionPanel extends SidePanel
 
 	override public function refresh()
 	{
-		var ent_layer:EntityLayer = cast layerEditor.layer;
+		var ent_layer = layerEditor.layer;
 		var sel = ent_layer.entities.getGroup(layerEditor.selection);
 
 		// list of entities

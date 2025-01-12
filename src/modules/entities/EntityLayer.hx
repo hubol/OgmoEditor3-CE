@@ -1,10 +1,11 @@
 package modules.entities;
 
+import level.data.GLayer;
 import level.data.Level;
 import level.data.Layer;
 import util.Vector;
 
-class EntityLayer extends Layer
+class EntityLayer extends GLayer<EntityLayerTemplate>
 {
 	public var entities:EntityList;
 

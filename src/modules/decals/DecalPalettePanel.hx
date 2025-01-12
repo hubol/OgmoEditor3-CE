@@ -25,7 +25,7 @@ class DecalPalettePanel extends SidePanel
 		holder = new JQuery('<div class="decalPalette">');
 		into.append(holder);
 		// TODO remove, this does nothing:
-		(cast layerEditor.template : DecalLayerTemplate).doRefresh = refresh;
+		layerEditor.template.doRefresh = refresh;
 		refresh();
 	}
 

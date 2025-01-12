@@ -1,5 +1,6 @@
 package modules.entities;
 
+import level.editor.GLayerEditor;
 import level.editor.ui.PropertyDisplay.PropertyDisplayMode;
 import level.editor.ui.SidePanel;
 import level.editor.LayerEditor;
@@ -48,7 +49,7 @@ class EntityNodeID
 	}
 }
 
-class EntityLayerEditor extends LayerEditor
+class EntityLayerEditor extends GLayerEditor<EntityLayer, EntityLayerTemplate>
 {
 	public var selection:EntityGroup = new EntityGroup();
 	public var hovered:EntityGroup = new EntityGroup();
@@ -235,8 +236,7 @@ class EntityLayerEditor extends LayerEditor
 
 	// endregion
 	inline function get_entities():EntityList {
-		var el:EntityLayer = cast layer;
-		return el.entities;
+		return this.layer.entities;
 	}
 
 	override  function set_visible(newVisible:Bool):Bool {

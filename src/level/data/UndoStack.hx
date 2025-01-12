@@ -26,7 +26,7 @@ class UndoStack
 
 	public function store(description:String):Void
 	{
-		description = "<span class='layer'>" + level.currentLayer.template.name + ":</span> " + description;
+		description = "<span class='layer'>" + level.currentLayer.rawTemplate.name + ":</span> " + description;
 
 		var state = fetchLayer(level.currentLayerID, description);
 		undoStates.push(state);

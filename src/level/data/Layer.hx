@@ -10,7 +10,7 @@ class Layer
 	public var level:Level;
 	public var id:Int;
 	public var offset:Vector;
-	public var template(get, never):LayerTemplate;
+	public var rawTemplate(get, never):LayerTemplate;
 	public var gridCellsX(get, never):Int;
 	public var gridCellsY(get, never):Int;
 	public var leftoverX(get, never):Float;
@@ -46,10 +46,10 @@ class Layer
 	{
 		var data:Dynamic = { };
 
-		data.name = template.name;
-		data._eid = template.exportID;
+		data.name = this.rawTemplate.name;
+		data._eid = this.rawTemplate.exportID;
 		offset.saveInto(data, "offsetX", "offsetY");
-		template.gridSize.saveInto(data, "gridCellWidth", "gridCellHeight");
+		this.rawTemplate.gridSize.saveInto(data, "gridCellWidth", "gridCellHeight");
 		data.gridCellsX = gridCellsX + (leftoverX > 0 ? 1 : 0);
 		data.gridCellsY = gridCellsY + (leftoverY > 0 ? 1 : 0);
 
@@ -69,8 +69,8 @@ class Layer
 	{
 		if (into == null) into = new Vector();
 
-		into.x = Math.floor((pos.x - offset.x) / template.gridSize.x);
-		into.y = Math.floor((pos.y - offset.y) / template.gridSize.y);
+		into.x = Math.floor((pos.x - offset.x) / this.rawTemplate.gridSize.x);
+		into.y = Math.floor((pos.y - offset.y) / this.rawTemplate.gridSize.y);
 
 		return into;
 	}
@@ -79,8 +79,8 @@ class Layer
 	{
 		if (into == null) into = new Vector();
 
-		into.x = pos.x * template.gridSize.x + offset.x;
-		into.y = pos.y * template.gridSize.y + offset.y;
+		into.x = pos.x * this.rawTemplate.gridSize.x + offset.x;
+		into.y = pos.y * this.rawTemplate.gridSize.y + offset.y;
 
 		return into;
 	}
@@ -97,12 +97,12 @@ class Layer
 
 	public function getGridCellsX(width:Float):Int
 	{
-		return Math.ceil((width - offset.x) / template.gridSize.x);
+		return Math.ceil((width - offset.x) / this.rawTemplate.gridSize.x);
 	}
 
 	public function getGridCellsY(height:Float):Int
 	{
-		return Math.ceil((height - offset.y) / template.gridSize.y);
+		return Math.ceil((height - offset.y) / this.rawTemplate.gridSize.y);
 	}
 
 	public function insideGrid(pos:Vector):Bool
@@ -148,7 +148,7 @@ class Layer
 		return into;
 	}
 
-	function get_template():LayerTemplate
+	function get_rawTemplate():LayerTemplate
 	{
 		return OGMO.project.layers[id];
 	}
@@ -165,11 +165,11 @@ class Layer
 
 	function get_leftoverX():Float
 	{
-		return (level.data.size.x - offset.x) % template.gridSize.x;
+		return (level.data.size.x - offset.x) % this.rawTemplate.gridSize.x;
 	}
 
 	function get_leftoverY():Float
 	{
-		return (level.data.size.y - offset.y) % template.gridSize.y;
+		return (level.data.size.y - offset.y) % this.rawTemplate.gridSize.y;
 	}
 }

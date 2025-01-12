@@ -1,5 +1,6 @@
 package modules.decals;
 
+import level.data.GLayer;
 import features.TextureRef;
 import features.EntityLikeUtils;
 import util.Matrix;
@@ -7,7 +8,7 @@ import rendering.Texture;
 import js.node.Path;
 import level.data.Layer;
 
-class DecalLayer extends Layer
+class DecalLayer extends GLayer<DecalLayerTemplate>
 {
 	public var decals:Array<Decal> = [];
 
@@ -16,8 +17,8 @@ class DecalLayer extends Layer
 		var data = super.save();
 		data._contents = "decals";
 		data.decals = [];
-		for (decal in decals) data.decals.push(decal.save((cast template : DecalLayerTemplate)));
-		data.folder = (cast template : DecalLayerTemplate).folder;
+		for (decal in decals) data.decals.push(decal.save(template));
+		data.folder = template.folder;
 
 		return data;
 	}
@@ -26,7 +27,6 @@ class DecalLayer extends Layer
 	{
 		super.load(data);
 
-		final template = (cast this.template : DecalLayerTemplate);
 		var decals = Imports.contentsArray(data, "decals");
 
 		for (decal in decals)
@@ -38,9 +38,9 @@ class DecalLayer extends Layer
 			var origin = Imports.vector(decal, "originX", "originY", new Vector(0.5, 0.5));
 			var scale = Imports.vector(decal, "scaleX", "scaleY", new Vector(1, 1));
 			var rotation = Imports.float(decal.rotation, 0);
-			var tint = (cast template:DecalLayerTemplate).tintable.loadObjectTint(decal);
+			var tint = this.template.tintable.loadObjectTint(decal);
 
-			var values = Imports.values(decal, (cast template:DecalLayerTemplate).values);
+			var values = Imports.values(decal, this.template.values);
 
 			var groupName = Imports.string(decal.groupName, null);
 

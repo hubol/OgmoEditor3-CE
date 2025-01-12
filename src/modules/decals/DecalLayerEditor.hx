@@ -1,5 +1,7 @@
 package modules.decals;
 
+import level.editor.GLayerEditor;
+import level.data.GLayer;
 import features.DecalGroups;
 import js.lib.Promise;
 import features.Prompt;
@@ -9,7 +11,7 @@ import features.TextureRef;
 import level.editor.ui.SidePanel;
 import level.editor.LayerEditor;
 
-class DecalLayerEditor extends LayerEditor
+class DecalLayerEditor extends GLayerEditor<DecalLayer, DecalLayerTemplate>
 {
 	public var brush:TextureRef;
 	public var selected:Array<Decal> = [];
@@ -40,7 +42,7 @@ class DecalLayerEditor extends LayerEditor
 
 		final selectedSet = new Set(this.selected);
 		
-		for (decal in (cast this.layer : DecalLayer).decals) {
+		for (decal in this.layer.decals) {
 			if (decal.groupName == name && !selectedSet.has(decal)) {
 				this.selected.push(decal);
 			}
@@ -52,7 +54,7 @@ class DecalLayerEditor extends LayerEditor
 
 		return Prompt.show('Update name for group: <strong>"${name}"</strong>', 'Group Name', name)
 			.then((nextGroupName) -> {
-				DecalGroups.renameGroup((cast this.layer : DecalLayer).decals, previousGroupName, nextGroupName);
+				DecalGroups.renameGroup(this.layer.decals, previousGroupName, nextGroupName);
 			});
 	}
 
@@ -87,7 +89,7 @@ class DecalLayerEditor extends LayerEditor
 
 	public function remove(decal:Decal):Void
 	{
-		(cast layer : DecalLayer).decals.remove(decal);
+		this.layer.decals.remove(decal);
 		hovered.remove(decal);
 		selected.remove(decal);
 	}
@@ -95,7 +97,7 @@ class DecalLayerEditor extends LayerEditor
 	override function draw(): Void
 	{
 		// draw decals
-		for (decal in (cast layer : DecalLayer).decals)
+		for (decal in this.layer.decals)
 		{
 			if (decal.texture != null){
 				var originInPixels = new Vector(decal.width * decal.origin.x, decal.height * decal.origin.y);
@@ -131,7 +133,7 @@ class DecalLayerEditor extends LayerEditor
 		}
 
 		if (this._hoveredGroupName != null) {
-			for (decal in (cast layer : DecalLayer).decals) {
+			for (decal in this.layer.decals) {
 				if (decal.groupName == this._hoveredGroupName) {
 					decal.drawSelectionBox(true, Color.yellow);
 				}
@@ -141,12 +143,11 @@ class DecalLayerEditor extends LayerEditor
 	}
 
 	override function drawHighlight() {
-		for (decal in (cast this.layer : DecalLayer).decals)
+		for (decal in this.layer.decals)
 			decal.drawSelectionBox(false);
 	}
 
 	override function loop() {
-		final template:DecalLayerTemplate = cast this.template;
 		final textureRepositoryPagerHasChanges = template.textureRepositoryPager.isOutdated() == HasChanges;
 
 		if (textureRepositoryPagerHasChanges) {
@@ -190,7 +191,7 @@ class DecalLayerEditor extends LayerEditor
 		if (previousSelectedDecals.length == 0)
 			return;
 
-		final decals = (cast this.layer : DecalLayer).decals;
+		final decals = this.layer.decals;
 		final decalsByInternalId = new Map<Int,Decal>();
 
 		for (decal in decals) {
@@ -205,12 +206,12 @@ class DecalLayerEditor extends LayerEditor
 	}
 
 	override public function onEditorCleaned() {
-		this._uiDecalGroupsList.update((cast this.layer : DecalLayer), this.selected);
+		this._uiDecalGroupsList.update(this.layer, this.selected);
 	}
 
 	override function onLayerEditorIsCurrentChanged(isCurrent:Bool) {
 		this._uiDecalGroupsList.setVisible(isCurrent);
-		this._uiDecalGroupsList.update((cast this.layer : DecalLayer), this.selected);
+		this._uiDecalGroupsList.update(this.layer, this.selected);
 	}
 
 	public function updateSelectedDecals(textureRef: TextureRef) {
@@ -230,7 +231,7 @@ class DecalLayerEditor extends LayerEditor
 	public function selectDecalsWithTexture(textureRef: TextureRef) {
 		selected.resize(0);
 
-		for (decal in (cast this.layer : DecalLayer).decals) {
+		for (decal in this.layer.decals) {
 			if (decal.texture.equals(textureRef)) {
 				selected.push(decal);
 			}

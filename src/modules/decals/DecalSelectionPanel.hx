@@ -48,7 +48,7 @@ class DecalSelectionPanel extends SidePanel
 		}
 
 		final selectedDecal = this.layerEditor.selected[0];
-		final decals = (cast this.layerEditor.layer : DecalLayer).decals;
+		final decals = this.layerEditor.layer.decals;
 
 		var index = -1;
 		for (i in 0...decals.length) {
@@ -143,7 +143,7 @@ class DecalSelectionPanel extends SidePanel
 				});
 				Fields.createSettingsBlock(properties, decalPos, SettingsBlock.Full, "Position" + this._getSelectionIndexHtml(), SettingsBlock.OverTitle);
 
-				var decalLayerTemplate: DecalLayerTemplate = cast layerEditor.template;
+				final decalLayerTemplate = layerEditor.template;
 
 				if (decalLayerTemplate.rotatable)
 				{
@@ -232,7 +232,7 @@ class DecalSelectionPanel extends SidePanel
 			if (sel.length > 0)
 			{
 				// loop through all the decal values
-				for (valueTemplate in (cast layerEditor.template : DecalLayerTemplate).values)
+				for (valueTemplate in layerEditor.template.values)
 				{
 					var values:Array<Value> = [];
 					for (decal in sel)

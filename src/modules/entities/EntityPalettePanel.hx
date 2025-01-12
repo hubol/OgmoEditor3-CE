@@ -99,14 +99,14 @@ class EntityPalettePanel extends SidePanel
 
 				item.onclick = function(current)
 				{
-					var layerEditorTemplate:EntityLayerTemplate = layerEditor == null ? null : cast layerEditor.layer.template;
+					var layerEditorTemplate = layerEditor == null ? null : layerEditor.layer.template;
 
 					if (layerEditorTemplate == null || !template.allowedOnLayer(layerEditorTemplate)) {
 						for (i in 0...EDITOR.layerEditors.length) {
 							var entityLayerEditor = Std.downcast(EDITOR.layerEditors[i], EntityLayerEditor);
 							if (entityLayerEditor == null)
 								continue;
-							if (template.allowedOnLayer(cast entityLayerEditor.template)) {
+							if (template.allowedOnLayer(entityLayerEditor.template)) {
 								setCreateToolWithBrush(entityLayerEditor, template);
 								EDITOR.setLayer(i);
 								return;

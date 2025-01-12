@@ -232,7 +232,7 @@ class Level
 
 	public function getLayerByExportID(exportID:String): Layer
 	{
-		for (layer in layers) if (layer.template.exportID == exportID) return layer;
+		for (layer in layers) if (layer.rawTemplate.exportID == exportID) return layer;
 		return null;
 	}
 

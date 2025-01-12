@@ -1,9 +1,10 @@
 package modules.tiles;
 
+import level.editor.GLayerEditor;
 import modules.tiles.TileLayer.TileData;
 import level.editor.LayerEditor;
 
-class TileLayerEditor extends LayerEditor
+class TileLayerEditor extends GLayerEditor<TileLayer, TileLayerTemplate>
 {
 	public var brush:Array<Array<TileData>> = [[new TileData(0)]];
 	public var brushIsContiguous(get, never):Bool;
@@ -18,7 +19,7 @@ class TileLayerEditor extends LayerEditor
 	{
 		for (x in 0...layer.gridCellsX) for (y in 0...layer.gridCellsY)
 		{
-			var l:TileLayer = cast layer;
+			final l = this.layer;
 			var tile = l.data[x][y];
 			if (!tile.isEmptyTile()) EDITOR.draw.drawTile(x * l.template.gridSize.x, y * layer.template.gridSize.y, l.tileset, tile);
 		}
@@ -33,7 +34,6 @@ class TileLayerEditor extends LayerEditor
 	{
 		if (brushIsContiguous)
 		{
-			var layer:TileLayer = cast this.layer;
 			var atX = layer.tileset.getTileX(brush[0][0].idx);
 			var atY = layer.tileset.getTileY(brush[0][0].idx);
 			atX += x;
@@ -80,7 +80,7 @@ class TileLayerEditor extends LayerEditor
 
 	public function setBrushRect(topLeft:Int):Void
 	{
-		for (x in 0...brush.length) for (y in 0...brush[x].length) brush[x][y].idx = topLeft + x + y * (cast layer : TileLayer).tileset.tileColumns;
+		for (x in 0...brush.length) for (y in 0...brush[x].length) brush[x][y].idx = topLeft + x + y * this.layer.tileset.tileColumns;
 	}
 
 	override function keyRepeat(key:Int):Void
@@ -103,7 +103,7 @@ class TileLayerEditor extends LayerEditor
 	{
 		for (x in 0...brush.length) for (y in 0...brush[x].length)
 		{
-			if (brush[x][y].isEmptyTile() || brush[x][y].idx != brush[0][0].idx + x + y * (cast layer : TileLayer).tileset.tileColumns)
+			if (brush[x][y].isEmptyTile() || brush[x][y].idx != brush[0][0].idx + x + y * this.layer.tileset.tileColumns)
 				return false;
 		}
 		return true;
@@ -114,7 +114,7 @@ class TileLayerEditor extends LayerEditor
 		if (brushIsContiguous)
 		{
 			var first = brush[0][0].idx;
-			var columns = (cast layer : TileLayer).tileset.tileColumns;
+			var columns = this.layer.tileset.tileColumns;
 			return new Rectangle(first % columns, Math.floor(first / columns), brush.length, brush[0].length);
 		}
 		else return null;

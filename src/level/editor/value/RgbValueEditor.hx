@@ -34,7 +34,7 @@ class RgbValueEditor extends ValueEditor
 			var decalLayer = layer.downcast(DecalLayer);
 			var entityLayer = layer.downcast(EntityLayer);
 			if (decalLayer != null) {
-				var decalLayerTemplate: DecalLayerTemplate = cast decalLayer.template;
+				var decalLayerTemplate = decalLayer.template;
 				var tintable = decalLayerTemplate.tintable;
 
 				if (tintable.receivesFromLevelValue(template)) {

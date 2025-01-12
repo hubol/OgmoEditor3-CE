@@ -12,8 +12,8 @@ class LayerEditor
 	public var visible(default, set):Bool = true;
 	public var palettePanel:SidePanel;
 	public var selectionPanel:SidePanel;
-	public var template(get, never):LayerTemplate;
-	public var layer(get, never):Layer;
+	public var rawTemplate(get, never):LayerTemplate;
+	public var rawLayer(get, never):Layer;
 
 	public function new(id:Int)
 	{
@@ -88,12 +88,12 @@ class LayerEditor
 		return visible = newVisible;
 	}
 
-	function get_template():LayerTemplate
+	function get_rawTemplate():LayerTemplate
 	{
 		return OGMO.project.layers[this.id];
 	}
 
-	function get_layer():Layer
+	function get_rawLayer():Layer
 	{
 		return EDITOR.level.layers[this.id];
 	}

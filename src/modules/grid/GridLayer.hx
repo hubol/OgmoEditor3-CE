@@ -1,9 +1,10 @@
 package modules.grid;
 
+import level.data.GLayer;
 import level.data.Level;
 import level.data.Layer;
 
-class GridLayer extends Layer
+class GridLayer extends GLayer<GridLayerTemplate>
 {
 	public var data: Array<Array<String>>;
 
@@ -15,7 +16,7 @@ class GridLayer extends Layer
 
 	private function initData():Void
 	{
-		var empty = (cast template : GridLayerTemplate).transparent;
+		var empty = this.template.transparent;
 		data = [];
 		for (x in 0...gridCellsX)
 		{
@@ -28,7 +29,6 @@ class GridLayer extends Layer
 	override function save():Dynamic
 	{
 		var data = super.save();
-		var template:GridLayerTemplate = cast this.template;
 
 		if(template.arrayMode == ONE)
 		{
@@ -88,7 +88,7 @@ class GridLayer extends Layer
 
 	public function addRow(end:Bool):Void
 	{
-		var empty = (cast template : GridLayerTemplate).transparent;
+		var empty = this.template.transparent;
 
 		if (end)
 		{
@@ -108,7 +108,7 @@ class GridLayer extends Layer
 
 	public function addColumn(end:Bool):Void
 	{
-		var empty = (cast template : GridLayerTemplate).transparent;
+		var empty = this.template.transparent;
 		var a: Array<String> = [];
 		for (y in 0...gridCellsY) a.push(empty);
 
@@ -225,7 +225,7 @@ class GridLayer extends Layer
 		//Actually shift
 		if (s.x != 0 || s.y != 0)
 		{
-			var empty = (cast template : GridLayerTemplate).transparent;
+			var empty = template.transparent;
 			var nData = Calc.cloneArray2D(data);
 			for (x in 0...data.length)
 			{

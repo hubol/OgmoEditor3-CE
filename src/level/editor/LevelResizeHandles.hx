@@ -177,7 +177,7 @@ class LevelResizeHandles
 			//Figure out grid snap values
 			var snap: Vector;
 			if (OGMO.ctrl) snap = new Vector(1, 1);
-			else snap = EDITOR.level.currentLayer.template.gridSize.clone();
+			else snap = EDITOR.level.currentLayer.rawTemplate.gridSize.clone();
 
 			var snapOffset: Vector = new Vector(0, 0);
 			if (!OGMO.ctrl)

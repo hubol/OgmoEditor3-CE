@@ -1,5 +1,6 @@
 package modules.tiles;
 
+import level.data.GLayer;
 import level.data.Level;
 import project.data.Tileset;
 import level.data.Layer;
@@ -142,7 +143,7 @@ class TileData
 	}
 }
 
-class TileLayer extends Layer
+class TileLayer extends GLayer<TileLayerTemplate>
 {
 	public var tileset:Tileset = null;
 	public var data:Array<Array<TileData>>;
