@@ -42,6 +42,26 @@ class DecalSelectionPanel extends SidePanel
 		refresh();
 	}
 
+	function _getSelectionIndexHtml() {
+		if (this.layerEditor.selected.length != 1) {
+			return '';
+		}
+
+		final selectedDecal = this.layerEditor.selected[0];
+		final decals = (cast this.layerEditor.layer : DecalLayer).decals;
+
+		var index = -1;
+		for (i in 0...decals.length) {
+			final decal = decals[i];
+			if (decal == selectedDecal) {
+				index = i;
+				break;
+			}
+		}
+
+		return '<div class="selected_decal_index">Index ${index}</div>';
+	}
+
 	override public function refresh()
 	{
 		var sel = layerEditor.selected;
@@ -121,7 +141,7 @@ class DecalSelectionPanel extends SidePanel
 						EDITOR.dirty();
 					}
 				});
-				Fields.createSettingsBlock(properties, decalPos, SettingsBlock.Full, "Position", SettingsBlock.OverTitle);
+				Fields.createSettingsBlock(properties, decalPos, SettingsBlock.Full, "Position" + this._getSelectionIndexHtml(), SettingsBlock.OverTitle);
 
 				var decalLayerTemplate: DecalLayerTemplate = cast layerEditor.template;
 

@@ -141,6 +141,7 @@ class DecalSelectTool extends DecalTool
 			EDITOR.level.store("move decal back");
 			for (decal in layerEditor.selected) OGMO.shift ? moveDecalToBack(decal) : moveDecalBack(decal);
 			DecalGroups.ensureConsecutiveGroups(layer.decals);
+			layerEditor.selectedChanged = true;
 			EDITOR.dirty();
 		}
 		else if (key == Keys.F)
@@ -148,6 +149,7 @@ class DecalSelectTool extends DecalTool
 			EDITOR.level.store("move decal forward");
 			for (decal in layerEditor.selected) OGMO.shift ? moveDecalToFront(decal) : moveDecalForward(decal);
 			DecalGroups.ensureConsecutiveGroups(layer.decals);
+			layerEditor.selectedChanged = true;
 			EDITOR.dirty();
 		}
 		else if (OGMO.shift && key == Keys.G) {
