@@ -1,5 +1,6 @@
 package features;
 
+import js.Browser;
 import modules.decals.Decal;
 import util.Matrix;
 
@@ -26,6 +27,10 @@ class EntityLikeUtils {
     static final _bottomLeft = new Vector();
 
     public static function overlapsRectangle(matrix:Matrix, rectangle:Rectangle) {
+        // Separation line test is impacted by winding order
+        // Which will get screwed up when the decal is horizontally or vertically flipped
+        final sign = (Browser.window:Dynamic).Math.sign(matrix.a) * (Browser.window:Dynamic).Math.sign(matrix.d);
+
         // Are the corners of the rectangle inside of the shape?
 		_topLeft.set(rectangle.left, rectangle.top);
 		matrix.inverseTransformPoint(_topLeft, _topLeft);
@@ -55,7 +60,7 @@ class EntityLikeUtils {
             return true;
         }
 
-		return !_unitRectangleHasSeparationLineAgainstQuadrilateral() && !_quadrilateralHasSeparationLineAgainstUnitRectangle();
+		return !_unitRectangleHasSeparationLineAgainstQuadrilateral() && !_quadrilateralHasSeparationLineAgainstUnitRectangle(sign);
 	}
 
     static final _unitRectangleCorners: Array<Vector> = [
@@ -115,10 +120,13 @@ class EntityLikeUtils {
     }
 
     // Check tangents of quadrilateral against unit rectangle
-    static function _quadrilateralHasSeparationLineAgainstUnitRectangle() {
+    static function _quadrilateralHasSeparationLineAgainstUnitRectangle(sign:Float) {
+        final quadCornerVectors = sign > 0 ? _quadCornerVectors : _quadNextCornerVectors;
+        final quadNextCornerVectors = sign > 0 ? _quadNextCornerVectors : _quadCornerVectors;
+
         for (i in 0...4) {
-            final quadCorner = _quadCornerVectors[i];
-            final nextQuadCorner = _quadNextCornerVectors[i];
+            final quadCorner = quadCornerVectors[i];
+            final nextQuadCorner = quadNextCornerVectors[i];
             _quadTangent.set(nextQuadCorner.x, nextQuadCorner.y).sub(quadCorner);
 
             for (j in 0...4) {
