@@ -20,42 +20,40 @@ class EntityLikeUtils {
 		return result.x >= -1 && result.x <= 1 && result.y >= -1 && result.y <= 1;
 	}
 
-    static final topLeft = new Vector();
-    static final topRight = new Vector();
-    static final bottomRight = new Vector();
-    static final bottomLeft = new Vector();
-
-    static final unitRectangleVectors = [ new Vector(-1, -1), new Vector(1, -1), new Vector(1, 1), new Vector(-1, 1) ];
+    static final _topLeft = new Vector();
+    static final _topRight = new Vector();
+    static final _bottomRight = new Vector();
+    static final _bottomLeft = new Vector();
 
     public static function overlapsRectangle(matrix:Matrix, rectangle:Rectangle) {
         // Are the corners of the rectangle inside of the shape?
-		topLeft.set(rectangle.left, rectangle.top);
-		matrix.inverseTransformPoint(topLeft, topLeft);
+		_topLeft.set(rectangle.left, rectangle.top);
+		matrix.inverseTransformPoint(_topLeft, _topLeft);
 
-        // if (topLeft.x >= -1 && topLeft.x <= 1 && topLeft.y >= -1 && topLeft.y <= 1) {
-        //     return true;
-        // }
+        if (_topLeft.x >= -1 && _topLeft.x <= 1 && _topLeft.y >= -1 && _topLeft.y <= 1) {
+            return true;
+        }
 
-        topRight.set(rectangle.right, rectangle.top);
-        matrix.inverseTransformPoint(topRight, topRight);
+        _topRight.set(rectangle.right, rectangle.top);
+        matrix.inverseTransformPoint(_topRight, _topRight);
 
-        // if (topRight.x >= -1 && topRight.x <= 1 && topRight.y >= -1 && topRight.y <= 1) {
-        //     return true;
-        // }
+        if (_topRight.x >= -1 && _topRight.x <= 1 && _topRight.y >= -1 && _topRight.y <= 1) {
+            return true;
+        }
 
-        bottomRight.set(rectangle.right, rectangle.bottom);
-        matrix.inverseTransformPoint(bottomRight, bottomRight);
+        _bottomRight.set(rectangle.right, rectangle.bottom);
+        matrix.inverseTransformPoint(_bottomRight, _bottomRight);
 
-        // if (bottomRight.x >= -1 && bottomRight.x <= 1 && bottomRight.y >= -1 && bottomRight.y <= 1) {
-        //     return true;
-        // }
+        if (_bottomRight.x >= -1 && _bottomRight.x <= 1 && _bottomRight.y >= -1 && _bottomRight.y <= 1) {
+            return true;
+        }
 
-        bottomLeft.set(rectangle.left, rectangle.bottom);
-        matrix.inverseTransformPoint(bottomLeft, bottomLeft);
+        _bottomLeft.set(rectangle.left, rectangle.bottom);
+        matrix.inverseTransformPoint(_bottomLeft, _bottomLeft);
 
-        // if (bottomLeft.x >= -1 && bottomLeft.x <= 1 && bottomLeft.y >= -1 && bottomLeft.y <= 1) {
-        //     return true;
-        // }
+        if (_bottomLeft.x >= -1 && _bottomLeft.x <= 1 && _bottomLeft.y >= -1 && _bottomLeft.y <= 1) {
+            return true;
+        }
 
 		return !_unitRectangleHasSeparationLineAgainstQuadrilateral() && !_quadrilateralHasSeparationLineAgainstUnitRectangle();
 	}
@@ -75,17 +73,17 @@ class EntityLikeUtils {
     ];
 
     static final _quadCornerVectors = [
-        topLeft,
-        topRight,
-        bottomRight,
-        bottomLeft,
+        _topLeft,
+        _topRight,
+        _bottomRight,
+        _bottomLeft,
     ];
 
     static final _quadNextCornerVectors = [
-        topRight,
-        bottomRight,
-        bottomLeft,
-        topLeft,
+        _topRight,
+        _bottomRight,
+        _bottomLeft,
+        _topLeft,
     ];
 
     static final _offset = new Vector();
