@@ -57,50 +57,50 @@ class EntityLikeUtils {
         //     return true;
         // }
 
-		return !unitRectangleHasSeparationLineAgainstQuadrilateral() && !quadrilateralHasSeparationLineAgainstUnitRectangle();
+		return !_unitRectangleHasSeparationLineAgainstQuadrilateral() && !_quadrilateralHasSeparationLineAgainstUnitRectangle();
 	}
 
-    static final unitRectangleCorners: Array<Vector> = [
+    static final _unitRectangleCorners: Array<Vector> = [
         new Vector(-1, -1),
         new Vector(1, -1),
         new Vector(1, 1),
         new Vector(-1, 1)
     ];
 
-    static final unitRectangleTangents: Array<Vector> = [
+    static final _unitRectangleTangents: Array<Vector> = [
         new Vector(2, 0),
         new Vector(0, 2),
         new Vector(-2, 0),
         new Vector(0, -2)
     ];
 
-    static final quadCornerVectors = [
+    static final _quadCornerVectors = [
         topLeft,
         topRight,
         bottomRight,
         bottomLeft,
     ];
 
-    static final quadNextCornerVectors = [
+    static final _quadNextCornerVectors = [
         topRight,
         bottomRight,
         bottomLeft,
         topLeft,
     ];
 
-    static final offset = new Vector();
-    static final quadTangent = new Vector();
+    static final _offset = new Vector();
+    static final _quadTangent = new Vector();
 
     // Check tangents of unit rectangle against quadrilateral
-    static function unitRectangleHasSeparationLineAgainstQuadrilateral() {
+    static function _unitRectangleHasSeparationLineAgainstQuadrilateral() {
         for (i in 0...4) {
-            final unitCorner = unitRectangleCorners[i];
-            final unitTangent = unitRectangleTangents[i];
+            final unitCorner = _unitRectangleCorners[i];
+            final unitTangent = _unitRectangleTangents[i];
 
             for (j in 0...4) {
-                final quadCorner = quadCornerVectors[j];
-                offset.set(quadCorner.x, quadCorner.y).sub(unitCorner);
-                if (wedge(unitTangent, offset) > 0) {
+                final quadCorner = _quadCornerVectors[j];
+                _offset.set(quadCorner.x, quadCorner.y).sub(unitCorner);
+                if (_wedge(unitTangent, _offset) > 0) {
                     // This is not a separating line,
                     // But we need to check for others
                     break;
@@ -117,16 +117,16 @@ class EntityLikeUtils {
     }
 
     // Check tangents of quadrilateral against unit rectangle
-    static function quadrilateralHasSeparationLineAgainstUnitRectangle() {
+    static function _quadrilateralHasSeparationLineAgainstUnitRectangle() {
         for (i in 0...4) {
-            final quadCorner = quadCornerVectors[i];
-            final nextQuadCorner = quadNextCornerVectors[i];
-            quadTangent.set(nextQuadCorner.x, nextQuadCorner.y).sub(quadCorner);
+            final quadCorner = _quadCornerVectors[i];
+            final nextQuadCorner = _quadNextCornerVectors[i];
+            _quadTangent.set(nextQuadCorner.x, nextQuadCorner.y).sub(quadCorner);
 
             for (j in 0...4) {
-                final unitCorner = unitRectangleCorners[j];
-                offset.set(unitCorner.x, unitCorner.y).sub(quadCorner);
-                if (wedge(quadTangent, offset) > 0) {
+                final unitCorner = _unitRectangleCorners[j];
+                _offset.set(unitCorner.x, unitCorner.y).sub(quadCorner);
+                if (_wedge(_quadTangent, _offset) > 0) {
                     // This is not a separating line,
                     // But we need to check for others
                     break;
@@ -145,7 +145,7 @@ class EntityLikeUtils {
     // dot product but rotated
     // a thing to mind is it is anticommutative
     // wedge(a,b) == -wedge(b,a)
-    static function wedge(v:Vector, other:Vector) {
+    static function _wedge(v:Vector, other:Vector) {
         return v.x * other.y - v.y * other.x;
     }
 
