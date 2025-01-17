@@ -9,6 +9,9 @@
 
     &_inner
     {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     	position: absolute;
     	top: 50%;
     	left: 50%;
@@ -49,7 +52,6 @@
         color: #aaa;
         cursor: default;
         font-size: 0.9em;
-        text-transform: uppercase;
         display: flex;
         width: calc(100vw - 64px);
         align-items: flex-end;
@@ -57,8 +59,6 @@
     }
 
     &_hubol {
-        text-transform: none;
-
         & h1 {
             font-size: 20px;
         }
@@ -68,6 +68,33 @@
             margin-bottom: 0;
             padding-inline-start: 25px;
         }
+    }
+
+    &_notice {
+        font-family: monospace;
+        font-size: 16px;
+        color: black;
+        background-color: yellow;
+        padding: 1em;
+        border: solid 1px black;
+        box-shadow: 8px 8px black;
+        max-width: 400px;
+    }
+
+    &_version {
+        font-weight: 800;
+    }
+
+    oddwarg {
+        content: '';
+        display: inline-block;
+        background-image: url("../img/icons/oddwarg.png");
+        background-position: center;
+        background-size: cover;
+        width: 180px;
+        height: 120px;
+        margin-top: 1em;
+        filter: drop-shadow(8px 8px 0 rgb(111, 131, 21));
     }
 
     &_recents

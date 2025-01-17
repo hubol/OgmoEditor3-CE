@@ -82,8 +82,7 @@ class DecalLayer extends GLayer<DecalLayerTemplate>
 		while (i >= 0)
 		{
 			var decal = decals[i];
-			if (rect.right > decal.position.x - decal.width * decal.origin.x && rect.bottom > decal.position.y - decal.height * decal.origin.y &&
-				rect.left < decal.position.x + decal.width * (1-decal.origin.x) && rect.top < decal.position.y + decal.height * (1-decal.origin.y))
+			if (EntityLikeUtils.overlapsRectangle(EntityLikeMatrix.fromDecal(decal), rect))
 				list.push(decal);
 			i--;
 		}
