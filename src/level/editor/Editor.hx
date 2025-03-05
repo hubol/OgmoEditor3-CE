@@ -583,27 +583,13 @@ class Editor
 		draw.drawRect(-1, -1, level.data.size.x + 2, level.data.size.y + 2, Color.black);
 		drawBackground();
 
-		//Draw the layers below and including the current one
 		var i = level.layers.length - 1;
-		while(i > level.currentLayerID) 
+		while(i >= 0) 
 		{
-			if (EDITOR.layerEditors[i] != null && EDITOR.layerEditors[i].visible) EDITOR.layerEditors[i].draw();
-			i--;
-		}
-
-		if (EDITOR.layerEditors[level.currentLayerID] != null) EDITOR.layerEditors[level.currentLayerID].draw();
-
-		//Draw the layers above the current one at half alpha
-		if (level.currentLayerID > 0)
-		{
-			draw.setAlpha(0.3);
-			var i = level.currentLayerID - 1;
-			while (i >= 0)
-			{
-				if (EDITOR.layerEditors[i] != null && EDITOR.layerEditors[i].visible) EDITOR.layerEditors[i].draw();
-				i--;
+			if (EDITOR.layerEditors[i] != null && (EDITOR.layerEditors[i].visible || i == level.currentLayerID)) {
+				EDITOR.layerEditors[i].draw();
 			}
-			draw.setAlpha(1);
+			i--;
 		}
 
 		//Resize handles
