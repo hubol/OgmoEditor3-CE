@@ -97,5 +97,10 @@ class DecalPalettePanel extends SidePanel
 			if (brush == texturePath) button.addClass("selected");
 			holder.append(button);
 		}
+
+		holder.append('<shortcuts>
+<shortcut><key>Ctrl-LMB:</key> Select decals on layer</shortcut>
+<shortcut><key>RMB:</key> Update selected decals</shortcut>
+</shortcuts>');
 	}
 }
