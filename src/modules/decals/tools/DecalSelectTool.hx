@@ -128,6 +128,19 @@ class DecalSelectTool extends DecalTool
 				EDITOR.dirty();
 			}
 		}
+		else if (key == Keys.R)
+		{
+			if ((cast layerEditor.template : DecalLayerTemplate).rotatable && layerEditor.selected.length > 0)
+			{
+				final isClockwise = !OGMO.shift;
+				final delta = Math.PI / (isClockwise ? 4 : -4);
+				EDITOR.level.store('rotate selected decals by 45 degrees ${ isClockwise ? "clockwise" : "counter-clockwise" }');
+				for (decal in layerEditor.selected)
+					decal.rotate(delta);
+				layerEditor.selectedChanged = true;
+				EDITOR.dirty();
+			}
+		}
 		else if (key == Keys.Delete || key == Keys.Backspace)
 		{
 			EDITOR.level.store("delete decals");
