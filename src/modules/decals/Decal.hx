@@ -97,6 +97,14 @@ class Decal implements ITintable
 		scale.y = Calc.snap(scale.y, 1);
 	}
 
+	public function flipX() {
+		this.scale.x = -this.scale.x;
+	}
+
+	public function flipY() {
+		this.scale.y = -this.scale.y;
+	}
+
 	public function updateTexture(textureRef:TextureRef) {
 		this.texture = textureRef;
 		this.path = textureRef.path;

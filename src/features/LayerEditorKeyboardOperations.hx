@@ -11,6 +11,7 @@ typedef LayerItemCommon = {
 
 typedef LayerEditorKeyboardOperationsContext<TLayerItem:LayerItemCommon> = {
     itemTypeName:String,
+    getCanFlip:() -> Bool,
     getCanRotate:() -> Bool,
     getClipboard:() -> Array<TLayerItem>,
     getSelection:() -> Array<TLayerItem>,
@@ -75,7 +76,7 @@ class LayerEditorKeyboardOperations<TLayerItem:LayerItemCommon> {
     function _setClipboardToSelection() {
         final selection = this._ctx.getSelection();
         final clipboard = this._ctx.getClipboard();
-        clipboard.splice(0, clipboard.length);
+        clipboard.resize(0);
         for (item in selection) {
             clipboard.push(this._ctx.clone(item, 0, 0));
         }
@@ -175,6 +176,10 @@ class LayerEditorKeyboardOperations<TLayerItem:LayerItemCommon> {
     }
 
     public function flipSelectionX() {
+        if (!this._ctx.getCanFlip()) {
+            return;
+        }
+
         EDITOR.level.store('horizontally flip selected ${this._ctx.itemTypeName}(s)');
         for (item in this._ctx.getSelection()) {
             item.flipX();
@@ -183,6 +188,10 @@ class LayerEditorKeyboardOperations<TLayerItem:LayerItemCommon> {
     }
 
     public function flipSelectionY() {
+        if (!this._ctx.getCanFlip()) {
+            return;
+        }
+        
         EDITOR.level.store('vertically flip selected ${this._ctx.itemTypeName}(s)');
         for (item in this._ctx.getSelection()) {
             item.flipY();

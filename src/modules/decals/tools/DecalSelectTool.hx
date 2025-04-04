@@ -6,8 +6,6 @@ import modules.entities.tools.EntitySelectTool.SelectModes;
 
 class DecalSelectTool extends DecalTool
 {
-	public static var inClipboard:Array<Decal> = [];
-
 	public var mode:SelectModes = None;
 	public var decals:Array<Decal>;
 	public var selecting:Bool = false;
@@ -52,102 +50,6 @@ class DecalSelectTool extends DecalTool
 				layerEditor.selectedChanged = true;
 				EDITOR.dirty();
 			}
-			else if (key == Keys.C || key == Keys.X)
-			{
-				DecalSelectTool.inClipboard = DecalSelectTool._getSelectedDecalsInIndexOrder(layerEditor);
-			}
-			if (key == Keys.X)
-			{
-				EDITOR.level.store("cut decals");
-				while (layerEditor.selected.length > 0)
-					layerEditor.remove(layerEditor.selected[0]);
-
-				DecalGroups.ensureConsecutiveGroups(layer.decals);
-
-				layerEditor.selectedChanged = true;
-				EDITOR.dirty();
-			}
-			else if (key == Keys.V && DecalSelectTool.inClipboard.length > 0)
-			{
-				EDITOR.level.store("pasted decals");
-
-				layerEditor.selected = [];
-				for (decal in DecalSelectTool.inClipboard)
-				{
-					var clone = decal.clone();
-					(cast layerEditor.layer:DecalLayer).decals.push(clone);
-					layerEditor.selected.push(clone);
-				}
-
-				DecalGroups.ensureConsecutiveGroups(layer.decals);
-
-				layerEditor.selectedChanged = true;
-				EDITOR.dirty();
-			}
-			else if (key == Keys.D && layerEditor.selected.length > 0)
-			{
-				EDITOR.level.store("duplicated decals");
-				final decalsToDuplicate = DecalSelectTool._getSelectedDecalsInIndexOrder(layerEditor);
-
-				var newSelection:Array<Decal> = [];
-				for (decal in decalsToDuplicate)
-				{
-					var clone = decal.clone();
-					clone.position.add(new Vector(32, 32));
-					
-					(cast layerEditor.layer:DecalLayer).decals.push(clone);
-					newSelection.push(clone);
-				}
-
-				DecalGroups.ensureConsecutiveGroups(layer.decals);
-
-				layerEditor.selected = newSelection;
-				layerEditor.selectedChanged = true;
-				EDITOR.dirty();
-			}
-		}
-		else if (key == Keys.H)
-		{
-			if ((cast layerEditor.template : DecalLayerTemplate).scaleable)
-			{
-				EDITOR.level.store("flip decal h");
-				for (decal in layerEditor.selected)
-					decal.scale.x = -decal.scale.x;
-				layerEditor.selectedChanged = true;
-				EDITOR.dirty();
-			}
-		}
-		else if (key == Keys.V)
-		{
-			if ((cast layerEditor.template : DecalLayerTemplate).scaleable)
-			{
-				EDITOR.level.store("flip decal v");
-				for (decal in layerEditor.selected)
-					decal.scale.y = -decal.scale.y;
-				layerEditor.selectedChanged = true;
-				EDITOR.dirty();
-			}
-		}
-		else if (key == Keys.R)
-		{
-			if ((cast layerEditor.template : DecalLayerTemplate).rotatable && layerEditor.selected.length > 0)
-			{
-				final isClockwise = !OGMO.shift;
-				final delta = Math.PI / (isClockwise ? 4 : -4);
-				EDITOR.level.store('rotate selected decals by 45 degrees ${ isClockwise ? "clockwise" : "counter-clockwise" }');
-				for (decal in layerEditor.selected)
-					decal.rotate(delta);
-				layerEditor.selectedChanged = true;
-				EDITOR.dirty();
-			}
-		}
-		else if (key == Keys.Delete || key == Keys.Backspace)
-		{
-			EDITOR.level.store("delete decals");
-			while (layerEditor.selected.length > 0)
-				layerEditor.remove(layerEditor.selected[0]);
-			layerEditor.selectedChanged = true;
-			EDITOR.dirty();
 		}
 		else if (key == Keys.B)
 		{

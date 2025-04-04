@@ -1,5 +1,6 @@
 package modules.decals;
 
+import features.LayerEditorKeyboardOperations;
 import level.editor.GLayerEditor;
 import level.data.GLayer;
 import features.DecalGroups;
@@ -17,6 +18,9 @@ class DecalLayerEditor extends GLayerEditor<DecalLayer, DecalLayerTemplate>
 	public var selected:Array<Decal> = [];
 	public var hovered:Array<Decal> = [];
 	public var selectedChanged:Bool = true;
+
+	static final _clipboard:Array<Decal> = [];
+	private final _keyboardOperations: LayerEditorKeyboardOperations<Decal>;
 
 	private var _hoveredGroupName:String;
 	
@@ -67,6 +71,43 @@ class DecalLayerEditor extends GLayerEditor<DecalLayer, DecalLayerTemplate>
 			this._onGroupNameMouseLeave,
 			this._onGroupNameClick,
 			this._onGroupNameRightClick);
+
+		this._keyboardOperations = new LayerEditorKeyboardOperations<Decal>({
+			itemTypeName: 'decal',
+			onChangeAffectingLayerItemIndices: () -> {
+				DecalGroups.ensureConsecutiveGroups(layer.decals);
+				this.selectedChanged = true;
+				EDITOR.dirty();
+			},
+			onChange: () -> {
+				this.selectedChanged = true;
+				EDITOR.dirty();
+			},
+			deleteSelection: () -> {
+				while (this.selected.length > 0) {
+					this.remove(this.selected[0]);
+				}
+			},
+			tryAddToLayer: (decal) -> {
+				this.layer.decals.push(decal);
+				return null;
+			},
+			clone: (decal, gridCellOffsetX, gridCellOffsetY) -> {
+				final clone = decal.clone();
+				clone.position.add(new Vector(gridCellOffsetX * this.template.gridSize.x, gridCellOffsetY * this.template.gridSize.y));
+				return clone;
+			},
+			setSelection: (decals) -> {
+				this.selected.resize(0);
+				for (decal in decals) {
+					this.selected.push(decal);
+				}
+			},
+			getSelection: () -> this.selected,
+			getClipboard: () -> DecalLayerEditor._clipboard,
+			getCanRotate: () -> this.template.rotatable,
+			getCanFlip: () -> this.template.scaleable,
+		});
 	}
 
 	public function toggleSelected(list:Array<Decal>):Void
@@ -239,5 +280,13 @@ class DecalLayerEditor extends GLayerEditor<DecalLayer, DecalLayerTemplate>
 
 		EDITOR.dirty();
 		this.selectedChanged = true;
+	}
+
+	override function keyPress(key:Int) {
+		if (EDITOR.locked) {
+			return;
+		}
+
+		this._keyboardOperations.onKeyPress(key);
 	}
 }

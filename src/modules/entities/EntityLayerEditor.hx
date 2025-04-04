@@ -88,6 +88,7 @@ class EntityLayerEditor extends GLayerEditor<EntityLayer, EntityLayerTemplate>
 			getSelection: () -> entities.getGroup(selection),
 			setSelection: (items) -> selection.set(items),
 			getClipboard: () -> _clipboard,
+			getCanFlip: () -> true,
 			getCanRotate: () -> true,
 			clone: (entity, gridCellOffsetX, gridCellOffsetY) -> entity.duplicate(
 				layer.nextID(),
