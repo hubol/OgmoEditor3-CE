@@ -592,7 +592,7 @@
             padding-right: 8px;
         }
 
-        & .icon-undo::after
+        & .icon-undo::after, & .icon-warning::after
         {
             background-color: red;
         }

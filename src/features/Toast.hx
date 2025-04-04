@@ -8,6 +8,8 @@ class Toast {
             return 'undo';
         if (type == ToastType.Redo)
             return 'redo';
+        if (type == ToastType.Warning)
+            return 'warning';
         return 'external-provider';
     }
 
@@ -31,4 +33,5 @@ enum ToastType {
     Undo;
     Redo;
     ExternalUpdate;
+    Warning;
 }
