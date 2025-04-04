@@ -79,8 +79,11 @@ class EntityLayerEditor extends GLayerEditor<EntityLayer, EntityLayerTemplate>
 			},
 			deleteSelection: () -> entities.removeAndClearGroup(selection),
 			tryAddToLayer: (entity) -> {
+				if (!entity.template.allowedOnLayer(this.template)) {
+					return 'Entity ${entity.template.name} is not allowed on layer ${this.template.name}';
+				}
 				entities.add(entity);
-				return null; // TODO should produce errors for some!
+				return null;
 			},
 			getSelection: () -> entities.getGroup(selection),
 			setSelection: (items) -> selection.set(items),

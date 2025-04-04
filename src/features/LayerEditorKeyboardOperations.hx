@@ -104,8 +104,8 @@ class LayerEditorKeyboardOperations<TLayerItem:LayerItemCommon> {
         final result = this._tryAddManyItems(items);
 
         if (result.errors.length > 0) {
-            Toast.show(Warning, '${result.errors.length} ${this._ctx.itemTypeName}(s) could not be pasted. See console for details.');
-            Browser.console.warn(result.errors);
+            Toast.show(Warning, '${result.errors.length} ${this._ctx.itemTypeName}(s) could not be pasted. See console for details.', 3000);
+            Browser.console.warn('${this._ctx.itemTypeName} paste error(s)', result.errors);
         }
 
         if (result.addedItems.length > 0) {
@@ -124,8 +124,9 @@ class LayerEditorKeyboardOperations<TLayerItem:LayerItemCommon> {
         final result = this._tryAddManyItems(items);
 
         if (result.errors.length > 0) {
-            Toast.show(Warning, '${result.errors.length} ${this._ctx.itemTypeName}(s) could not be duplicated. See console for details.');
-            Browser.console.warn(result.errors);
+            // Note: Should probably not get here ever...
+            Toast.show(Warning, '${result.errors.length} ${this._ctx.itemTypeName}(s) could not be duplicated. See console for details.', 3000);
+            Browser.console.warn('${this._ctx.itemTypeName} duplicate error(s)', result.errors);
         }
 
         if (result.addedItems.length > 0) {
