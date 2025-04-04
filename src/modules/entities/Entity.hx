@@ -230,16 +230,16 @@ class Entity implements ITintable
 		updateMatrix();
 	}
 
-	public function flipX(flippedX:Bool) {
+	public function flipX() {
 		if (template.canFlipX) {
-			this.flippedX = flippedX;
+			this.flippedX = !this.flippedX;
 			this.updateMatrix();
 		}
 	}
 
-	public function flipY(flippedY:Bool) {
+	public function flipY() {
 		if (template.canFlipY) {
-			this.flippedY = flippedY;
+			this.flippedY = !this.flippedY;
 			this.updateMatrix();
 		}
 	}

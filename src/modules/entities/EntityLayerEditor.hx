@@ -1,9 +1,9 @@
 package modules.entities;
 
+import features.LayerEditorKeyboardOperations;
 import level.editor.GLayerEditor;
 import level.editor.ui.PropertyDisplay.PropertyDisplayMode;
 import level.editor.ui.SidePanel;
-import level.editor.LayerEditor;
 import rendering.FloatingHTML.FloatingHTMLPropertyDisplay;
 import rendering.FloatingHTML.PositionAlignV;
 import rendering.FloatingHTML.PositionAlignH;
@@ -51,6 +51,8 @@ class EntityNodeID
 
 class EntityLayerEditor extends GLayerEditor<EntityLayer, EntityLayerTemplate>
 {
+	static final _clipboard = new Array<Entity>();
+
 	public var selection:EntityGroup = new EntityGroup();
 	public var hovered:EntityGroup = new EntityGroup();
 	public var hoveredNode:EntityNodeID = new EntityNodeID();
@@ -59,10 +61,36 @@ class EntityLayerEditor extends GLayerEditor<EntityLayer, EntityLayerTemplate>
 
 	private var entityTexts = new Map<Int, FloatingHTMLPropertyDisplay>();
 
+	public final keyboardOperations: LayerEditorKeyboardOperations<Entity>;
+
 	public function new(id:Int)
 	{
 		super(id);
 		brush = 0;
+		this.keyboardOperations = new LayerEditorKeyboardOperations<Entity>({
+			itemTypeName: 'enitity',
+			onChangeAffectingLayerItemIndices: () -> {
+				EDITOR.dirty();
+				this.selection.changed = true;
+			},
+			onChange: () -> {
+				EDITOR.dirty();
+				this.selection.changed = true;
+			},
+			deleteSelection: () -> entities.removeAndClearGroup(selection),
+			tryAddToLayer: (entity) -> {
+				entities.add(entity);
+				return null; // TODO should produce errors for some!
+			},
+			getSelection: () -> entities.getGroup(selection),
+			setSelection: (items) -> selection.set(items),
+			getClipboard: () -> _clipboard,
+			getCanRotate: () -> true,
+			clone: (entity, gridCellOffsetX, gridCellOffsetY) -> entity.duplicate(
+				layer.nextID(),
+				this.template.gridSize.x * gridCellOffsetX,
+				this.template.gridSize.y * gridCellOffsetY),
+		});
 	}
 
 	override function draw()
@@ -184,24 +212,14 @@ class EntityLayerEditor extends GLayerEditor<EntityLayer, EntityLayerTemplate>
 	override function keyPress(key:Int)
 	{
 		if (EDITOR.locked) return;
+
+		this.keyboardOperations.onKeyPress(key);
+
 		switch (key)
 		{
-			case Keys.Backspace, Keys.Delete:
-				if (selection.amount <= 0) return;
-				EDITOR.level.store('delete entities');
-				EDITOR.dirty();
-				entities.removeAndClearGroup(selection);
 			case Keys.A:
 				if (!OGMO.ctrl) return;
 				selection.set(entities.list);
-				EDITOR.dirty();
-			case Keys.D:
-				if (!OGMO.ctrl || selection.amount <= 0) return;
-				EDITOR.level.store('duplicate entities');
-				var copies:Array<Entity> = [ for (e in entities.getGroup(selection)) e.duplicate(layer.downcast(EntityLayer).nextID(), template.gridSize.x * 2, template.gridSize.y * 2) ];
-				entities.addList(copies);
-				if (OGMO.shift) selection.add(copies);
-				else selection.set(copies);
 				EDITOR.dirty();
 			case Keys.F:
 				// Swap selected entities' positions with their first nodes
@@ -219,18 +237,6 @@ class EntityLayerEditor extends GLayerEditor<EntityLayer, EntityLayerTemplate>
 					e.position = e.nodes[0];
 					e.nodes[0] = temp;
 				}
-			case Keys.H:
-				if (OGMO.ctrl || selection.amount <= 0) return;
-				EDITOR.level.store("flip entity h");
-				for (e in entities.getGroup(selection)) e.flipX(!e.flippedX);
-				selection.changed = true;
-				EDITOR.dirty();
-			case Keys.V:
-				if (OGMO.ctrl || selection.amount <= 0) return;
-				EDITOR.level.store("flip entity v");
-				for (e in entities.getGroup(selection)) e.flipY(!e.flippedY);
-				selection.changed = true;
-				EDITOR.dirty();
 		}
 	}
 

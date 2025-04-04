@@ -235,34 +235,14 @@ class EntitySelectionPanel extends SidePanel
 				if (showFlipX)
 				{
 					var entityFlipX = Fields.createCheckbox(entity.flippedX,"Flipped X");
-					entityFlipX.on("click", function(e) {
-							var flipped = !sel[0].flippedX;
-							EDITOR.level.store("Changed Entity Flipped X to '" + (flipped ? "True'" : "False'"));
-
-							for (selection in sel) {
-								selection.flipX(flipped);
-							}
-
-							EDITOR.level.unsavedChanges = true;
-							EDITOR.dirty();
-					});
+					entityFlipX.on("click", layerEditor.keyboardOperations.flipSelectionX);
 					Fields.createSettingsBlock(properties, entityFlipX, SettingsBlock.Full, "Flipped X", SettingsBlock.OverTitle);
 				}
 
 				if (showFlipY)
 				{
 					var entityFlipY = Fields.createCheckbox(entity.flippedY,"Flipped Y");
-					entityFlipY.on("click", function(e) {
-							var flipped = !sel[0].flippedY;
-							EDITOR.level.store("Changed Entity Flipped Y to '" + (flipped ? "True'" : "False'"));
-
-							for (selection in sel) {
-								selection.flipY(flipped);
-							}
-
-							EDITOR.level.unsavedChanges = true;
-							EDITOR.dirty();
-					});
+					entityFlipY.on("click", layerEditor.keyboardOperations.flipSelectionY);
 					Fields.createSettingsBlock(properties, entityFlipY, SettingsBlock.Full, "Flipped Y", SettingsBlock.OverTitle);
 				}
 
