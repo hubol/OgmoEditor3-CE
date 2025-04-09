@@ -103,7 +103,7 @@ class DecalLayerEditor extends GLayerEditor<DecalLayer, DecalLayerTemplate>
 					this.selected.push(decal);
 				}
 			},
-			getSelection: () -> this.selected,
+			getSelection: () -> this._getSelectedDecalsInIndexOrder(),
 			getClipboard: () -> DecalLayerEditor._clipboard,
 			getCanRotate: () -> this.template.rotatable,
 			getCanFlip: () -> this.template.scaleable,
@@ -288,5 +288,17 @@ class DecalLayerEditor extends GLayerEditor<DecalLayer, DecalLayerTemplate>
 		}
 
 		this._keyboardOperations.onKeyPress(key);
+	}
+
+	function _getSelectedDecalsInIndexOrder() {
+		final selectedDecals = new Set(this.selected);
+		final selectedDecalsInIndexOrder = new Array<Decal>();
+		for (decal in this.layer.decals) {
+			if (selectedDecals.has(decal)) {
+				selectedDecalsInIndexOrder.push(decal);
+			}
+		}
+
+		return selectedDecalsInIndexOrder;
 	}
 }

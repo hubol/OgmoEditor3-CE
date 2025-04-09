@@ -26,18 +26,6 @@ class DecalSelectTool extends DecalTool
 		layerEditor.hovered = [];
 	}
 
-	static function _getSelectedDecalsInIndexOrder(editor: DecalLayerEditor) {
-		final selectedDecals = new Set(editor.selected);
-		final selectedDecalsInIndexOrder = new Array<Decal>();
-		for (decal in (cast editor.layer:DecalLayer).decals) {
-			if (selectedDecals.has(decal)) {
-				selectedDecalsInIndexOrder.push(decal);
-			}
-		}
-
-		return selectedDecalsInIndexOrder;
-	}
-
 	override public function onKeyPress(key:Int)
 	{
 		if (OGMO.ctrl)
