@@ -36,7 +36,6 @@ class Entity implements ITintable
 	private var _tileMatrix:Matrix = new Matrix(); //The drawing matrix
 	private var _points:Array<Vector> = [];
 	private var _sizeAnchor:Vector;
-	private var _rotationAnchor:Float;
 	private var _texture:Null<Texture>;
 	private static var hoverColor:Color = new Color(1, 1, 1, 0.5);
 
@@ -209,16 +208,11 @@ class Entity implements ITintable
 		updateMatrix();
 	}
 
-	public function anchorRotation()
-	{
-		_rotationAnchor = rotation;
-	}
-
 	public function rotate(diff:Float)
 	{
 		if (template.rotatable)
 		{
-			rotation = _rotationAnchor + diff * Calc.RTD;
+			rotation = rotation + diff * Calc.RTD;
 			rotation = Calc.snap(rotation, 360 / template.rotationDegrees);
 			updateMatrix();
 		}

@@ -17,7 +17,6 @@ class EntityRotateTool extends EntityTool
 		origin = new Vector();
 		for (entity in entities)
 		{
-			entity.anchorRotation();
 			origin.x += entity.position.x;
 			origin.y += entity.position.y;
 		}
@@ -52,7 +51,7 @@ class EntityRotateTool extends EntityTool
 			EDITOR.level.store('rotate entities');
 		}
 		var angle = Calc.angleTo(origin, pos);
-		var initial = Calc.angleTo(origin, start);
+		var initial = Calc.angleTo(origin, last);
 		for (entity in entities) entity.rotate(angle - initial);
 		layerEditor.selection.changed = true;
 		EDITOR.dirty();
