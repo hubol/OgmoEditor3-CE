@@ -31,8 +31,4 @@ class TimelapseClient {
     public static function submitScreenshot(levelPath: String, pngBase64: String) {
         return HubolClient.sendMessage(url, { type: 'submitScreenshot', data: { levelPath: levelPath, pngBase64: pngBase64 } });
     }
-
-    public static function markTaskComplete() {
-
-    }
 }
