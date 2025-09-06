@@ -632,15 +632,16 @@ class Editor
 			final pixels = draw.getRenderTargetPixels();
 			final png = FileSystem.saveRGBAToPNG(pixels, Math.floor(level.data.size.x), Math.floor(level.data.size.y));
 
-			if (saveLevelAsImageCallback == null) {
+			if (this.saveLevelAsImageCallback == null) {
 				var path = FileSystem.chooseSaveFile("Level as image", [{ name: "Image", extensions: ["png"]}], level.displayNameNoExtension + ".png");
 				if (path.length > 0) {
 					FileSystem.saveString(png.toString(), path);
 				}
 			}
 			else {
-				saveLevelAsImageCallback(png.toString('base64'));
-				saveLevelAsImageCallback = null;
+				final callback = this.saveLevelAsImageCallback;
+				this.saveLevelAsImageCallback = null;
+				callback(png.toString('base64'));
 			}
 
 			draw.doneRenderTarget();
