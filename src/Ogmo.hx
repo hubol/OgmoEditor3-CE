@@ -1,3 +1,4 @@
+import features.Timelapse;
 import features.HubolColorPicker;
 import features.Tooltip;
 import js.jquery.Event;
@@ -78,6 +79,7 @@ class Ogmo
 		new Editor();
 		new StartPage();
 		new ProjectEditor();
+		Timelapse.singleton.initialize();
 		gotoStartPage();
 		loop();
 
@@ -156,6 +158,7 @@ class Ogmo
 		Browser.window.requestAnimationFrame(loop);
 		this.tooltip.loop();
 		HubolColorPicker.singleton.loop();
+		Timelapse.singleton.loop();
 		
 		// Time update
 		{

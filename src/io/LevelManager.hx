@@ -1,5 +1,6 @@
 package io;
 
+import js.html.Console;
 import electron.Shell;
 import util.Popup;
 import js.node.Fs;

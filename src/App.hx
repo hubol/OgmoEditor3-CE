@@ -64,7 +64,8 @@ class App
 			webPreferences: {
 				contextIsolation: false,
 				enableRemoteModule: true,
-				nodeIntegration: true
+				nodeIntegration: true,
+				webSecurity: false,
 			} 
 		});
 
