@@ -13,6 +13,7 @@ typedef ScreenshotData = {
 
 enum State {
     NotReady;
+    Delay;
     WaitForLevelsPanelItems;
     TakeAndSubmitScreenshots;
     MarkedTaskComplete;
@@ -30,16 +31,21 @@ class Timelapse {
     public function initialize() {
         TimelapseClient.getTask()
             .then(task -> Ogmo.startPage.onOpenProject(task.ogmoProjectPath))
-            .then((cast (() -> this.state = WaitForLevelsPanelItems): Dynamic));
+            .then((cast (() -> this.state = Delay): Dynamic));
     }
 
     var levelPaths: Array<String>;
     var currentLevelPath: Null<String>;
     var remainingScreenshotsCount: Int;
-    var stupid = 0;
+    var delayedCount = 0;
 
     public function loop() {
-        if (this.state == WaitForLevelsPanelItems) {
+        if (this.state == Delay) {
+            if (this.delayedCount++ >= 60) {
+                this.state = WaitForLevelsPanelItems;
+            }
+        }
+        else if (this.state == WaitForLevelsPanelItems) {
             final levelPaths = findLevelPaths(Ogmo.editor.levelsPanel.items, []);
             if (Ogmo.editor.levelsPanel.items.length > 0 && levelPaths.length > 0) {
                 this.levelPaths = levelPaths;
@@ -49,12 +55,13 @@ class Timelapse {
         }
         else if (this.state == TakeAndSubmitScreenshots) {
             if (this.currentLevelPath == null && this.levelPaths.length > 0) {
+                final levelDirectoryPath = OGMO.project.getAbsoluteLevelDirectories()[0];
                 final levelPath = this.levelPaths.pop();
                 this.currentLevelPath = levelPath;
                 Ogmo.editor.levelManager.open(levelPath);
                 Ogmo.editor.saveLevelAsImage((png) -> {
                     this.currentLevelPath = null;
-                    TimelapseClient.submitScreenshot(levelPath, png)
+                    TimelapseClient.submitScreenshot(levelPath.substring(levelDirectoryPath.length), png)
                         .then((cast (() -> this.remainingScreenshotsCount -= 1): Dynamic));
                 });
             }
@@ -69,7 +76,6 @@ class Timelapse {
 
     static function findLevelPaths(items:Array<PanelItem>, levelPaths:Array<String>) {
         for (item in items) {
-            Console.log(item.path);
             if (item.children != null) {
                 findLevelPaths(item.children, levelPaths);
             }
