@@ -1,7 +1,7 @@
 package features;
 
+import js.Browser;
 import js.node.Path;
-import js.html.Console;
 import level.editor.ui.LevelsPanel.PanelItem;
 import js.lib.Uint8Array;
 
@@ -16,7 +16,6 @@ enum State {
     Delay;
     WaitForLevelsPanelItems;
     TakeAndSubmitScreenshots;
-    MarkedTaskComplete;
 }
 
 class Timelapse {
@@ -66,11 +65,8 @@ class Timelapse {
                 });
             }
             else if (this.remainingScreenshotsCount <= 0) {
-                // TODO
+                Browser.window.location.reload();
             }
-        }
-        else if (this.state == MarkedTaskComplete) {
-
         }
     }
 
