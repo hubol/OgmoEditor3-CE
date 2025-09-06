@@ -1,5 +1,6 @@
 package features;
 
+import js.html.Console;
 import js.Browser;
 import js.node.Path;
 import level.editor.ui.LevelsPanel.PanelItem;
@@ -43,7 +44,7 @@ class Timelapse {
 
     public function loop() {
         if (this.state == Delay) {
-            if (this.delayedCount++ >= 10) {
+            if (this.delayedCount++ >= 5) {
                 this.state = TakeAndSubmitScreenshots;
             }
         }
@@ -55,7 +56,7 @@ class Timelapse {
                 this.currentLevelPath = this.levelPaths.pop();
                 Ogmo.editor.levelManager.open(this.currentLevelPath);
             }
-            else if (this.delayedCount++ == 4) {
+            else if (this.delayedCount++ == 5) {
                 Ogmo.editor.saveLevelAsImage((png) -> {
                     TimelapseClient.submitScreenshot(this.currentLevelPath.substring(levelDirectoryPath.length), png)
                         .then((cast (() -> this.remainingScreenshotsCount -= 1): Dynamic));
@@ -64,6 +65,9 @@ class Timelapse {
             }
             else if (this.remainingScreenshotsCount <= 0) {
                 Browser.window.location.reload();
+            }
+            else {
+                Ogmo.editor.isDirty = true;
             }
         }
     }
