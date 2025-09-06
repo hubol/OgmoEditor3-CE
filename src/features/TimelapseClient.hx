@@ -5,16 +5,7 @@ import js.lib.Uint8Array;
 
 typedef TimelapseApi_GetTask_Response = {
     ogmoProjectPath: String,
-}
-
-typedef TimelapseApi_MarkTaskComplete_Response = {
-    ogmoProjectPath: String,
-}
-
-typedef ScreenshotRequest = {
-    data: Uint8Array,
-    width: Int,
-    height: Int,
+    levelPaths: Array<String>,
 }
 
 class TimelapseClient {
