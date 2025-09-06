@@ -112,7 +112,7 @@ class FileSystem
 		Fs.writeFileSync(path, data);
 	}
 
-	public static function saveRGBAToPNG(data:Uint8Array, width:Int, height:Int, path:String)
+	public static function saveRGBAToPNG(data:Uint8Array, width:Int, height:Int):Buffer
 	{
 		var canvas = Browser.document.createCanvasElement();
 		canvas.width = width;
@@ -126,9 +126,11 @@ class FileSystem
 
 		var nativeImage = js.Lib.require('electron').nativeImage;
 		var img = nativeImage.createFromDataURL(canvas.toDataURL("image/png"));
-		Fs.writeFileSync(path, img.toPNG());
+		final png = img.toPNG();
 
 		canvas.remove();
+
+		return png;
 	}
 
 	/*

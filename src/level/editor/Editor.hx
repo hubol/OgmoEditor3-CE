@@ -53,6 +53,7 @@ class Editor
 	var middleClickMove:Bool = false;
 	var lastOverlayUpdate:Float = 0;
 	var saveLevelAsImageRequested:Bool = false;
+	var saveLevelAsImageCallback:Null<(png:String) -> Void>;
 
 	var resizingLeft:Bool = false;
 	var resizingRight:Bool = false;
@@ -628,10 +629,19 @@ class Editor
 
 			draw.finishDrawing();
 
-			var pixels = draw.getRenderTargetPixels();
-			var path = FileSystem.chooseSaveFile("Level as image", [{ name: "Image", extensions: ["png"]}], level.displayNameNoExtension + ".png");
-			if (path.length > 0)
-				FileSystem.saveRGBAToPNG(pixels, Math.floor(level.data.size.x), Math.floor(level.data.size.y), path);
+			final pixels = draw.getRenderTargetPixels();
+			final png = FileSystem.saveRGBAToPNG(pixels, Math.floor(level.data.size.x), Math.floor(level.data.size.y));
+
+			if (saveLevelAsImageCallback == null) {
+				var path = FileSystem.chooseSaveFile("Level as image", [{ name: "Image", extensions: ["png"]}], level.displayNameNoExtension + ".png");
+				if (path.length > 0) {
+					FileSystem.saveString(png.toString(), path);
+				}
+			}
+			else {
+				saveLevelAsImageCallback(png.toString('base64'));
+				saveLevelAsImageCallback = null;
+			}
 
 			draw.doneRenderTarget();
 			draw.destroyRenderTarget();
@@ -673,9 +683,10 @@ class Editor
 		overlay.finishDrawing();
 	}
 
-	public function saveLevelAsImage():Void
+	public function saveLevelAsImage(?callback: (png:String) -> Void):Void
 	{
 		saveLevelAsImageRequested = true;
+		this.saveLevelAsImageCallback = callback;
 		isDirty = true;
 	}
 

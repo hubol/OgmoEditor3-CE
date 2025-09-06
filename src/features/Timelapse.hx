@@ -1,0 +1,83 @@
+package features;
+
+import js.node.Path;
+import js.html.Console;
+import level.editor.ui.LevelsPanel.PanelItem;
+import js.lib.Uint8Array;
+
+typedef ScreenshotData = {
+    data: Uint8Array,
+    width: Int,
+    height: Int,
+}
+
+enum State {
+    NotReady;
+    WaitForLevelsPanelItems;
+    TakeAndSubmitScreenshots;
+    MarkedTaskComplete;
+}
+
+class Timelapse {
+    public static final singleton = new Timelapse();
+
+    function new() {
+
+    }
+
+    var state = State.NotReady;
+
+    public function initialize() {
+        TimelapseClient.getTask()
+            .then(task -> Ogmo.startPage.onOpenProject(task.ogmoProjectPath))
+            .then((cast (() -> this.state = WaitForLevelsPanelItems): Dynamic));
+    }
+
+    var levelPaths: Array<String>;
+    var currentLevelPath: Null<String>;
+    var remainingScreenshotsCount: Int;
+    var stupid = 0;
+
+    public function loop() {
+        if (this.state == WaitForLevelsPanelItems) {
+            final levelPaths = findLevelPaths(Ogmo.editor.levelsPanel.items, []);
+            if (Ogmo.editor.levelsPanel.items.length > 0 && levelPaths.length > 0) {
+                this.levelPaths = levelPaths;
+                this.remainingScreenshotsCount = this.levelPaths.length;
+                this.state = TakeAndSubmitScreenshots;
+            }
+        }
+        else if (this.state == TakeAndSubmitScreenshots) {
+            if (this.currentLevelPath == null && this.levelPaths.length > 0) {
+                final levelPath = this.levelPaths.pop();
+                this.currentLevelPath = levelPath;
+                Ogmo.editor.levelManager.open(levelPath);
+                Ogmo.editor.saveLevelAsImage((png) -> {
+                    this.currentLevelPath = null;
+                    TimelapseClient.submitScreenshot(levelPath, png)
+                        .then((cast (() -> this.remainingScreenshotsCount -= 1): Dynamic));
+                });
+            }
+            else if (this.remainingScreenshotsCount <= 0) {
+                // TODO
+            }
+        }
+        else if (this.state == MarkedTaskComplete) {
+
+        }
+    }
+
+    static function findLevelPaths(items:Array<PanelItem>, levelPaths:Array<String>) {
+        for (item in items) {
+            Console.log(item.path);
+            if (item.children != null) {
+                findLevelPaths(item.children, levelPaths);
+            }
+            else if (Path.extname(item.path) == ".json") {
+                levelPaths.push(item.path);
+            }
+        }
+
+        return levelPaths;
+    }
+}
