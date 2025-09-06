@@ -28,8 +28,8 @@ class TimelapseClient {
         return HubolClient.sendMessage(url, { type: 'getTask', data: {} });
     }
 
-    public static function submitScreenshot(path: String, png: String) {
-        return HubolClient.sendMessage(url, { type: 'submitScreenshot', data: { path: path, png: png } });
+    public static function submitScreenshot(levelPath: String, pngBase64: String) {
+        return HubolClient.sendMessage(url, { type: 'submitScreenshot', data: { levelPath: levelPath, pngBase64: pngBase64 } });
     }
 
     public static function markTaskComplete() {
