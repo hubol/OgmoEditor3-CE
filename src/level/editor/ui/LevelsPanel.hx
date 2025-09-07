@@ -30,7 +30,7 @@ class LevelsPanel extends SidePanel
 	public var itemlist:ItemList;
 	public var unsavedFolder:ItemListFolder = null;
 
-	public var items:Array<PanelItem> = [];
+	var items:Array<PanelItem> = [];
 	var watchers:Array<FSWatcher> = [];
 	var item_count:Int;
 	var warning_displayed:Bool;

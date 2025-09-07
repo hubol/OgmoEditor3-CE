@@ -25,8 +25,4 @@ class Promises {
             });
         });
     }
-
-    public static function sleep(ms: Int) {
-        return new Promise((resolve, reject) -> Browser.window.setTimeout(resolve, ms));
-    }
 }
