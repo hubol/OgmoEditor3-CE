@@ -74,6 +74,13 @@ class Timelapse {
             }
             else {
                 if (!mustVisitAllAgain) {
+                    if (this.levelPaths.length > 0 && this.levelPathsToScreenshot.length == 0 && this.visitAllAttempts > 2) {
+                        Console.log("Seems fucked! No levels are without broken textures!");
+                        this.state = NotReady;
+                        restartOgmo();
+                        return;
+                    }
+
                     this.state = TakeAndSubmitScreenshots;
                     this.remainingScreenshotsCount = this.levelPathsToScreenshot.length;
                 }
@@ -92,17 +99,18 @@ class Timelapse {
                 Ogmo.editor.levelManager.open(this.currentLevelPath);
                 Ogmo.editor.saveLevelAsImage((png) -> {
                     TimelapseClient.submitScreenshot(this.currentLevelPath.substring(levelDirectoryPath.length), png)
-                        .then((cast (() -> this.remainingScreenshotsCount -= 1): Dynamic));
+                        .then((_) -> this.remainingScreenshotsCount -= 1);
                     this.currentLevelPath = null;
                 });
             }
             else if (this.remainingScreenshotsCount <= 0) {
-                complete();
+                TimelapseClient.completeTask().then((_) -> restartOgmo());
+                this.state = NotReady;
             }
         }
     }
 
-    private static function complete() {
+    private static function restartOgmo() {
         Browser.window.location.reload();
     }
 
