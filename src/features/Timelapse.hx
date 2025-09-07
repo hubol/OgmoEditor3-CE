@@ -15,6 +15,7 @@ typedef ScreenshotData = {
 enum State {
     NotReady;
     Delay;
+    VisitAll;
     TakeAndSubmitScreenshots;
 }
 
@@ -45,23 +46,35 @@ class Timelapse {
     public function loop() {
         if (this.state == Delay) {
             if (this.delayedCount++ >= 5) {
+                this.delayedCount = 0;
+                this.state = VisitAll;
+            }
+        }
+        else if (this.state == VisitAll) {
+            if (this.delayedCount < this.levelPaths.length) {
+                Ogmo.editor.levelManager.open(this.levelPaths[this.delayedCount]);
+                this.delayedCount += 1;
+            }
+            else {
                 this.state = TakeAndSubmitScreenshots;
             }
         }
         else if (this.state == TakeAndSubmitScreenshots) {
             final levelDirectoryPath = OGMO.project.getAbsoluteLevelDirectories()[0];
-
+            
             if (this.currentLevelPath == null && this.levelPaths.length > 0) {
                 this.delayedCount = 0;
                 this.currentLevelPath = this.levelPaths.pop();
                 Ogmo.editor.levelManager.open(this.currentLevelPath);
             }
             else if (this.delayedCount++ == 5) {
-                Ogmo.editor.saveLevelAsImage((png) -> {
+                final struggle = (_:String) -> Ogmo.editor.saveLevelAsImage((png) -> {
                     TimelapseClient.submitScreenshot(this.currentLevelPath.substring(levelDirectoryPath.length), png)
                         .then((cast (() -> this.remainingScreenshotsCount -= 1): Dynamic));
                     this.currentLevelPath = null;
                 });
+
+                Ogmo.editor.saveLevelAsImage(struggle);
             }
             else if (this.remainingScreenshotsCount <= 0) {
                 Browser.window.location.reload();
