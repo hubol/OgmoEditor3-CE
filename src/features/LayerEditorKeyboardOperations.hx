@@ -1,9 +1,11 @@
 package features;
 
+import level.data.UndoStack.LevelState;
 import js.Browser;
 import features.Toast;
 
 typedef LayerItemCommon = {
+    var position:Vector;
     function flipX(): Void;
     function flipY(): Void;
     function rotate(delta:Float): Void;
@@ -31,6 +33,11 @@ class LayerEditorKeyboardOperations<TLayerItem:LayerItemCommon> {
     public function new(ctx:LayerEditorKeyboardOperationsContext<TLayerItem>) {
         this._ctx = ctx;
     }
+
+    static final _east = new Vector(1, 0);
+    static final _west = new Vector(-1, 0);
+    static final _south = new Vector(0, 1);
+    static final _north = new Vector(0, -1);
 
     public function onKeyPress(key:Int) {
         final ctrl = OGMO.ctrl;
@@ -69,6 +76,18 @@ class LayerEditorKeyboardOperations<TLayerItem:LayerItemCommon> {
             }
             else if (key == Keys.V) {
                 this.flipSelectionY();
+            }
+            else if (key == Keys.W) {
+                this._translateSelection(_north);
+            }
+            else if (key == Keys.A) {
+                this._translateSelection(_west);
+            }
+            else if (key == Keys.S) {
+                this._translateSelection(_south);
+            }
+            else if (key == Keys.D) {
+                this._translateSelection(_east);
             }
         }
     }
@@ -196,6 +215,23 @@ class LayerEditorKeyboardOperations<TLayerItem:LayerItemCommon> {
         for (item in this._ctx.getSelection()) {
             item.flipY();
         }
+        this._ctx.onChange();
+    }
+
+    var _previousTranslateSelectionLevelState:LevelState = null;
+
+    function _translateSelection(v:Vector) {
+        final stack = EDITOR.level.stack;
+
+        if (stack.redoStates.length > 0 || stack.undoStates.length == 0 || this._previousTranslateSelectionLevelState != stack.undoStates[stack.undoStates.length - 1]) {
+            EDITOR.level.store('translate ${this._ctx.itemTypeName}(s)');
+            this._previousTranslateSelectionLevelState = stack.undoStates[stack.undoStates.length - 1];
+        }
+        
+        for (item in this._ctx.getSelection()) {
+            item.position.add(v);
+        }
+
         this._ctx.onChange();
     }
 }

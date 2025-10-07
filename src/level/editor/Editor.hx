@@ -762,6 +762,20 @@ class Editor
 				else EDITOR.toolBelt.setTool(key - Keys.D1);
 		}
 
+		if (key == Keys.S && OGMO.ctrl && EDITOR.level != null && !EDITOR.locked) {
+			if (OGMO.shift) {
+				EDITOR.level.doSaveAs();
+			}
+			else {
+				EDITOR.level.doSave();
+			}
+			return;
+		}
+		else if (key == Keys.W && OGMO.ctrl && EDITOR.level != null && !EDITOR.locked) {
+			EDITOR.levelManager.close(EDITOR.level);
+			return;
+		}
+
 		switch (key)
 		{
 			default:
@@ -785,19 +799,9 @@ class Editor
 					EDITOR.propertyDisplayDropdown.refresh(EDITOR.stickerDropdown);
 					EDITOR.dirty();
 				}
-			case Keys.S:
-				//Save Level
-				if (OGMO.ctrl && EDITOR.level != null && !EDITOR.locked)
-				{
-					if (OGMO.shift) EDITOR.level.doSaveAs();
-					else EDITOR.level.doSave();
-				}
 			case Keys.N:
 				//New Level
 				if (OGMO.ctrl && !EDITOR.locked) EDITOR.levelManager.create();
-			case Keys.W:
-				//Close Level
-				if (OGMO.ctrl && EDITOR.level != null && !EDITOR.locked) EDITOR.levelManager.close(EDITOR.level);
 			case Keys.D1:
 				dPress(key);
 			case Keys.D2:
