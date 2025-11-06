@@ -1,22 +1,28 @@
 package features;
 
 import js.lib.Promise;
-import modules.decals.DecalLayer;
 import js.lib.Set;
-import modules.decals.Decal;
+
+interface IGroupable {
+    public var groupName:String;
+}
+
+interface IGroupablesProvider<T:IGroupable> {
+    public function getGroupables():Array<T>;
+}
 
 class DecalGroups {
-    public static function groupOrUngroupDecals(decals: Array<Decal>, destination: Array<Decal>) {
-        final groupNameAnalysis = analyzeDecalGroupNames(decals);
+    public static function groupOrUngroup<T:IGroupable>(groupables: Array<T>, destination: Array<T>) {
+        final groupNameAnalysis = analyzeGroupNames(groupables);
         final groupNameToApply = _getGroupNameToApply(groupNameAnalysis, destination);
 
         final action = groupNameToApply == null ? "Clear group" : 'Set group to "${groupNameToApply}"';
-        final description = '${action} for ${decals.length} decal(s)';
+        final description = '${action} for ${groupables.length} groupable(s)';
         trace(description);
         EDITOR.level.store(description);
 
-        for (decal in decals) {
-            decal.groupName = groupNameToApply;
+        for (groupable in groupables) {
+            groupable.groupName = groupNameToApply;
         }
 
         ensureConsecutiveGroups(destination);
@@ -24,23 +30,23 @@ class DecalGroups {
         EDITOR.dirty();
     }
 
-    public static function renameGroup(decals: Array<Decal>, previousGroupName: String, nextGroupName: String) {
+    public static function renameGroup<T:IGroupable>(groupables: Array<T>, previousGroupName: String, nextGroupName: String) {
         final description = 'Changed group name from ${previousGroupName} to ${nextGroupName}';
         trace(description);
         EDITOR.level.store(description);
 
-        for (decal in decals) {
-            if (decal.groupName == previousGroupName) {
-                decal.groupName = nextGroupName;
+        for (groupable in groupables) {
+            if (groupable.groupName == previousGroupName) {
+                groupable.groupName = nextGroupName;
             }
         }
 
         EDITOR.dirty();
     }
 
-    static function _getGroupNameToApply(analysis: DecalGroupNameAnalysis, decals: Array<Decal>) {
+    static function _getGroupNameToApply<T:IGroupable>(analysis: GroupNameAnalysis, groupables: Array<T>) {
         if (analysis.uniqueGroupNamesCount == 0) {
-            final groupNames = new Set([ for (decal in decals) if (decal.groupName != null) decal.groupName ]);
+            final groupNames = new Set([ for (groupable in groupables) if (groupable.groupName != null) groupable.groupName ]);
 
             final baseName = 'Group';
             var count = 0;
@@ -61,69 +67,69 @@ class DecalGroups {
         return shouldApplyTopmostGroupName ? analysis.topmostGroupName : null;
     }
 
-    public static function ensureConsecutiveGroups(decals: Array<Decal>) {
-        final groupNamesToChunks = new Map<String,Array<Decal>>();
-        final decalChunks = new Array<Array<Decal>>();
+    public static function ensureConsecutiveGroups<T:IGroupable>(groupables: Array<T>) {
+        final groupNamesToChunks = new Map<String,Array<T>>();
+        final groupableChunks = new Array<Array<T>>();
 
-        decalChunks[0] = new Array();
+        groupableChunks[0] = new Array();
 
-        for (decal in decals) {
-            if (decal.groupName == null) {
-                decalChunks[decalChunks.length - 1].push(decal);
+        for (groupable in groupables) {
+            if (groupable.groupName == null) {
+                groupableChunks[groupableChunks.length - 1].push(groupable);
                 continue;
             }
 
-            var chunk = groupNamesToChunks.get(decal.groupName);
+            var chunk = groupNamesToChunks.get(groupable.groupName);
 
             if (chunk == null) {
                 chunk = new Array();
-                groupNamesToChunks.set(decal.groupName, chunk);
-                decalChunks.push(chunk);
-                decalChunks.push(new Array());
+                groupNamesToChunks.set(groupable.groupName, chunk);
+                groupableChunks.push(chunk);
+                groupableChunks.push(new Array());
             }
 
-            chunk.push(decal);
+            chunk.push(groupable);
         }
 
-        decals.resize(0);
+        groupables.resize(0);
 
-        for (chunk in decalChunks) {
-            for (decal in chunk) {
-                decals.push(decal);
+        for (chunk in groupableChunks) {
+            for (groupable in chunk) {
+                groupables.push(groupable);
             }
         }
     }
 
-    public static function analyzeDecalGroupNames(decals: Array<Decal>): DecalGroupNameAnalysis {
+    public static function analyzeGroupNames<T:IGroupable>(groupables: Array<T>): GroupNameAnalysis {
         final groupNameCounts = new Map<String,Int>();
         var topmostGroupName = null;
-        var topmostDecal = null;
+        var topmostGroupable = null;
         var nullGroupNamesCount = 0;
 
-        var i = decals.length - 1;
+        var i = groupables.length - 1;
         while (i >= 0) {
-            final decal = decals[i];
+            final groupable = groupables[i];
             i -= 1;
 
-            if (topmostDecal == null) {
-                topmostDecal = decal;
+            if (topmostGroupable == null) {
+                topmostGroupable = groupable;
             }
 
-            if (decal.groupName == null) {
+            if (groupable.groupName == null) {
                 nullGroupNamesCount += 1;
                 continue;
             } 
 
             if (topmostGroupName == null) {
-                topmostGroupName = decal.groupName;
+                topmostGroupName = groupable.groupName;
             }
             
-            final count = groupNameCounts.get(decal.groupName);
-            groupNameCounts.set(decal.groupName, count == null ? 1 : count + 1);
+            final count = groupNameCounts.get(groupable.groupName);
+            groupNameCounts.set(groupable.groupName, count == null ? 1 : count + 1);
         }
 
         return {
-            topmostDecal: topmostDecal,
+            topmostGroupable: topmostGroupable,
             topmostGroupName: topmostGroupName,
             nullGroupNamesCount: nullGroupNamesCount,
             uniqueGroupNamesCount: [for (key in groupNameCounts.keys()) key].length,
@@ -132,20 +138,20 @@ class DecalGroups {
     }
 }
 
-typedef DecalGroupNameAnalysis = {
-    final topmostDecal:Decal;
+typedef GroupNameAnalysis = {
+    final topmostGroupable:IGroupable;
     final topmostGroupName:String;
     final uniqueGroupNamesCount:Int;
     final nullGroupNamesCount:Int;
     final groupNameCounts:Map<String,Int>;
 }
 
-class UiDecalGroupsList extends LayerEditorMainPanelElement {
+class UiGroupsList extends LayerEditorMainPanelElement {
     private final _rootEl = new JQuery('<div class="decal_groups_list"></div>');
     private final _titleEl = new JQuery('<div></div>');
     private final _listEl = new JQuery('<ul></ul>');
 
-    private var _state: UiDecalGroupsListState = { groups: [] };
+    private var _state: UiGroupsListState = { groups: [] };
 
     private final _onMouseEnter: (groupName:String) -> Void;
     private final _onMouseLeave: (groupName:String) -> Void;
@@ -166,8 +172,8 @@ class UiDecalGroupsList extends LayerEditorMainPanelElement {
         this._onRightClick = onRightClick;
     }
 
-    public function update(decalLayer: DecalLayer, selectedDecals: Array<Decal>) {
-        final nextState = _getState(decalLayer, selectedDecals);
+    public function update<T:IGroupable>(groupablesProvider: IGroupablesProvider<T>, selectedGroupables: Array<T>) {
+        final nextState = _getState(groupablesProvider, selectedGroupables);
 
         if (_areStatesEqual(this._state, nextState)) {
             return;
@@ -181,7 +187,7 @@ class UiDecalGroupsList extends LayerEditorMainPanelElement {
         this._listEl.empty();
 
         for (group in this._state.groups) {
-            final itemEl = new JQuery('<li>${group.name}<count>(${group.count == 1 ? '1 decal' : '${group.count} decals'})</count></li>');
+            final itemEl = new JQuery('<li>${group.name}<count>(${group.count == 1 ? '1 object' : '${group.count} objects'})</count></li>');
 
             if (group.isTopmostSelected) {
                 itemEl.attr('data-topmost_selected', 'true');
@@ -204,7 +210,7 @@ class UiDecalGroupsList extends LayerEditorMainPanelElement {
         }
     }
 
-    private static function _areStatesEqual(state0: UiDecalGroupsListState, state1: UiDecalGroupsListState) {
+    private static function _areStatesEqual(state0: UiGroupsListState, state1: UiGroupsListState) {
         if (state0.groups.length != state1.groups.length) {
             return false;
         }
@@ -224,20 +230,20 @@ class UiDecalGroupsList extends LayerEditorMainPanelElement {
         return true;
     }
 
-    private static function _getState(layer: DecalLayer, selectedDecals: Array<Decal>): UiDecalGroupsListState {
-        final analysis = DecalGroups.analyzeDecalGroupNames(selectedDecals);
+    private static function _getState<T:IGroupable>(groupablesProvider: IGroupablesProvider<T>, selectedGroupables: Array<T>): UiGroupsListState {
+        final analysis = DecalGroups.analyzeGroupNames(selectedGroupables);
 
         final groups = new Map<String, Int>();
-        for (decal in layer.decals) {
-            if (decal.groupName == null) {
+        for (groupable in groupablesProvider.getGroupables()) {
+            if (groupable.groupName == null) {
                 continue;
             }
 
-            final value = groups.get(decal.groupName);
-            groups.set(decal.groupName, value == null ? 1 : (value + 1));
+            final value = groups.get(groupable.groupName);
+            groups.set(groupable.groupName, value == null ? 1 : (value + 1));
         }
 
-        final groupsArray = new Array<UiDecalGroupsListStateGroups>();
+        final groupsArray = new Array<UiGroupsListStateGroups>();
 
         for (groupName in groups.keys()) {
             final name = groupName;
@@ -253,13 +259,13 @@ class UiDecalGroupsList extends LayerEditorMainPanelElement {
     }
 }
 
-typedef UiDecalGroupsListStateGroups = {
+typedef UiGroupsListStateGroups = {
     final name:String;
     final count:Int;
     final isTopmostSelected:Bool;
     final membersSelectedCount:Int;
 }
 
-typedef UiDecalGroupsListState = {
-    final groups:Array<UiDecalGroupsListStateGroups>;
+typedef UiGroupsListState = {
+    final groups:Array<UiGroupsListStateGroups>;
 }

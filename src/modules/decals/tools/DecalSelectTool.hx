@@ -56,7 +56,7 @@ class DecalSelectTool extends DecalTool
 			EDITOR.dirty();
 		}
 		else if (OGMO.shift && key == Keys.G) {
-			DecalGroups.groupOrUngroupDecals(layerEditor.selected, layer.decals);
+			DecalGroups.groupOrUngroup(layerEditor.selected, layer.decals);
 		}
 	}
 

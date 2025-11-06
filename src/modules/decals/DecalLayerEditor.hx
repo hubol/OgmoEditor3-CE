@@ -7,12 +7,11 @@ import features.DecalGroups;
 import js.lib.Promise;
 import features.Prompt;
 import js.lib.Set;
-import features.DecalGroups.UiDecalGroupsList;
 import features.TextureRef;
 import level.editor.ui.SidePanel;
 import level.editor.LayerEditor;
 
-class DecalLayerEditor extends GLayerEditor<DecalLayer, DecalLayerTemplate>
+class DecalLayerEditor extends GLayerEditor<DecalLayer, DecalLayerTemplate> implements IGroupablesProvider<Decal>
 {
 	public var brush:TextureRef;
 	public var selected:Array<Decal> = [];
@@ -62,11 +61,11 @@ class DecalLayerEditor extends GLayerEditor<DecalLayer, DecalLayerTemplate>
 			});
 	}
 
-	private final _uiDecalGroupsList: UiDecalGroupsList;
+	private final _uiDecalGroupsList: UiGroupsList;
 
 	public function new(id:Int) {
 		super(id);
-		this._uiDecalGroupsList = new UiDecalGroupsList(
+		this._uiDecalGroupsList = new UiGroupsList(
 			this._onGroupNameMouseEnter,
 			this._onGroupNameMouseLeave,
 			this._onGroupNameClick,
@@ -246,13 +245,15 @@ class DecalLayerEditor extends GLayerEditor<DecalLayer, DecalLayerTemplate>
 		}
 	}
 
+	
+
 	override public function onEditorCleaned() {
-		this._uiDecalGroupsList.update(this.layer, this.selected);
+		this._uiDecalGroupsList.update(this, this.selected);
 	}
 
 	override function onLayerEditorIsCurrentChanged(isCurrent:Bool) {
 		this._uiDecalGroupsList.setVisible(isCurrent);
-		this._uiDecalGroupsList.update(this.layer, this.selected);
+		this._uiDecalGroupsList.update(this, this.selected);
 	}
 
 	public function updateSelectedDecals(textureRef: TextureRef) {
@@ -300,5 +301,9 @@ class DecalLayerEditor extends GLayerEditor<DecalLayer, DecalLayerTemplate>
 		}
 
 		return selectedDecalsInIndexOrder;
+	}
+
+	public function getGroupables():Array<Decal> {
+		return this.layer.decals;
 	}
 }

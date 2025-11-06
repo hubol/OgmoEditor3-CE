@@ -1,11 +1,12 @@
 package modules.decals;
 
+import features.DecalGroups.IGroupable;
 import features.TextureRef;
 import features.EntityLikeUtils;
 import features.Tintable.ITintable;
 import level.data.Value;
 
-class Decal implements ITintable
+class Decal implements ITintable implements IGroupable
 {
 	private static var _nextId = 0;
 
